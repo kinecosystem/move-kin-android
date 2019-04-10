@@ -1,5 +1,5 @@
 package org.kinecosystem.movekinlib
 
-class AppDiscoveryViews {
+public class AppDiscoveryViews {
     var count = 7
 }
