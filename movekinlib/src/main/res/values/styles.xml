@@ -1,0 +1,12 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="kinTextButtonRounded" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@drawable/kin_button_text_colors</item>
+        <item name="android:background">@drawable/kin_button_rounded_drawable</item>
+        <item name="android:textSize">@dimen/kin_btn_text_size</item>
+        <item name="android:clickable">true</item>
+        <item name="android:fontFamily">@font/sailec_medium</item>
+    </style>
+
+
+</resources>

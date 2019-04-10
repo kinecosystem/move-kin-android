@@ -1,2 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.kinecosystem.movekinlib" />
+    package="org.kinecosystem.movekinlib">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        >
+        <activity android:name="org.kinecosystem.movekin.ecoappsdiscovery.discovery.view.AppsDiscoveryActivity"
+            android:screenOrientation="portrait"/>
+    </application>
+</manifest>
