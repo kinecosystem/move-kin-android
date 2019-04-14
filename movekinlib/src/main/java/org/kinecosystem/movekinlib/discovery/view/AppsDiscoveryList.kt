@@ -13,17 +13,20 @@ import android.widget.TextView
 import org.kinecosystem.movekinlib.R
 import org.kinecosystem.movekinlib.discovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.movekinlib.discovery.presenter.IAppsDiscoveryListPresenter
+import org.kinecosystem.movekinlib.model.EcosystemApp
+import org.kinecosystem.movekinlib.model.iconUrl
+import org.kinecosystem.movekinlib.model.name
 import org.kinecosystem.movekinlib.utils.load
 
 const val COLUMNS_COUNT = 2
 
 class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RecyclerView(context, attrs, defStyleAttr), IAppsDiscoveryListView {
-    override fun updateData(data: List<String>) {
-        (adapter as AppsDiscoveryAdapter).updateData(data)
+    override fun updateData(apps: List<EcosystemApp>) {
+        (adapter as AppsDiscoveryAdapter).updateData(apps)
     }
 
-    override fun navigateToApp(app: String) {
+    override fun navigateToApp(app: EcosystemApp) {
         Log.d("###", "#### navaigte to app $app")
     }
 
@@ -62,10 +65,10 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
 
 class AppsDiscoveryAdapter(private val context: Context, private val presenter: IAppsDiscoveryListPresenter) : RecyclerView.Adapter<AppsDiscoveryAdapter.ViewHolder>() {
 
-    var data: List<String> = listOf()
+    var apps: List<EcosystemApp> = listOf()
 
-    fun updateData(data: List<String>) {
-        this.data = data
+    fun updateData(apps: List<EcosystemApp>) {
+        this.apps = apps
         notifyDataSetChanged()
     }
 
@@ -76,11 +79,11 @@ class AppsDiscoveryAdapter(private val context: Context, private val presenter: 
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return apps.size
     }
 
     override fun onBindViewHolder(holder: AppsDiscoveryAdapter.ViewHolder?, position: Int) {
-        val app: String = data[position]
+        val app: EcosystemApp = apps[position]
         holder?.bind(app)
         holder?.view?.setOnClickListener {
             presenter.onAppClicked(app)
@@ -94,9 +97,9 @@ class AppsDiscoveryAdapter(private val context: Context, private val presenter: 
         //private val actionText: TextView = view.findViewById(R.id.actionText)
         //private val category: TextView = view.findViewById(R.id.category)
 
-        fun bind(app: String) {
-            appName.text = app
-            icon.load("https://cdn.kinitapp.com/discovery/vent/logo/android/xxhdpi/Logo_Vent.png")
+        fun bind(app: EcosystemApp) {
+            appName.text = app.name
+            icon.load(app.iconUrl)
 //               with(actionText){
 //                setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
 //                typeface = GeneralUtils.getFontTypeForType(context, app.cardFontName)
