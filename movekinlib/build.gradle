@@ -28,6 +28,10 @@ android {
 
 }
 
+androidExtensions {
+    experimental = true
+}
+
 repositories {
     mavenCentral()
     jcenter()
