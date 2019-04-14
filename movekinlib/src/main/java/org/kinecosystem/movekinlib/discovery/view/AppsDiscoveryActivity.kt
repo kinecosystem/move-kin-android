@@ -1,4 +1,4 @@
-package org.kinecosystem.movekin.ecoappsdiscovery.discovery.view
+package org.kinecosystem.movekinlib.discovery.view
 
 import android.content.Context
 import android.content.Intent
