@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#44aa22">
+
+
+    <View
+        android:id="@+id/colorBg"
+        android:layout_width="0dp"
+        android:layout_height="230dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="#ffbb00" />
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/category"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="12dp"-->
+        <!--android:layout_marginTop="12dp"-->
+        <!--android:layout_marginEnd="12dp"-->
+        <!--android:gravity="center"-->
+        <!--style="@style/TextRegular"-->
+        <!--android:textSize="10sp"-->
+        <!--android:textColor="@color/white"-->
+        <!--app:layout_constraintEnd_toEndOf="@+id/colorBg"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/colorBg"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/colorBg"-->
+        <!--tools:text="Travel" />-->
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/actionText"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_marginStart="16dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginEnd="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--android:gravity="center"-->
+        <!--android:textColor="@color/white"-->
+        <!--tools:textSize="29sp"-->
+        <!--app:layout_constraintBottom_toTopOf="@+id/learnMore"-->
+        <!--app:layout_constraintEnd_toEndOf="@+id/colorBg"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/colorBg"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/category"-->
+        <!--tools:text="Donate" />-->
+
+
+    <!--<TextView-->
+        <!--android:id="@+id/learnMore"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="12dp"-->
+        <!--android:layout_marginEnd="12dp"-->
+        <!--android:layout_marginBottom="12dp"-->
+        <!--android:gravity="center"-->
+        <!--android:text="@string/learn_more"-->
+        <!--style="@style/TextRegular"-->
+        <!--android:textColor="@color/white"-->
+        <!--android:textSize="12sp"-->
+        <!--app:layout_constraintBottom_toBottomOf="@+id/colorBg"-->
+        <!--app:layout_constraintEnd_toEndOf="@+id/colorBg"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/colorBg" />-->
+
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="35dp"
+        app:layout_constraintBottom_toBottomOf="@+id/kinLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/kinLogo"
+        app:srcCompat="@drawable/white_small_kin_logo"
+        android:layout_marginLeft="35dp" />
+
+    <ImageView
+        android:id="@+id/kinLogo"
+        android:layout_width="37dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="30dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorBg"
+        android:layout_marginLeft="6dp"
+        android:src="@drawable/white_small_kin_logo"
+        />
+
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="88dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="@+id/colorBg"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/colorBg"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="james bond" />
+
+
+</android.support.constraint.ConstraintLayout>
