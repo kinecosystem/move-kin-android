@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.IAppsDiscoveryListPresenter
@@ -23,6 +22,7 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.utils.TextUtils
 import org.kinecosystem.appsdiscovery.utils.load
+
 
 const val COLUMNS_COUNT = 2
 
@@ -97,13 +97,13 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
             appName.text = app.name
             colorBg.setBackgroundColor(app.cardColor)
             icon.load(app.iconUrl)
-               with(actionText){
+            with(actionText) {
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
-                setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing,  context.resources.displayMetrics), 1.0f)
+                setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
                 text = app.cardTitle
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
                 typeface = TextUtils.getFontTypeForType(context, app.cardFontName)
-                setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing,  context.resources.displayMetrics), 1.0f)
+                setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
                 text = app.cardTitle
             }
 //

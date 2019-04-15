@@ -1,0 +1,3 @@
+package org.kinecosystem.appsdiscovery.receiver
+
+interface IKinReceiver

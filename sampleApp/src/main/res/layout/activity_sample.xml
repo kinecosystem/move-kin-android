@@ -26,5 +26,4 @@
         android:text="Show Alert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/discoverBtn" />
-
 </android.support.constraint.ConstraintLayout>
