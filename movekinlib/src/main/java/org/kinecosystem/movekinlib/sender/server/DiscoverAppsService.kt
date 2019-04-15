@@ -1,12 +1,12 @@
-package org.kinecosystem.movekinlib.server
+package org.kinecosystem.movekinlib.sender.server
 
 import org.kinecosystem.movekinlib.base.OperationResultCallback
-import org.kinecosystem.movekinlib.model.EcosystemApp
+import org.kinecosystem.movekinlib.sender.model.EcosystemApp
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DiscoverAppsServic(private val discoveryAppsApi: DiscoverAppsApi) {
+class DiscoverAppsService(private val discoveryAppsApi: DiscoverAppsApi) {
 
     fun getApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
         discoveryAppsApi.apps().enqueue(object : Callback<DiscoverAppsApi.AppsResponds> {

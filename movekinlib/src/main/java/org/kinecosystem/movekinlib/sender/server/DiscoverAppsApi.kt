@@ -1,7 +1,7 @@
-package org.kinecosystem.movekinlib.server
+package org.kinecosystem.movekinlib.sender.server
 
 import com.google.gson.annotations.SerializedName
-import org.kinecosystem.movekinlib.model.EcosystemApp
+import org.kinecosystem.movekinlib.sender.model.EcosystemApp
 import retrofit2.Call
 import retrofit2.http.GET
 

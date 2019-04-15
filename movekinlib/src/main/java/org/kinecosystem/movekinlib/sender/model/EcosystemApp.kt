@@ -1,4 +1,4 @@
-package org.kinecosystem.movekinlib.model
+package org.kinecosystem.movekinlib.sender.model
 
 import android.graphics.Color
 import android.os.Parcelable

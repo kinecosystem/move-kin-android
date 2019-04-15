@@ -1,10 +1,10 @@
-package org.kinecosystem.movekinlib.discovery.presenter
+package org.kinecosystem.movekinlib.sender.discovery.presenter
 
 import org.kinecosystem.movekinlib.base.BasePresenter
 import org.kinecosystem.movekinlib.base.OperationResultCallback
-import org.kinecosystem.movekinlib.discovery.view.IAppsDiscoveryListView
-import org.kinecosystem.movekinlib.model.EcosystemApp
-import org.kinecosystem.movekinlib.server.Network
+import org.kinecosystem.movekinlib.sender.discovery.view.IAppsDiscoveryListView
+import org.kinecosystem.movekinlib.sender.model.EcosystemApp
+import org.kinecosystem.movekinlib.sender.server.Network
 
 class AppsDiscoveryListPresenter : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
     override fun loadData() {

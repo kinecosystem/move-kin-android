@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <org.kinecosystem.movekinlib.discovery.view.AppsDiscoveryList
+    <org.kinecosystem.movekinlib.sender.discovery.view.AppsDiscoveryList
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

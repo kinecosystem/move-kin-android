@@ -1,7 +1,7 @@
-package org.kinecosystem.movekinlib.discovery.presenter
+package org.kinecosystem.movekinlib.sender.discovery.presenter
 
 import org.kinecosystem.movekinlib.base.BasePresenter
-import org.kinecosystem.movekinlib.discovery.view.IDiscoverButtonView
+import org.kinecosystem.movekinlib.sender.discovery.view.IDiscoverButtonView
 
 class DiscoverButtonPresenter : BasePresenter<IDiscoverButtonView>(), IDiscoverButtonPresenter{
     override fun onClicked() {

@@ -1,10 +1,10 @@
-package org.kinecosystem.movekinlib.server
+package org.kinecosystem.movekinlib.sender.server
 
 import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.kinecosystem.movekinlib.base.OperationResultCallback
-import org.kinecosystem.movekinlib.model.EcosystemApp
+import org.kinecosystem.movekinlib.sender.model.EcosystemApp
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -14,7 +14,7 @@ private const val STAGE_S3_BASE_URL = "https://s3.amazonaws.com/kinapp-static/" 
 
 class Network{
 
-    private var service:DiscoverAppsServic
+    private var service:DiscoverAppsService
 
     init {
         //TODO
@@ -28,7 +28,7 @@ class Network{
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-        service = DiscoverAppsServic(retrofit.create<DiscoverAppsApi>(DiscoverAppsApi::class.java))
+        service = DiscoverAppsService(retrofit.create<DiscoverAppsApi>(DiscoverAppsApi::class.java))
     }
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
