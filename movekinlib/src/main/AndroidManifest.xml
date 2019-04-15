@@ -5,7 +5,7 @@
     <application
         android:label="@string/app_name"
         >
-        <activity android:name=".discovery.view.AppsDiscoveryActivity"
+        <activity android:name="org.kinecosystem.movekinlib.sender.discovery.view.AppsDiscoveryActivity"
             android:screenOrientation="portrait"/>
     </application>
 </manifest>

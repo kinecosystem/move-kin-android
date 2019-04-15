@@ -1,4 +1,4 @@
-package org.kinecosystem.movekinlib.discovery.view
+package org.kinecosystem.movekinlib.sender.discovery.view
 
 import org.kinecosystem.movekinlib.base.IBaseView
 

@@ -1,4 +1,4 @@
-package org.kinecosystem.movekinlib.discovery.view
+package org.kinecosystem.movekinlib.sender.discovery.view
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
@@ -6,8 +6,8 @@ import android.support.v4.widget.TextViewCompat
 import android.util.AttributeSet
 import android.widget.TextView
 import org.kinecosystem.movekinlib.R
-import org.kinecosystem.movekinlib.discovery.presenter.DiscoverButtonPresenter
-import org.kinecosystem.movekinlib.discovery.presenter.IDiscoverButtonPresenter
+import org.kinecosystem.movekinlib.sender.discovery.presenter.DiscoverButtonPresenter
+import org.kinecosystem.movekinlib.sender.discovery.presenter.IDiscoverButtonPresenter
 
 class DiscoverButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr), IDiscoverButtonView {

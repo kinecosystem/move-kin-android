@@ -15,7 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <org.kinecosystem.movekinlib.discovery.view.DiscoverButton
+    <org.kinecosystem.movekinlib.sender.discovery.view.DiscoverButton
         android:id="@+id/btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

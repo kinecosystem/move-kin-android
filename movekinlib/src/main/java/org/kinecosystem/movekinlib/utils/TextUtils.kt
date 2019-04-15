@@ -1,9 +1,7 @@
 package org.kinecosystem.movekinlib.utils
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Typeface
-import android.util.DisplayMetrics
 
 class TextUtils {
     companion object {

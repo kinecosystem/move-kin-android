@@ -1,7 +1,7 @@
-package org.kinecosystem.movekinlib.discovery.view
+package org.kinecosystem.movekinlib.sender.discovery.view
 
 import org.kinecosystem.movekinlib.base.IBaseView
-import org.kinecosystem.movekinlib.model.EcosystemApp
+import org.kinecosystem.movekinlib.sender.model.EcosystemApp
 
 interface IAppsDiscoveryListView : IBaseView{
     fun updateData(apps:List<EcosystemApp>)
