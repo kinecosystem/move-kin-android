@@ -1,1 +1,1 @@
-include ':app', ':movekinlib'
+include ':sampleApp', ':appsDiscovery'
