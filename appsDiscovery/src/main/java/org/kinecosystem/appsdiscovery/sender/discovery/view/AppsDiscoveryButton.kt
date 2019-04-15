@@ -9,7 +9,7 @@ import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.DiscoverButtonPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.IDiscoverButtonPresenter
 
-class DiscoverButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class AppsDiscoveryButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr), IDiscoverButtonView {
 
     override fun startAppsDiscoveryActivity() {
