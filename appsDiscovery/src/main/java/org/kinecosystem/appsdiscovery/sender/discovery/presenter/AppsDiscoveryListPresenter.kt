@@ -9,16 +9,17 @@ import org.kinecosystem.appsdiscovery.sender.server.Network
 class AppsDiscoveryListPresenter : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
     override fun loadData() {
         val network = Network()
-        network.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>?> {
-            override fun onResult(apps: List<EcosystemApp>?) {
-                apps?.let {
-                    view?.updateData(apps)
-                }
-            }
-
-            override fun onError(errorCode: Int) {
-            }
-        })
+        network.getDiscoveryApps()
+//        network.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>?> {
+//            override fun onResult(apps: List<EcosystemApp>?) {
+//                apps?.let {
+//                    view?.updateData(apps)
+//                }
+//            }
+//
+//            override fun onError(errorCode: Int) {
+//            }
+//        })
     }
 
     override fun onAppClicked(app: EcosystemApp) {

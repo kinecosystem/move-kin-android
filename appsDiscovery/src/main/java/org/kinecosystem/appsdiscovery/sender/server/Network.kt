@@ -1,53 +1,57 @@
 package org.kinecosystem.appsdiscovery.sender.server
 
 import android.util.Log
-import okhttp3.OkHttpClient
+import com.google.gson.Gson
+import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import org.kinecosystem.appsdiscovery.base.OperationResultCallback
-import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import org.json.JSONException
+import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
+import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-private const val PROD_CDN_BASE_URL = "https://cdn.kinitapp.com/"
-private const val STAGE_S3_BASE_URL = "https://s3.amazonaws.com/kinapp-static/" // TODO: move to BuildConfig (Requires to update Travis!)
+//TODO make a nicer url without the kinit
+private const val BASE_CDN_URL = "https://cdn.kinitapp.com"
+private const val GET_DISCOVERY_APPS_PROD_URL = "$BASE_CDN_URL/discovery_apps_android.json"
+private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stage.json"
 
-class Network{
 
-    private var service:DiscoverAppsService
+class Network {
+    private val httpClient: OkHttpClient
+    private val gson = Gson()
 
     init {
-        //TODO
-        val serverUrl = STAGE_S3_BASE_URL// if (BuildConfig.DEBUG) STAGE_S3_BASE_URL else PROD_CDN_BASE_URL
-        val interceptor = HttpLoggingInterceptor()
-        //TODO
-        interceptor.level = HttpLoggingInterceptor.Level.BODY// if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY else HttpLoggingInterceptor.Level.NONE
-        val client = OkHttpClient.Builder().readTimeout(20, TimeUnit.SECONDS).writeTimeout(20, TimeUnit.SECONDS).addInterceptor(interceptor).build()
-        val retrofit = Retrofit.Builder()
-                .baseUrl(serverUrl)
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-        service = DiscoverAppsService(retrofit.create<DiscoverAppsApi>(DiscoverAppsApi::class.java))
+        val httpClientBuilder = OkHttpClient.Builder()
+        httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS)
+        val httpLoggingInterceptor = HttpLoggingInterceptor()
+        httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
+        httpClientBuilder.networkInterceptors().add(httpLoggingInterceptor)
+        httpClient = httpClientBuilder.build()
     }
 
-    fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
-        service.getApps(object : OperationResultCallback<List<EcosystemApp>?> {
-            override fun onResult(result: List<EcosystemApp>?) {
-                result?.let { apps ->
-                    for(app in apps){
-                        Log.d("####", "#### app ${app.identifier}")
-                    }
-                    //filter the current one
-                    val filter = apps.filterNot { it.identifier.equals("org.kinecosystem.kinit") }
-                    callback.onResult(filter)
-                }
+    private fun getRequest(url: String): Request = Request.Builder().url(url).build()
+
+    fun getDiscoveryApps() {
+        httpClient.newCall(getRequest(GET_DISCOVERY_APPS_STAGE_URL)).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                //TODO
+                Log.d("", "response failed")
             }
 
-            override fun onError(errorCode: Int) {
-                callback.onError(errorCode)
+            override fun onResponse(call: Call, response: Response) {
+                if (response.isSuccessful) {
+                    try {
+                        val responseData = gson.fromJson(response.body()?.charStream(), EcosystemAppResponse::class.java)
+                        Log.d("", "####response version  ${responseData.version}")
+                        Log.d("", "##### app size ${responseData.apps?.size} app  ${responseData.apps?.get(0)}")
+                    } catch (e: JSONException) {
+                        Log.d("####", "##### response json not valid ${e.message}")
+                    }
+
+                } else {
+                    //TODO error with response
+                    Log.d("", "response not successful")
+                }
             }
         })
     }
-
 }
