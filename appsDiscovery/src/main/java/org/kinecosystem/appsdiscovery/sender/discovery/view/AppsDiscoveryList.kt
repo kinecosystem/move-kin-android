@@ -99,7 +99,6 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
                 setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing,  context.resources.displayMetrics), 1.0f)
                 text = app.cardTitle
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
-                   //TODO not working
                 typeface = TextUtils.getFontTypeForType(context, app.cardFontName)
                 setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing,  context.resources.displayMetrics), 1.0f)
                 text = app.cardTitle
