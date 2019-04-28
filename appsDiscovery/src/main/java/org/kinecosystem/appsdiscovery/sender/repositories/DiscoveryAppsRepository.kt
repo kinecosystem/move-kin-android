@@ -4,12 +4,32 @@ import android.os.Handler
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
 import org.kinecosystem.appsdiscovery.sender.model.hasNewData
+import org.kinecosystem.appsdiscovery.sender.model.name
+import java.util.*
 
-class DiscoveryAppsRepository(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
+class DiscoveryAppsRepository private constructor(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) : Observable() {
+
+
+    companion object {
+        private var instance: DiscoveryAppsRepository? = null
+
+        fun getInstance(local: DiscoveryAppsLocal, remote: DiscoveryAppsRemote, uiHandler: Handler): DiscoveryAppsRepository {
+            if (instance == null) {
+                instance = DiscoveryAppsRepository(local, remote, uiHandler)
+            }
+            return instance!!
+        }
+    }
+
+    //TODO
+    //how to notify errors
 
     private var hasLocalData = false
+    var discoveryApps: List<EcosystemApp> = listOf()
+        private set
 
-    fun getDiscoveryApps(discoveryAppsCallback: OperationResultCallback<List<EcosystemApp>?>) {
+
+    fun loadDiscoveryApps() {
         hasLocalData = false
         //get first data from cache
         local.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>?> {
@@ -18,10 +38,12 @@ class DiscoveryAppsRepository(private val local: DiscoveryAppsLocal, private val
                     hasLocalData = true
                     //update ui with cached data
                     uiHandler.post {
-                        discoveryAppsCallback.onResult(cachedApps)
+                        discoveryApps = cachedApps
+                        setChanged()
+                        notifyObservers()
                     }
                     //check server data and update local if needed
-                    checkRemoteData(discoveryAppsCallback)
+                    checkRemoteData()
                 }
             }
 
@@ -29,13 +51,13 @@ class DiscoveryAppsRepository(private val local: DiscoveryAppsLocal, private val
             override fun onError(error: String) {
                 hasLocalData = false
                 //check server data
-                checkRemoteData(discoveryAppsCallback)
+                checkRemoteData()
             }
         })
 
     }
 
-    private fun checkRemoteData(discoveryAppsCallback: OperationResultCallback<List<EcosystemApp>?>) {
+    private fun checkRemoteData() {
         remote.getDiscoveryAppsServerData(object : OperationResultCallback<EcosystemAppResponse> {
             override fun onResult(result: EcosystemAppResponse) {
                 if (result.apps != null) {
@@ -45,13 +67,15 @@ class DiscoveryAppsRepository(private val local: DiscoveryAppsLocal, private val
                         local.discoveryAppVersion = result.version
                         //update ui with new data from server
                         uiHandler.post {
-                            discoveryAppsCallback.onResult(result.apps)
+                            discoveryApps = result.apps
+                            setChanged()
+                            notifyObservers()
                         }
                     }
                 } else {
                     if (!hasLocalData) {
                         uiHandler.post {
-                            discoveryAppsCallback.onError("no data from server and no data in cache")
+                            //  discoveryAppsCallback.onError("no data from server and no data in cache")
                         }
                     }
                 }
@@ -60,11 +84,21 @@ class DiscoveryAppsRepository(private val local: DiscoveryAppsLocal, private val
             override fun onError(error: String) {
                 if (!hasLocalData) {
                     uiHandler.post {
-                        discoveryAppsCallback.onError("error data from server and no data in cache")
+                        //  discoveryAppsCallback.onError("error data from server and no data in cache")
                     }
                 }
             }
         })
+    }
+
+    fun getAppByName(appName: String): EcosystemApp? {
+        val sublist = discoveryApps.filter { app ->
+            app.name == appName
+        }
+        if (sublist.isNotEmpty()) {
+            return sublist[0]
+        }
+        return null
     }
 
     fun clearLocalData() {

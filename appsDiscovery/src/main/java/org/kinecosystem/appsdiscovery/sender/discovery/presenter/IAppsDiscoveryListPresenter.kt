@@ -6,5 +6,5 @@ import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 
 interface IAppsDiscoveryListPresenter : IBasePresenter<IAppsDiscoveryListView> {
     fun onAppClicked(app:EcosystemApp)
-    fun updateData(apps:List<EcosystemApp>)
+    fun updateApps(apps:List<EcosystemApp>)
 }
