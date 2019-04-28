@@ -6,28 +6,28 @@ import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.apps_discovery_dialog.view.*
 import org.kinecosystem.appsdiscovery.R
 
-class AppsDiscoveryAlertDialog(val context: Context, positiveAction: (() -> Unit)?=null, negativeAction: (() -> Unit)?=null){
+class AppsDiscoveryAlertDialog(val context: Context) {
 
-    private val alertDialog:AlertDialog
+
+    private val alertDialog: AlertDialog
+
     init {
         val dialogView = LayoutInflater.from(context).inflate(R.layout.apps_discovery_dialog, null)
         alertDialog = AlertDialog.Builder(context).setView(dialogView).create()
         with(dialogView.positiveBtn) {
             setOnClickListener {
                 startAppsDiscoveryActivity()
-                positiveAction?.invoke()
                 alertDialog.dismiss()
             }
         }
         with(dialogView.negativeBtn) {
             setOnClickListener {
-                negativeAction?.invoke()
                 alertDialog.dismiss()
             }
         }
     }
 
-    fun show(){
+    fun show() {
         alertDialog.show()
     }
 
