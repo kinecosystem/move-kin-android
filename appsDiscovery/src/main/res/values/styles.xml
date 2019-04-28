@@ -1,12 +1,36 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="kinTextButtonRounded" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@drawable/kin_button_text_colors</item>
-        <item name="android:background">@drawable/kin_button_rounded_drawable</item>
         <item name="android:textSize">@dimen/kin_btn_text_size</item>
         <item name="android:clickable">true</item>
+        <item name="android:gravity">center_horizontal</item>
         <item name="android:fontFamily">@fonts/sailec_medium</item>
     </style>
 
+    <style name="kinTextButtonRounded.Purple">
+        <item name="android:textColor">@drawable/kin_button_text_colors</item>
+        <item name="android:background">@drawable/kin_button_rounded_drawable</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="kinTextButtonRounded.White">
+        <item name="android:textColor">@drawable/kin_white_button_text_colors</item>
+        <item name="android:background">@drawable/kin_white_button_rounded_drawable</item>
+    </style>
+
+    <style name="KinAlertText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/alert_text</item>
+        <item name="android:textSize">@dimen/kin_alert_text_size</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+
+    <style name="KinAlertText.Title">
+        <item name="android:fontFamily">@fonts/sailec_medium</item>
+    </style>
+
+    <style name="KinAlertText.Subtitle">
+        <item name="android:fontFamily">@fonts/sailec</item>
+    </style>
 
 </resources>
