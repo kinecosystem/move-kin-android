@@ -8,24 +8,28 @@ import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-
-//TODO make a nicer url without the kinit
-private const val BASE_CDN_URL = "https://cdn.kinitapp.com"
-private const val GET_DISCOVERY_APPS_PROD_URL = "$BASE_CDN_URL/discovery_apps_android.json"
-private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stage.json"
-
-
 class DiscoveryAppsRemote {
 
     private val httpClient: OkHttpClient
     private val gson = Gson()
 
+    companion object {
+        //TODO make a nicer url without the kinit
+        private const val BASE_CDN_URL = "https://cdn.kinitapp.com"
+        private const val GET_DISCOVERY_APPS_PROD_URL = "$BASE_CDN_URL/discovery_apps_android.json"
+        private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stage.json"
+        private const val SERVER_TIMEOUT = 30L
+
+    }
+
     init {
-        val httpClientBuilder = OkHttpClient.Builder()
-        httpClientBuilder.connectTimeout(30, TimeUnit.SECONDS)
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        httpClientBuilder.networkInterceptors().add(httpLoggingInterceptor)
+        val httpClientBuilder = OkHttpClient.Builder()
+        with(httpClientBuilder){
+            connectTimeout(SERVER_TIMEOUT, TimeUnit.SECONDS)
+            networkInterceptors().add(httpLoggingInterceptor)
+        }
         httpClient = httpClientBuilder.build()
     }
 
@@ -36,9 +40,9 @@ class DiscoveryAppsRemote {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
+                if (response.isSuccessful && response.body() != null) {
                     try {
-                        val responseData = gson.fromJson(response.body()?.charStream(), EcosystemAppResponse::class.java)
+                        val responseData = gson.fromJson(response.body()!!.string(), EcosystemAppResponse::class.java)
                         callback.onResult(responseData)
                     } catch (e: JSONException) {
                         callback.onError("wrong json format ${e.message}")
@@ -46,7 +50,7 @@ class DiscoveryAppsRemote {
 
                 } else {
                     //TODO error with response
-                    callback.onError("server response is not successful")
+                    callback.onError("server response is not successful or no body")
                 }
             }
         })

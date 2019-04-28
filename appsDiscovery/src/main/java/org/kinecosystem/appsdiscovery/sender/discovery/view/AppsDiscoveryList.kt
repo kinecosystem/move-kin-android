@@ -1,6 +1,8 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.view
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -16,6 +18,9 @@ import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.IAppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.sender.model.*
+import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsLocal
+import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
+import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.utils.TextUtils
 import org.kinecosystem.appsdiscovery.utils.load
 
@@ -28,7 +33,8 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         layoutManager = GridLayoutManager(context, COLUMNS_COUNT)
-        presenter = AppsDiscoveryListPresenter()
+        val discoveryAppsRepository = DiscoveryAppsRepository(DiscoveryAppsLocal(context), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        presenter = AppsDiscoveryListPresenter(discoveryAppsRepository)
         presenter?.let {
             adapter = AppsDiscoveryAdapter(it)
         }

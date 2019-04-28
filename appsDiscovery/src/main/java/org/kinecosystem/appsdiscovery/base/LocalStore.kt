@@ -16,6 +16,17 @@ class LocalStore(context: Context, name:String){
 
     fun getString(key:String, defaultValue:String?=null): String? = sharedPreferences.getString(key, defaultValue)
 
+
+
+    fun updateInt(key:String, value:Int){
+        sharedPreferences.edit().apply{
+            putInt(key, value)
+            apply()
+        }
+    }
+
+    fun getInt(key:String, defaultValue:Int): Int = sharedPreferences.getInt(key, defaultValue)
+
     fun clearAll(){
         sharedPreferences.edit().apply {
             clear()
