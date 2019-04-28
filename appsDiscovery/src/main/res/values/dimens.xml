@@ -3,4 +3,5 @@
     <dimen name="kin_btn_corner">5dp</dimen>
     <dimen name="kin_btn_text_padding">17dp</dimen>
     <dimen name="kin_btn_text_size">16sp</dimen>
+    <dimen name="kin_alert_text_size">16sp</dimen>
 </resources>
