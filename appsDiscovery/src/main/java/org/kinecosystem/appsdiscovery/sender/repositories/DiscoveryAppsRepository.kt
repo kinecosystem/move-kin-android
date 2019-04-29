@@ -7,7 +7,7 @@ import org.kinecosystem.appsdiscovery.sender.model.hasNewData
 import org.kinecosystem.appsdiscovery.sender.model.name
 import java.util.*
 
-class DiscoveryAppsRepository private constructor(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) : Observable() {
+class DiscoveryAppsRepository private constructor(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
 
 
     companion object {
@@ -21,29 +21,24 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
         }
     }
 
-    //TODO
-    //how to notify errors
 
     private var hasLocalData = false
-    var discoveryApps: List<EcosystemApp> = listOf()
-        private set
+    private var discoveryApps: List<EcosystemApp> = listOf()
 
-
-    fun loadDiscoveryApps() {
+    fun loadDiscoveryApps(listener:OperationResultCallback<List<EcosystemApp>>) {
         hasLocalData = false
         //get first data from cache
         local.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>?> {
             override fun onResult(cachedApps: List<EcosystemApp>?) {
                 if (cachedApps != null) {
                     hasLocalData = true
+                    discoveryApps = cachedApps
                     //update ui with cached data
                     uiHandler.post {
-                        discoveryApps = cachedApps
-                        setChanged()
-                        notifyObservers()
+                        listener.onResult(cachedApps)
                     }
                     //check server data and update local if needed
-                    checkRemoteData()
+                    checkRemoteData(listener)
                 }
             }
 
@@ -51,13 +46,13 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
             override fun onError(error: String) {
                 hasLocalData = false
                 //check server data
-                checkRemoteData()
+                checkRemoteData(listener)
             }
         })
 
     }
 
-    private fun checkRemoteData() {
+    private fun checkRemoteData(listener:OperationResultCallback<List<EcosystemApp>>) {
         remote.getDiscoveryAppsServerData(object : OperationResultCallback<EcosystemAppResponse> {
             override fun onResult(result: EcosystemAppResponse) {
                 if (result.apps != null) {
@@ -66,16 +61,15 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
                         local.updateDiscoveryApps(result.apps)
                         local.discoveryAppVersion = result.version
                         //update ui with new data from server
+                        discoveryApps = result.apps
                         uiHandler.post {
-                            discoveryApps = result.apps
-                            setChanged()
-                            notifyObservers()
+                            listener.onResult(result.apps)
                         }
                     }
                 } else {
                     if (!hasLocalData) {
                         uiHandler.post {
-                            //  discoveryAppsCallback.onError("no data from server and no data in cache")
+                            listener.onError("no data from server and no data in cache")
                         }
                     }
                 }
@@ -84,7 +78,7 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
             override fun onError(error: String) {
                 if (!hasLocalData) {
                     uiHandler.post {
-                        //  discoveryAppsCallback.onError("error data from server and no data in cache")
+                        listener.onError("error data from server and no data in cache")
                     }
                 }
             }
