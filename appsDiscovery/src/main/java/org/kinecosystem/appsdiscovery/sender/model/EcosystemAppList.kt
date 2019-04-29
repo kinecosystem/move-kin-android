@@ -6,11 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
-data class EcosystemAppResponse(
-        @SerializedName("version")
-        val version: Int,
+data class DiscoveryAppsList(
         @SerializedName("apps")
         val apps: List<EcosystemApp>?
 ) : Parcelable
-
-fun EcosystemAppResponse.hasNewData(localVersion : Int) :Boolean = version != localVersion
