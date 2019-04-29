@@ -3,12 +3,10 @@ package org.kinecosystem.appsdiscovery.sender.model
 import android.graphics.Color
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 import org.kinecosystem.appsdiscovery.utils.ImageUtils
 import org.kinecosystem.appsdiscovery.utils.TextUtils.Companion.FONT_SAILEC
 
 
-@Parcelize
 data class EcosystemApp(
         @SerializedName("category_name")
         val category: String?,
@@ -18,17 +16,15 @@ data class EcosystemApp(
         val metaData: MetaData?,
         @SerializedName("transfer_data")
         val transferData: TransferData?
-) : Parcelable
+)
 
 
-@Parcelize
 data class TransferData(
         @SerializedName("launch_activity")
         val launchActivityFullPath: String?
-) : Parcelable
+)
 
 
-@Parcelize
 data class MetaData(
         @SerializedName("about_app")
         val about: String?,
@@ -44,10 +40,9 @@ data class MetaData(
         val experienceData: ExperienceData?,
         @SerializedName("card_data")
         val cardData: CardData?
-) : Parcelable
+)
 
 
-@Parcelize
 data class ExperienceData(
         @SerializedName("about")
         val about: String?,
@@ -55,9 +50,8 @@ data class ExperienceData(
         val howTo: String?,
         @SerializedName("title")
         val name: String?
-) : Parcelable
+)
 
-@Parcelize
 data class CardData(
         @SerializedName("font_line_spacing")
         val fontLineSpacing: String?,
@@ -69,7 +63,7 @@ data class CardData(
         val bgColor: String?,
         @SerializedName("title")
         val title: String?
-) : Parcelable
+)
 
 
 fun EcosystemApp.preFetch() {
