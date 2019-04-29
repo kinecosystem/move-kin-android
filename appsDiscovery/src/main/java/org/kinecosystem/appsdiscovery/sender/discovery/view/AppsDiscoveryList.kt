@@ -45,10 +45,7 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     override fun navigateToApp(app: EcosystemApp) {
-        //TODO
-       // context.startActivity(AppActivity.getIntent(context, app))
-        Toast.makeText(context, "click pkg ${context.applicationContext.packageName}", Toast.LENGTH_SHORT).show()
-        Log.d("###", "#### navaigte to app $app")
+        context.startActivity(AppInfoActivity.getIntent(context, app.name))
     }
 
     override fun onAttachedToWindow() {
