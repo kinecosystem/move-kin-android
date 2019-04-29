@@ -10,13 +10,18 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public abstract class ReceiveKinServiceBase extends Service {
 
     //developer must implements
     public abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo);
+
     public abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo);
+
+    //TODO need to change to support prefix of the pkg
+    //and change the manifest to the convention for action name is FQN, i.e. org.kinecosystem....KinReceiverTransactionCompleted
 
     private static final String ACTION_TRANSACTION_COMPLETED = "KinReceiverTransactionCompleted";
     private static final String ACTION_TRANSACTION_FAILED = "KinReceiverTransactionFailed";
@@ -27,52 +32,74 @@ public abstract class ReceiveKinServiceBase extends Service {
     private static final String SERVICE_ARG_MEMO = "memo";
     private static final String SERVICE_ARG_ERROR = "error";
     private static final int NO_AMOUNT = 0;
+    private static final String SERVICE_NAME = "ReceiveKinService";
 
 
-    public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) {
-        Intent intent = getTransactionResultIntent(context, true);
-        if (intent != null) {
-            intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
-            intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
-            intent.putExtra(SERVICE_ARG_AMOUNT, amount);
-            intent.putExtra(SERVICE_ARG_TRANSACTION_ID, transactionId);
-            intent.putExtra(SERVICE_ARG_MEMO, memo);
-            context.startService(intent);
+    public static class KinReceiverServiceException extends Exception {
+        private String serviceFullPath;
+        private boolean isNotFound;
+        private boolean isServicePublic;
+
+
+        public KinReceiverServiceException(@NonNull String serviceFullPath, boolean isNotFound, boolean isServicePublic) {
+            super("service " + serviceFullPath + " exception");
+            this.serviceFullPath = serviceFullPath;
+            this.isNotFound = isNotFound;
+            this.isServicePublic = isServicePublic;
+        }
+
+        @Override
+        public String getMessage() {
+            String message = "service exception";
+            if (isNotFound) {
+                message = "serviced " + serviceFullPath + " not found or implemented";
+            } else if (isServicePublic) {
+                message = "serviced " + serviceFullPath + " cant be define exported on manifest";
+
+            }
+            return message;
         }
     }
 
-    public static void notifyTransactionFailed(@NonNull Context context, @NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) {
-        Intent intent = getTransactionResultIntent(context, false);
-        if (intent != null) {
-            intent.putExtra(SERVICE_ARG_ERROR, error);
-            intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
-            intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
-            intent.putExtra(SERVICE_ARG_AMOUNT, amount);
-            intent.putExtra(SERVICE_ARG_MEMO, memo);
-            context.startService(intent);
-        }
+
+    public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String fromAddress, @NonNull String toAddress, BigDecimal amount, @NonNull String transactionId, @NonNull String memo) throws KinReceiverServiceException {
+        Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
+        intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
+        intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
+        intent.putExtra(SERVICE_ARG_AMOUNT, amount);
+        intent.putExtra(SERVICE_ARG_TRANSACTION_ID, transactionId);
+        intent.putExtra(SERVICE_ARG_MEMO, memo);
+        context.startService(intent);
     }
 
-    private static Intent getTransactionResultIntent(Context context, Boolean isCompleted) {
+    public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, BigDecimal amount, @NonNull String memo) throws KinReceiverServiceException {
+        Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
+        intent.putExtra(SERVICE_ARG_ERROR, error);
+        intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
+        intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
+        intent.putExtra(SERVICE_ARG_AMOUNT, amount);
+        intent.putExtra(SERVICE_ARG_MEMO, memo);
+        context.startService(intent);
+    }
+
+    private static Intent getTransactionResultIntent(Context context, String receiverPackageName, final Boolean isCompleted) throws KinReceiverServiceException {
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
-
-        //TODO change to receiver pkg
-        final String receiverPackageName = context.getApplicationContext().getPackageName();
-
-        intent.setComponent(new ComponentName(receiverPackageName, receiverPackageName + ".ReceiveKinService"));
+        String serviceFullPath =  receiverPackageName + "." + SERVICE_NAME;
+        intent.setComponent(new ComponentName(receiverPackageName, serviceFullPath));
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
         if (resolveInfos.isEmpty()) {
             //TODO notify error service not found - hence the receiver will not be inform of the transaction
             Log.d("####", "#### cant find the service " + receiverPackageName + ".ReceiveKinService");
+            throw new KinReceiverServiceException(serviceFullPath, true, true);
         } else {
             for (ResolveInfo info : resolveInfos) {
                 if (info.serviceInfo.exported) {
                     //TODO throw exception service is exported
                     Log.d("####", "####  service " + receiverPackageName + ".ReceiveKinService export must be declared on manifest false");
-                    return null;
+                    throw new KinReceiverServiceException(serviceFullPath , false, true);
                 }
             }
         }

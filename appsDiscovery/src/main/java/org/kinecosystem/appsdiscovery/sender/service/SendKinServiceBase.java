@@ -6,12 +6,14 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
+import java.math.BigDecimal;
+
 public abstract class SendKinServiceBase extends Service {
 
     //Developer needs to implements
     //these is called from background thread so can be called async
     public abstract @NonNull
-    KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
+    KinTransferComplete transferKin(@NonNull final String toAddress, final BigDecimal amount, @NonNull final String memo) throws KinTransferException;
 
     public abstract int getCurrentBalance() throws BalanceException;
 
@@ -49,8 +51,8 @@ public abstract class SendKinServiceBase extends Service {
     }
 
     public class KinTransferComplete {
-        private String senderAddress;
-        private String transactionId;
+        private final String senderAddress;
+        private final String transactionId;
 
         public KinTransferComplete(@NonNull String senderAddress, @NonNull String transactionId) {
             this.senderAddress = senderAddress;
