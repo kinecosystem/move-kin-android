@@ -18,7 +18,7 @@ class TransferManager(var activity: Activity?) {
 
         fun onError(error: String)
 
-        fun onAddressReceived(data: String)
+        fun onAddressReceived(address: String)
     }
 
     /**

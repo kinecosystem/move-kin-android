@@ -18,22 +18,35 @@ class DiscoveryAppsLocal(context: Context) {
         private const val APPS_DISCOVERY_STORE = "APPS_DISCOVERY_STORE"
         private const val APPS_DISCOVERY_VERSION_KEY = "APPS_DISCOVERY_VERSION_KEY"
         private const val APPS_DISCOVERY_KEY = "APPS_DISCOVERY_KEY"
+
+        private const val APP_ICON_URL = "APP_ICON_URL"
+        private const val RECEIVER_APP_ADDRESS = "RECEIVER_APP_ADDRESS"
+
     }
 
     var discoveryAppVersion: Int
         set(version) = localStore.updateInt(APPS_DISCOVERY_VERSION_KEY, version)
         get() = localStore.getInt(APPS_DISCOVERY_VERSION_KEY, -1)
 
+    var appIconUrl: String
+        set(iconUrl) = localStore.updateString(APP_ICON_URL, iconUrl)
+        get() = localStore.getString(APP_ICON_URL, "")
+
+    var receiverAppPublicAddress: String
+        set(address) = localStore.updateString(RECEIVER_APP_ADDRESS, address)
+        get() = localStore.getString(RECEIVER_APP_ADDRESS, "")
+
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
-        localStore.getString(APPS_DISCOVERY_KEY)?.let {
+        val apps = localStore.getString(APPS_DISCOVERY_KEY, "")
+       if(apps.isNotEmpty()) {
             try {
-                val apps: List<EcosystemApp> = gson.fromJson<List<EcosystemApp>>(it, appsListType)
+                val apps: List<EcosystemApp> = gson.fromJson<List<EcosystemApp>>(apps, appsListType)
                 callback.onResult(apps)
             } catch (error: JsonSyntaxException) {
                 callback.onError("no valid data")
             }
-        } ?: run {
+        } else {
             callback.onError("no data")
         }
     }
