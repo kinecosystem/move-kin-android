@@ -14,9 +14,7 @@ class LocalStore(context: Context, name:String){
         }
     }
 
-    fun getString(key:String, defaultValue:String?=null): String? = sharedPreferences.getString(key, defaultValue)
-
-
+    fun getString(key:String, defaultValue:String): String = sharedPreferences.getString(key, defaultValue)
 
     fun updateInt(key:String, value:Int){
         sharedPreferences.edit().apply{

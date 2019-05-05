@@ -5,7 +5,6 @@ import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
 import org.kinecosystem.appsdiscovery.sender.model.hasNewData
 import org.kinecosystem.appsdiscovery.sender.model.name
-import java.util.*
 
 class DiscoveryAppsRepository private constructor(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
 
@@ -24,6 +23,17 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
 
     private var hasLocalData = false
     private var discoveryApps: List<EcosystemApp> = listOf()
+
+    fun storeReceiverAppPublicAddress(address:String){
+        local.receiverAppPublicAddress = address
+    }
+
+    fun getReceiverAppPublicAddress() = local.receiverAppPublicAddress
+
+    fun clearReceiverAppPublicAddress(){
+        local.receiverAppPublicAddress = ""
+    }
+
 
     fun loadDiscoveryApps(listener:OperationResultCallback<List<EcosystemApp>>) {
         hasLocalData = false
@@ -85,7 +95,10 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
         })
     }
 
-    fun getAppByName(appName: String): EcosystemApp? {
+    fun getAppByName(appName: String?): EcosystemApp? {
+        if(appName.isNullOrBlank()) {
+            return null
+        }
         val sublist = discoveryApps.filter { app ->
             app.name == appName
         }
