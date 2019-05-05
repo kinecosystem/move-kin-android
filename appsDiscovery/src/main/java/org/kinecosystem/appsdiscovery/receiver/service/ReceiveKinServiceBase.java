@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public abstract class ReceiveKinServiceBase extends Service {
@@ -62,7 +61,7 @@ public abstract class ReceiveKinServiceBase extends Service {
     }
 
 
-    public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String fromAddress, @NonNull String toAddress, BigDecimal amount, @NonNull String transactionId, @NonNull String memo) throws KinReceiverServiceException {
+    public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) throws KinReceiverServiceException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
         intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
@@ -72,7 +71,7 @@ public abstract class ReceiveKinServiceBase extends Service {
         context.startService(intent);
     }
 
-    public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, BigDecimal amount, @NonNull String memo) throws KinReceiverServiceException {
+    public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) throws KinReceiverServiceException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
         intent.putExtra(SERVICE_ARG_ERROR, error);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
@@ -86,7 +85,7 @@ public abstract class ReceiveKinServiceBase extends Service {
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
-        String serviceFullPath =  receiverPackageName + "." + SERVICE_NAME;
+        String serviceFullPath = receiverPackageName + "." + SERVICE_NAME;
         intent.setComponent(new ComponentName(receiverPackageName, serviceFullPath));
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
@@ -99,7 +98,7 @@ public abstract class ReceiveKinServiceBase extends Service {
                 if (info.serviceInfo.exported) {
                     //TODO throw exception service is exported
                     Log.d("####", "####  service " + receiverPackageName + ".ReceiveKinService export must be declared on manifest false");
-                    throw new KinReceiverServiceException(serviceFullPath , false, true);
+                    throw new KinReceiverServiceException(serviceFullPath, false, true);
                 }
             }
         }

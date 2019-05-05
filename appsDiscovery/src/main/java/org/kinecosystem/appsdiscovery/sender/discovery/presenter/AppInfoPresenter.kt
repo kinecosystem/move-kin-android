@@ -10,15 +10,40 @@ import org.kinecosystem.appsdiscovery.sender.model.iconUrl
 import org.kinecosystem.appsdiscovery.sender.model.launchActivity
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
-import java.math.BigDecimal
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     private val AmountChooserRequestCode = 100
+    private val memoDelim = "-CrossApps-"
 
     private var app: EcosystemApp? = null
 
-    enum class ReqeustReceiverPublicAddressError {
+    override fun updateBalance(currentBalance: Int) {
+        repository.storeCurrentBalance(currentBalance)
+    }
+
+    override fun onStart() {
+        view?.bindToSendService(app?.identifier)
+    }
+
+    enum class ServiceError {
+        ServiceNotFound,
+        ServiceShouldNotBeExported
+    }
+
+    override fun onServiceNotFound() {
+        view?.onServiceError(ServiceError.ServiceNotFound)
+    }
+
+    override fun onServiceShouldNotBeExported() {
+        view?.onServiceError(ServiceError.ServiceShouldNotBeExported)
+    }
+
+    override fun onDestroy() {
+        view?.unbindToSendService()
+    }
+
+    enum class RequestReceiverPublicAddressError {
         NotStarted,
         NoPathInfo,
         BadDataReceived
@@ -26,22 +51,35 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == AmountChooserRequestCode) {
-            processAmountResponse(requestCode, resultCode, intent)
+            processAmountResponse(resultCode, intent)
         } else {
             parsePublicAddressData(requestCode, resultCode, intent)
         }
     }
 
-    private fun processAmountResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
-            if (resultCode == Activity.RESULT_OK) {
-                intent?.let {
-                    val amountReceived = it.getIntExtra(AmountChooserPresenter.PARAM_AMOUNT, 0)
-                    Log.d("####", "#### transfer $amountReceived kin ")
-
-                } ?: kotlin.run {
-                    view?.onRequestAmountError()
-                }
+    private fun processAmountResponse(resultCode: Int, intent: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            intent?.let {
+                val amountToSend = it.getIntExtra(AmountChooserPresenter.PARAM_AMOUNT, 0)
+                sendKin(amountToSend)
+            } ?: kotlin.run {
+                view?.onRequestAmountError()
             }
+        }
+    }
+
+    private fun sendKin(amountToSend: Int) {
+        val senderApp = ""
+        //1-KIT-CrossApps-TIPC
+        //TODO save memo of current app
+        val memo = "1-$senderApp$memoDelim${app?.memo}"
+        app?.identifier?.let { receiverPackage ->
+            //TODO change to correct
+            view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
+            //TODO remove - for testing
+            //view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, "com.swelly")
+        }
+
     }
 
     private fun parsePublicAddressData(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -51,18 +89,15 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             }
 
             override fun onError(error: String) {
-                view?.onRequestReceiverPublicAddressError(ReqeustReceiverPublicAddressError.BadDataReceived)
+                view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.BadDataReceived)
 
             }
 
             override fun onAddressReceived(address: String) {
                 repository.storeReceiverAppPublicAddress(address)
                 Log.d("####", "#### got address onAddressReceived $address")
-                //TODO get balance
-                val balance:BigDecimal = BigDecimal(668)
                 app?.iconUrl?.let {
-                    view?.startAmountChooserActivity(it, balance, AmountChooserRequestCode)
-
+                    view?.startAmountChooserActivity(it, repository.getCurrentBalance(), AmountChooserRequestCode)
                 }
             }
         })
@@ -74,19 +109,16 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             app?.identifier?.let { receiverPkg ->
                 val started = transferManager.startTransferRequestActivity(receiverPkg, activityPath)
                 if (!started) {
-                    view?.onRequestReceiverPublicAddressError(ReqeustReceiverPublicAddressError.NotStarted)
+                    view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NotStarted)
                 } else {
                     view?.onStartRequestReceiverPublicAddress()
                 }
             } ?: kotlin.run {
-                view?.onRequestReceiverPublicAddressError(ReqeustReceiverPublicAddressError.NoPathInfo)
+                view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NoPathInfo)
             }
         } ?: kotlin.run {
-            view?.onRequestReceiverPublicAddressError(ReqeustReceiverPublicAddressError.NoPathInfo)
+            view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NoPathInfo)
         }
-    }
-
-    override fun onSendKinClicked() {
     }
 
     override fun onAttach(view: IAppInfoView) {
@@ -95,7 +127,4 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         view.initViews(app)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
 }

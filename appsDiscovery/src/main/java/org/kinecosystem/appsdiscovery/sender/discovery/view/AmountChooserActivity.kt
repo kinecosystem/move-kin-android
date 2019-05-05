@@ -8,12 +8,13 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AmountChooserPresenter
-import java.math.BigDecimal
 
 class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
 
     override fun initViews(receiverAppIconUrl: String, balance: Int) {
         findViewById<TextView>(R.id.appName).setText(receiverAppIconUrl)
+        //findViewById<TextView>(R.id.availableBalance).setText("NNNO BBAKANCE")
+       // findViewById<TextView>(R.id.availableBalance).setText(balance)
 
         findViewById<TextView>(R.id.send).setOnClickListener {
             presenter?.onSendKinClicked()
@@ -52,7 +53,7 @@ class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
         const val PARAM_APP_ICON_URL = "PARAM_APP_ICON_URL"
         const val PARAM_BALANCE = "PARAM_BALANCE"
 
-        fun getIntent(context: Context, appIconUrl: String, balance: BigDecimal): Intent {
+        fun getIntent(context: Context, appIconUrl: String, balance: Int): Intent {
             val intent = Intent(context, AmountChooserActivity::class.java)
             intent.putExtra(PARAM_APP_ICON_URL, appIconUrl)
             intent.putExtra(PARAM_BALANCE, balance.toInt())
