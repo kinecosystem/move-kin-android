@@ -20,11 +20,9 @@ class DiscoveryAppsLocal(context: Context) {
         private const val APPS_DISCOVERY_KEY = "APPS_DISCOVERY_KEY"
     }
 
-
     var discoveryAppVersion: Int
         set(version) = localStore.updateInt(APPS_DISCOVERY_VERSION_KEY, version)
         get() = localStore.getInt(APPS_DISCOVERY_VERSION_KEY, -1)
-
 
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
