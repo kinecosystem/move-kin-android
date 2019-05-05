@@ -88,8 +88,6 @@ class TransferManager(var activity: Activity?) {
             accountInfoResponseListener: AccountInfoResponseListener
     ) {
         try {
-            //TODO fix issue
-            accountInfoResponseListener.onAddressReceived( "this is facke address 4444")
             val uri = intent.data
             val inputStream = activity?.contentResolver?.openInputStream(uri!!)
 
@@ -112,8 +110,7 @@ class TransferManager(var activity: Activity?) {
             e.message?.let {
                 message = it
             }
-            //TODO fix issue
-            //accountInfoResponseListener.onError(message)
+            accountInfoResponseListener.onError(message)
         }
 
     }
