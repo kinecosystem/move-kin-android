@@ -1,1 +1,1 @@
-include ':sampleApp', ':appsDiscovery'
+include ':sampleSenderApp', ':appsDiscovery'

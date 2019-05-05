@@ -9,5 +9,14 @@
             android:screenOrientation="portrait"/>
         <activity android:name="org.kinecosystem.appsdiscovery.sender.discovery.view.AppInfoActivity"
             android:screenOrientation="portrait"/>
+        <service
+            android:name="org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="KinReceiverTransactionCompleted"/>
+                <action android:name="KinReceiverTransactionFailed"/>
+            </intent-filter>
+        </service>
     </application>
+
 </manifest>
