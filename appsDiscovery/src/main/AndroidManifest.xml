@@ -9,6 +9,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="org.kinecosystem.appsdiscovery.sender.discovery.view.AppInfoActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="org.kinecosystem.appsdiscovery.sender.discovery.view.AmountChooserActivity"
+            android:screenOrientation="portrait"/>
         <service
             android:name="org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase"
             android:exported="false">

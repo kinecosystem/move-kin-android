@@ -21,14 +21,19 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import java.math.BigDecimal
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
-    override fun onRequestReceiverPublicAddressCanceled() {
-        Toast.makeText(this, "canceld ", Toast.LENGTH_LONG).show()
+    override fun onRequestAmountError() {
+        Toast.makeText(this, "onRequestAmountError ", Toast.LENGTH_LONG).show()    }
+
+    override fun startAmountChooserActivity(receiverAppIcon: String, balance: BigDecimal, requestCode: Int) {
+        Toast.makeText(this, "publoic receieved ", Toast.LENGTH_LONG).show()
+        startActivityForResult(AmountChooserActivity.getIntent(this, receiverAppIcon, balance), requestCode)
     }
 
-    override fun onStartAmountChooser() {
-        Toast.makeText(this, "publoic receieved ", Toast.LENGTH_LONG).show()
+    override fun onRequestReceiverPublicAddressCanceled() {
+        Toast.makeText(this, "canceld ", Toast.LENGTH_LONG).show()
     }
 
     override fun onRequestReceiverPublicAddressError(error: AppInfoPresenter.ReqeustReceiverPublicAddressError) {

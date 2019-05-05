@@ -1,16 +1,20 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 
+import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
+import org.kinecosystem.appsdiscovery.sender.model.iconUrl
 import org.kinecosystem.appsdiscovery.sender.model.launchActivity
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import java.math.BigDecimal
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
-    private val AmountChooserRequestCode = 100;
+    private val AmountChooserRequestCode = 100
 
     private var app: EcosystemApp? = null
 
@@ -22,10 +26,22 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == AmountChooserRequestCode) {
-//            processResponse(requestCode, resultCode, intent)
+            processAmountResponse(requestCode, resultCode, intent)
         } else {
             parsePublicAddressData(requestCode, resultCode, intent)
         }
+    }
+
+    private fun processAmountResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
+            if (resultCode == Activity.RESULT_OK) {
+                intent?.let {
+                    val amountReceived = it.getIntExtra(AmountChooserPresenter.PARAM_AMOUNT, 0)
+                    Log.d("####", "#### transfer $amountReceived kin ")
+
+                } ?: kotlin.run {
+                    view?.onRequestAmountError()
+                }
+            }
     }
 
     private fun parsePublicAddressData(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -41,7 +57,13 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
             override fun onAddressReceived(address: String) {
                 repository.storeReceiverAppPublicAddress(address)
-                view?.onStartAmountChooser()
+                Log.d("####", "#### got address onAddressReceived $address")
+                //TODO get balance
+                val balance:BigDecimal = BigDecimal(668)
+                app?.iconUrl?.let {
+                    view?.startAmountChooserActivity(it, balance, AmountChooserRequestCode)
+
+                }
             }
         })
     }

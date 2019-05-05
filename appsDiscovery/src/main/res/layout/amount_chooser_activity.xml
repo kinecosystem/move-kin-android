@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <EditText
+        android:id="@+id/editTextAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/send00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="send"
+        style="@style/KinTextRegular.Dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextAmount"
+        android:visibility="gone"/>
+
+
+
+
+    <ImageView
+        android:id="@+id/close_x"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/kin_x_close_dark" />
+
+
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close_x"
+        />
+
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:text="to"
+        android:textSize="16sp"
+        style="@style/KinTextRegular.Dark"
+        app:layout_constraintBottom_toBottomOf="@+id/appIcon"
+        app:layout_constraintStart_toEndOf="@+id/appIcon"
+        app:layout_constraintTop_toTopOf="@+id/appIcon" />
+
+    <TextView
+        android:id="@+id/appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        style="@style/KinTextMedium.Dark"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/appIcon"
+        app:layout_constraintStart_toEndOf="@+id/to"
+        app:layout_constraintTop_toTopOf="@+id/appIcon" />
+
+
+
+    <View
+        android:id="@+id/delim"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#a6a6a6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appIcon" />
+
+
+    <EditText
+        android:id="@+id/amount"
+        style="@style/KinTextMedium.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="true"
+        android:gravity="center_horizontal"
+        android:hint="0"
+        android:inputType="number"
+        android:letterSpacing="-0.02"
+        android:textColor="@color/purple"
+        android:textColorHint="@color/purple"
+        android:textSize="70sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/send"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delim"
+        />
+
+    <ImageView
+        android:id="@+id/kin_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_marginEnd="4dp"
+        android:baselineAlignBottom="@+id/amount"
+        app:layout_constraintBottom_toBottomOf="@+id/amount"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
+        app:layout_constraintTop_toTopOf="@+id/amount"
+        app:srcCompat="@drawable/white_small_kin_logo" />
+
+    <TextView
+        android:id="@+id/send"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:gravity="center"
+        android:letterSpacing="0.06"
+        android:text="send kin"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:background="@drawable/kin_button_rectangle_bg"
+        style="@style/KinTextRegular.Dark"
+        android:textColor="@drawable/kin_button_text_colors"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/availableBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="8dp"
+        style="@style/KinTextRegular.Dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delim"
+        tools:text="15 kin available"/>
+
+
+
+
+</android.support.constraint.ConstraintLayout>
