@@ -33,9 +33,6 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextAmount"
         android:visibility="gone"/>
 
-
-
-
     <ImageView
         android:id="@+id/close_x"
         android:layout_width="56dp"

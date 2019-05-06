@@ -5,4 +5,6 @@ import org.kinecosystem.appsdiscovery.sender.discovery.view.IAmountChooserView
 
 interface IAmountChooserPresenter : IBasePresenter<IAmountChooserView> {
     fun onSendKinClicked()
+    fun onXClicked()
+    fun onAmountChanged(amount:Int)
 }

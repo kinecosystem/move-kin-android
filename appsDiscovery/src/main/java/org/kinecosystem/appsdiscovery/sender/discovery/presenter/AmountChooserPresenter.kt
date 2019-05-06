@@ -4,13 +4,20 @@ import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAmountChooserView
 
 class AmountChooserPresenter(private val appIconUrl: String, private val balance: Int) : BasePresenter<IAmountChooserView>(), IAmountChooserPresenter {
+    var amount = 0
+    override fun onAmountChanged(amount: Int) {
+        this.amount = amount
+        view?.setSendEnable(amount in 1..balance)
+    }
+
+    override fun onXClicked() {
+        view?.onCancel()
+    }
 
     companion object{
        val PARAM_AMOUNT = "PARAM_AMOUNT"
     }
 
-    //TODO update
-    var amountChosen = 89
 
     override fun onAttach(view: IAmountChooserView) {
         super.onAttach(view)
@@ -19,7 +26,7 @@ class AmountChooserPresenter(private val appIconUrl: String, private val balance
 
 
     override fun onSendKinClicked() {
-        view?.sendKin(amountChosen)
+        view?.sendKin(amount)
     }
 
 
