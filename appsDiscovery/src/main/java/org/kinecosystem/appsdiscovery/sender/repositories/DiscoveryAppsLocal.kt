@@ -47,7 +47,7 @@ class DiscoveryAppsLocal(context: Context) {
         set(balance) = localStore.updateInt(CURRENT_BALANCE, balance)
         get() = localStore.getInt(CURRENT_BALANCE, 0)
 
-    fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
+    fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>>) {
         val apps = localStore.getString(APPS_DISCOVERY_KEY, "")
         if (apps.isNotEmpty()) {
             try {

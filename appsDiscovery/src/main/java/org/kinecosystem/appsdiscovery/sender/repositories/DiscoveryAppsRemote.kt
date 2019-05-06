@@ -26,7 +26,7 @@ class DiscoveryAppsRemote {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val httpClientBuilder = OkHttpClient.Builder()
-        with(httpClientBuilder){
+        with(httpClientBuilder) {
             connectTimeout(SERVER_TIMEOUT, TimeUnit.SECONDS)
             networkInterceptors().add(httpLoggingInterceptor)
         }
@@ -34,7 +34,8 @@ class DiscoveryAppsRemote {
     }
 
     fun getDiscoveryAppsServerData(callback: OperationResultCallback<EcosystemAppResponse>) {
-        httpClient.newCall(getRequest(GET_DISCOVERY_APPS_PROD_URL)).enqueue(object : Callback {
+        //TODO switch to prod or dev
+        httpClient.newCall(getRequest(GET_DISCOVERY_APPS_STAGE_URL)).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 callback.onError("server failed get discoveryApps ${e.message}")
             }

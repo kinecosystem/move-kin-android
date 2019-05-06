@@ -1,20 +1,17 @@
 package org.kinecosystem.appsdiscovery.sender.repositories
 
 import android.os.Handler
-import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
-import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
-import org.kinecosystem.appsdiscovery.sender.model.hasNewData
-import org.kinecosystem.appsdiscovery.sender.model.name
+import org.kinecosystem.appsdiscovery.sender.model.*
 
-class DiscoveryAppsRepository private constructor(private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
+class DiscoveryAppsRepository private constructor(private val currentPackage: String, private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
 
 
     companion object {
         private var instance: DiscoveryAppsRepository? = null
 
-        fun getInstance(local: DiscoveryAppsLocal, remote: DiscoveryAppsRemote, uiHandler: Handler): DiscoveryAppsRepository {
+        fun getInstance(currentPackage: String, local: DiscoveryAppsLocal, remote: DiscoveryAppsRemote, uiHandler: Handler): DiscoveryAppsRepository {
             if (instance == null) {
-                instance = DiscoveryAppsRepository(local, remote, uiHandler)
+                instance = DiscoveryAppsRepository(currentPackage, local, remote, uiHandler)
             }
             return instance!!
         }
@@ -23,11 +20,11 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
     private var hasLocalData = false
     private var discoveryApps: List<EcosystemApp> = listOf()
 
-    fun storeReceiverAppPublicAddress(address:String){
+    fun storeReceiverAppPublicAddress(address: String) {
         local.receiverAppPublicAddress = address
     }
 
-    fun storeCurrentBalance(balance:Int){
+    fun storeCurrentBalance(balance: Int) {
         local.currentBalance = balance
     }
 
@@ -35,26 +32,28 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
 
     fun getReceiverAppPublicAddress() = local.receiverAppPublicAddress
 
-    fun clearReceiverAppPublicAddress(){
+    fun clearReceiverAppPublicAddress() {
         local.receiverAppPublicAddress = ""
     }
 
+    fun getStoredMemo() = local.memo
 
-    fun loadDiscoveryApps(listener:OperationResultCallback<List<EcosystemApp>>) {
+    fun getStoredAppIcon() = local.appIconUrl
+
+
+    fun loadDiscoveryApps(listener: OperationResultCallback<List<EcosystemApp>>) {
         hasLocalData = false
         //get first data from cache
-        local.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>?> {
-            override fun onResult(cachedApps: List<EcosystemApp>?) {
-                if (cachedApps != null) {
-                    hasLocalData = true
-                    discoveryApps = cachedApps
-                    //update ui with cached data
-                    uiHandler.post {
-                        listener.onResult(cachedApps)
-                    }
-                    //check server data and update local if needed
-                    checkRemoteData(listener)
+        local.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {
+            override fun onResult(cachedApps: List<EcosystemApp>) {
+                hasLocalData = true
+                discoveryApps = cachedApps
+                //update ui with cached data
+                uiHandler.post {
+                    listener.onResult(cachedApps)
                 }
+                //check server data and update local if needed
+                checkRemoteData(listener)
             }
 
             //no data on cache
@@ -67,21 +66,31 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
 
     }
 
-    private fun checkRemoteData(listener:OperationResultCallback<List<EcosystemApp>>) {
+    private fun checkRemoteData(listener: OperationResultCallback<List<EcosystemApp>>) {
         remote.getDiscoveryAppsServerData(object : OperationResultCallback<EcosystemAppResponse> {
             override fun onResult(result: EcosystemAppResponse) {
-                if (result.apps != null) {
-                    if (result.hasNewData(local.discoveryAppVersion)) {
-
-                        //TODO filter
-
-                        //update cache with new data from server
-                        local.updateDiscoveryApps(result.apps)
+                if (result.hasNewData(local.discoveryAppVersion)) {
+                    result.apps?.let { serverApps ->
+                        var filterApps: List<EcosystemApp> = listOf()
+                        val currentApp: EcosystemApp? = serverApps.firstOrNull { it.identifier == currentPackage }
+                        currentApp?.let { app ->
+                            local.appIconUrl = app.iconUrl
+                            local.memo = app.memo
+                            filterApps = serverApps.filter { it != app }
+                        } ?: kotlin.run {
+                            listener.onError("cant find in apps the current package $currentPackage")
+                            return
+                        }
+                        discoveryApps = filterApps
+                        local.updateDiscoveryApps(discoveryApps)
                         local.discoveryAppVersion = result.version
                         //update ui with new data from server
-                        discoveryApps = result.apps
                         uiHandler.post {
-                            listener.onResult(result.apps)
+                            listener.onResult(discoveryApps)
+                        }
+                        //perform image caching
+                        serverApps.forEach {
+                            it.preFetch()
                         }
                     }
                 } else {
@@ -104,7 +113,7 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
     }
 
     fun getAppByName(appName: String?): EcosystemApp? {
-        if(appName.isNullOrBlank()) {
+        if (appName.isNullOrBlank()) {
             return null
         }
         val sublist = discoveryApps.filter { app ->

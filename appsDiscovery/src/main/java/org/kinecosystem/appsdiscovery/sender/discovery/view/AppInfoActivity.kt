@@ -34,6 +34,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
                     //TODO notify the transaction bar of complete
                     try {
+                        //notify the receiver of complete
                         ReceiveKinServiceBase.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
                         Log.d("####", "#### error notify receiver of transaction success ${kinReceiverServiceException.message}")
@@ -43,7 +44,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     //notify the receiver of the error
                     Log.d("####", "#### kinTransferException ${kinTransferException.message}")
                     try {
-                        Log.d("####", "#### ReceiveKinServiceBase.notifyTransactionFailed ${kinTransferException.message}")
                         ReceiveKinServiceBase.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
                         Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
@@ -135,7 +135,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             finish()
         }
         setContentView(R.layout.app_info_activity)
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
         presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()

@@ -69,10 +69,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     }
 
     private fun sendKin(amountToSend: Int) {
-        val senderApp = ""
         //1-KIT-CrossApps-TIPC
-        //TODO save memo of current app
-        val memo = "1-$senderApp$memoDelim${app?.memo}"
+        val memo = "1-${repository.getStoredMemo()}$memoDelim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
             //TODO change to correct
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
