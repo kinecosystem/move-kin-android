@@ -20,13 +20,18 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
         }
     }
 
-
     private var hasLocalData = false
     private var discoveryApps: List<EcosystemApp> = listOf()
 
     fun storeReceiverAppPublicAddress(address:String){
         local.receiverAppPublicAddress = address
     }
+
+    fun storeCurrentBalance(balance:Int){
+        local.currentBalance = balance
+    }
+
+    fun getCurrentBalance() = local.currentBalance
 
     fun getReceiverAppPublicAddress() = local.receiverAppPublicAddress
 
@@ -67,6 +72,9 @@ class DiscoveryAppsRepository private constructor(private val local: DiscoveryAp
             override fun onResult(result: EcosystemAppResponse) {
                 if (result.apps != null) {
                     if (result.hasNewData(local.discoveryAppVersion)) {
+
+                        //TODO filter
+
                         //update cache with new data from server
                         local.updateDiscoveryApps(result.apps)
                         local.discoveryAppVersion = result.version

@@ -1,7 +1,6 @@
 package org.kinecosystem.appsdiscovery.sender.model
 
 import android.graphics.Color
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import org.kinecosystem.appsdiscovery.utils.ImageUtils
 import org.kinecosystem.appsdiscovery.utils.TextUtils.Companion.FONT_SAILEC
@@ -12,6 +11,8 @@ data class EcosystemApp(
         val category: String?,
         @SerializedName("identifier") //package
         val identifier: String?,
+        @SerializedName("memo")
+        val memo: String?,
         @SerializedName("meta_data")
         val metaData: MetaData?,
         @SerializedName("transfer_data")

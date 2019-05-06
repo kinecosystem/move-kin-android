@@ -4,16 +4,13 @@ import android.support.annotation.NonNull;
 
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase;
 
-import java.math.BigDecimal;
-
 public class SendKinService extends SendKinServiceBase {
 
     @Override
     public @NonNull
-    KinTransferComplete transferKin(@NonNull String toAddress, BigDecimal amount, @NonNull String memo) throws KinTransferException {
-        String transactionId = "swellyTransactionId";
-        //String transactionId = "";
-        String address = "mySwellyAddress";
+    KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
+        String transactionId = "myImplswellyTransactionId";
+        String address = "myImpladdressSwellyAddress";
         try {
             //long operation
             Thread.sleep(8000);

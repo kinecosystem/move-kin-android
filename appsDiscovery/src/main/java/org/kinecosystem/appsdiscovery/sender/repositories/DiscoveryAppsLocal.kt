@@ -20,26 +20,36 @@ class DiscoveryAppsLocal(context: Context) {
         private const val APPS_DISCOVERY_KEY = "APPS_DISCOVERY_KEY"
 
         private const val APP_ICON_URL = "APP_ICON_URL"
+        private const val MEMO = "APP_MEMO"
         private const val RECEIVER_APP_ADDRESS = "RECEIVER_APP_ADDRESS"
-
+        private const val CURRENT_BALANCE = "CURRENT_BALANCE"
     }
 
     var discoveryAppVersion: Int
         set(version) = localStore.updateInt(APPS_DISCOVERY_VERSION_KEY, version)
         get() = localStore.getInt(APPS_DISCOVERY_VERSION_KEY, -1)
 
+    //TODO use
     var appIconUrl: String
         set(iconUrl) = localStore.updateString(APP_ICON_URL, iconUrl)
         get() = localStore.getString(APP_ICON_URL, "")
+
+    //TODO use
+    var memo: String
+        set(iconUrl) = localStore.updateString(MEMO, iconUrl)
+        get() = localStore.getString(MEMO, "")
 
     var receiverAppPublicAddress: String
         set(address) = localStore.updateString(RECEIVER_APP_ADDRESS, address)
         get() = localStore.getString(RECEIVER_APP_ADDRESS, "")
 
+    var currentBalance: Int
+        set(balance) = localStore.updateInt(CURRENT_BALANCE, balance)
+        get() = localStore.getInt(CURRENT_BALANCE, 0)
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>?>) {
         val apps = localStore.getString(APPS_DISCOVERY_KEY, "")
-       if(apps.isNotEmpty()) {
+        if (apps.isNotEmpty()) {
             try {
                 val apps: List<EcosystemApp> = gson.fromJson<List<EcosystemApp>>(apps, appsListType)
                 callback.onResult(apps)
