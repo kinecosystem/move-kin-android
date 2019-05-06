@@ -12,7 +12,7 @@ data class EcosystemApp(
         @SerializedName("identifier") //package
         val identifier: String?,
         @SerializedName("memo")
-        val memo: String?,
+        val memo: String = "",
         @SerializedName("meta_data")
         val metaData: MetaData?,
         @SerializedName("transfer_data")
@@ -68,7 +68,7 @@ data class CardData(
 
 
 fun EcosystemApp.preFetch() {
-    ImageUtils.fetch(metaData?.iconUrl)
+    ImageUtils.fetch(iconUrl)
     metaData?.images?.let {
         for (url: String in it) {
             ImageUtils.fetch(url)

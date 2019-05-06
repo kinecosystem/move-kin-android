@@ -33,7 +33,7 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         layoutManager = GridLayoutManager(context, COLUMNS_COUNT)
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(DiscoveryAppsLocal(context), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(context.packageName, DiscoveryAppsLocal(context), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
         presenter = AppsDiscoveryListPresenter(discoveryAppsRepository)
         presenter?.let {
             adapter = AppsDiscoveryAdapter(it)
