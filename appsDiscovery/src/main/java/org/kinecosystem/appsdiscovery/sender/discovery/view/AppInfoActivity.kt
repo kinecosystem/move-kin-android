@@ -24,12 +24,14 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepositor
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
 import org.kinecosystem.appsdiscovery.utils.navigateToUrl
+import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var presenter: AppInfoPresenter? = null
     private var receiverAppStateView: ReceiverAppStateView? = null
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
+    private var exceutorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -65,7 +67,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            val thread = Thread(Runnable {
+            exceutorService.execute {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
                     //TODO notify the transaction bar of complete
@@ -87,8 +89,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
                     }
                 }
-            })
-            thread.start()
+            }
         }
     }
 
@@ -176,7 +177,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     private fun updateBalance() {
         if (isBound) {
-            val thread = Thread(Runnable {
+            exceutorService.execute {
                 try {
                     transferService?.let {
                         val currentBalance = it.currentBalance
@@ -186,8 +187,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     //TODO show error retrieve balance
                     Log.d("####", "#### balanceException ${balanceException.message}")
                 }
-            })
-            thread.start()
+            }
         }
     }
 
