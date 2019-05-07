@@ -15,4 +15,6 @@ interface IAppInfoView : IBaseView {
     fun unbindToSendService()
     fun onServiceError(serviceNotFound: AppInfoPresenter.ServiceError)
     fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String)
+    fun updateAppState(state: ReceiverAppStateView.State)
+    fun navigateTo(downloadUrl: String)
 }

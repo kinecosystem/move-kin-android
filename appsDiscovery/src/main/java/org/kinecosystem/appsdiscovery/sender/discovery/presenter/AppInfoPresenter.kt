@@ -1,20 +1,22 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
-import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
-import org.kinecosystem.appsdiscovery.sender.model.iconUrl
-import org.kinecosystem.appsdiscovery.sender.model.launchActivity
+import org.kinecosystem.appsdiscovery.sender.discovery.view.ReceiverAppStateView
+import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import org.kinecosystem.appsdiscovery.utils.isAppInstalled
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     private val AmountChooserRequestCode = 100
-    private val memoDellim = "-CrossApps-"
+    private val memoDelim = "-CrossApps-"
+    private var appState: ReceiverAppStateView.State = ReceiverAppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
 
@@ -29,6 +31,32 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     enum class ServiceError {
         ServiceNotFound,
         ServiceShouldNotBeExported
+    }
+
+    override fun onResume(context: Context) {
+        app?.identifier?.let {
+            appState = if (!context.isAppInstalled(it)) {
+                ReceiverAppStateView.State.NotInstalled
+            } else {
+                if (app?.canTransferKin!!) {
+                    ReceiverAppStateView.State.ReceiveKinSupported
+                } else {
+                    ReceiverAppStateView.State.ReceiveKinNotSupported
+                }
+            }
+            view?.updateAppState(appState)
+        }
+    }
+
+    override fun onActionButtonClicked() {
+        when (appState) {
+            ReceiverAppStateView.State.ReceiveKinSupported -> {
+                view?.onStartRequestReceiverPublicAddress()
+            }
+            ReceiverAppStateView.State.NotInstalled -> {
+                view?.navigateTo(app?.downloadUrl!!)
+            }
+        }
     }
 
     override fun onServiceNotFound() {
@@ -70,7 +98,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
     private fun sendKin(amountToSend: Int) {
         //1-KIT-CrossApps-TIPC
-        val memo = "1-${repository.getStoredMemo()}$memoDellim${app?.memo}"
+        val memo = "1-${repository.getStoredMemo()}$memoDelim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
             //TODO remove - for testing

@@ -23,10 +23,11 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import org.kinecosystem.appsdiscovery.utils.navigateToUrl
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
-
     private var presenter: AppInfoPresenter? = null
+    private var receiverAppStateView: ReceiverAppStateView? = null
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private val connection = object : ServiceConnection {
@@ -54,6 +55,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.onResume(baseContext)
     }
 
 
@@ -149,8 +155,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<Button>(R.id.approveBtn).setOnClickListener {
             presenter?.onRequestReceiverPublicAddress()
         }
-
+        receiverAppStateView = findViewById(R.id.receiver_app_state)
+        receiverAppStateView?.setListener(object : ReceiverAppStateView.IActionClickListener {
+            override fun onActionButtonClicked() {
+                presenter?.onActionButtonClicked()
+            }
+        })
     }
+
 
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"
@@ -177,6 +189,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             })
             thread.start()
         }
+    }
+
+    override fun navigateTo(downloadUrl: String) {
+        navigateToUrl(downloadUrl)
+    }
+
+    override fun updateAppState(state: ReceiverAppStateView.State) {
+        receiverAppStateView?.update(state)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
