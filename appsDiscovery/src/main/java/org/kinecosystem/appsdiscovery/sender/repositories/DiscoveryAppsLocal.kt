@@ -29,12 +29,10 @@ class DiscoveryAppsLocal(context: Context) {
         set(version) = localStore.updateInt(APPS_DISCOVERY_VERSION_KEY, version)
         get() = localStore.getInt(APPS_DISCOVERY_VERSION_KEY, -1)
 
-    //TODO use
     var appIconUrl: String
         set(iconUrl) = localStore.updateString(APP_ICON_URL, iconUrl)
         get() = localStore.getString(APP_ICON_URL, "")
 
-    //TODO use
     var memo: String
         set(iconUrl) = localStore.updateString(MEMO, iconUrl)
         get() = localStore.getString(MEMO, "")

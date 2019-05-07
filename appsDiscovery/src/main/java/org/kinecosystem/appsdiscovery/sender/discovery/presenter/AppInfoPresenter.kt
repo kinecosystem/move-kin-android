@@ -14,7 +14,7 @@ import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     private val AmountChooserRequestCode = 100
-    private val memoDelim = "-CrossApps-"
+    private val memoDellim = "-CrossApps-"
 
     private var app: EcosystemApp? = null
 
@@ -70,9 +70,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
     private fun sendKin(amountToSend: Int) {
         //1-KIT-CrossApps-TIPC
-        val memo = "1-${repository.getStoredMemo()}$memoDelim${app?.memo}"
+        val memo = "1-${repository.getStoredMemo()}$memoDellim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
-            //TODO change to correct
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
             //TODO remove - for testing
             //view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, "com.swelly")

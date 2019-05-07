@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
@@ -27,6 +26,37 @@ import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
+    private var presenter: AppInfoPresenter? = null
+    private var isBound = false
+    private var transferService: SendKinServiceBase? = null
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as SendKinServiceBase.KinTransferServiceBinder
+            transferService = binder.service
+            isBound = true
+            updateBalance()
+        }
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            isBound = false
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val appName = intent.getStringExtra(PARAM_APP_NAME)
+        if (appName.isNullOrBlank()) {
+            finish()
+        }
+        setContentView(R.layout.app_info_activity)
+        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
+        presenter?.onAttach(this)
+        presenter?.onStart()
+    }
+
+
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
             val thread = Thread(Runnable {
@@ -37,15 +67,17 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         //notify the receiver of complete
                         ReceiveKinServiceBase.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
+                        //TODO check if need to update the sender that receiver will not get the update
                         Log.d("####", "#### error notify receiver of transaction success ${kinReceiverServiceException.message}")
                     }
                 } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
-                    //TODO notify the transaction bar of error
-                    //notify the receiver of the error
+                    //TODO notify the transaction bar of failed
                     Log.d("####", "#### kinTransferException ${kinTransferException.message}")
                     try {
+                        //notify the receiver of the error
                         ReceiveKinServiceBase.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
+                        //TODO check if need to update the sender that receiver will not get the update
                         Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
                     }
                 }
@@ -60,36 +92,32 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     override fun onServiceError(serviceNotFound: AppInfoPresenter.ServiceError) {
-        //TODO cant start service show error
+        //TODO cant start service show error to user or developer
     }
 
     override fun bindToSendService(identifier: String?) {
         val intent = Intent()
         var receiverPackageName = identifier
 
-        //TODO temp change to local sample
-        receiverPackageName = packageName
+        //TODO for testing change to local sample
+        //receiverPackageName = packageName
         intent.component = ComponentName(receiverPackageName, "$receiverPackageName.SendKinService")
         intent.setPackage(receiverPackageName)
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
         if (!resolveInfos.any()) {
-            //TODO throw exception service not implemented
             presenter?.onServiceNotFound()
-            Log.d("####", "#### cant find the service ${receiverPackageName}.SendKinService")
         }
         if (resolveInfos.filter {
                     it.serviceInfo.exported
                 }.any()) {
             presenter?.onServiceShouldNotBeExported()
-            //TODO throw exception service is exported andr remove the else
-            Log.d("####", "####  service ${receiverPackageName}.SendKinService export must be declared on manifest false")
         } else {
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
     }
 
     override fun onRequestAmountError() {
-        Toast.makeText(this, "onRequestAmountError ", Toast.LENGTH_LONG).show()
+        //TODO update user
     }
 
     override fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int) {
@@ -97,16 +125,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     override fun onRequestReceiverPublicAddressCanceled() {
-        Toast.makeText(this, "canceld ", Toast.LENGTH_LONG).show()
     }
 
     override fun onRequestReceiverPublicAddressError(error: AppInfoPresenter.RequestReceiverPublicAddressError) {
-        //TODO show error connection to other app
-        Toast.makeText(this, "onRequestReceiverPublicAddressError ${error.name}", Toast.LENGTH_LONG).show()
+        //TODO update user
     }
 
     override fun onStartRequestReceiverPublicAddress() {
-        //TODO
+        //TODO show progress
     }
 
     override fun initViews(app: EcosystemApp?) {
@@ -126,21 +152,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     }
 
-    private var presenter: AppInfoPresenter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val appName = intent.getStringExtra(PARAM_APP_NAME)
-        if (appName.isNullOrBlank()) {
-            finish()
-        }
-        setContentView(R.layout.app_info_activity)
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
-        presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
-        presenter?.onAttach(this)
-        presenter?.onStart()
-    }
-
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"
 
@@ -151,33 +162,16 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    private var isBound = false
-    private var transferService: SendKinServiceBase? = null
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as SendKinServiceBase.KinTransferServiceBinder
-            transferService = binder.service
-            isBound = true
-            updateBalance()
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            isBound = false
-        }
-    }
-
     private fun updateBalance() {
         if (isBound) {
             val thread = Thread(Runnable {
                 try {
                     transferService?.let {
                         val currentBalance = it.currentBalance
-                        Log.d("####", "#### current balanbe is $currentBalance")
                         presenter?.updateBalance(currentBalance)
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
-                    //TODO need to handle??
+                    //TODO show error retrieve balance
                     Log.d("####", "#### balanceException ${balanceException.message}")
                 }
             })

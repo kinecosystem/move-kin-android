@@ -17,14 +17,19 @@ data class EcosystemApp(
         val metaData: MetaData?,
         @SerializedName("transfer_data")
         val transferData: TransferData?
-)
+) {
 
+    companion object {
+        val DEFAULT_CARD_COLOR = "#a6a6a6"
+        val DEFAULT_FONT = FONT_SAILEC
+        val DEFAULT_FONT_SIZE = 12f
+    }
+}
 
 data class TransferData(
         @SerializedName("launch_activity")
         val launchActivityFullPath: String?
 )
-
 
 data class MetaData(
         @SerializedName("about_app")
@@ -42,7 +47,6 @@ data class MetaData(
         @SerializedName("card_data")
         val cardData: CardData?
 )
-
 
 data class ExperienceData(
         @SerializedName("about")
@@ -66,7 +70,6 @@ data class CardData(
         val title: String?
 )
 
-
 fun EcosystemApp.preFetch() {
     ImageUtils.fetch(iconUrl)
     metaData?.images?.let {
@@ -83,7 +86,7 @@ val EcosystemApp.name: String
 
 val EcosystemApp.cardFontSize: Float
     get() {
-        return metaData?.cardData?.fontSize?.toFloatOrNull() ?: 12f
+        return metaData?.cardData?.fontSize?.toFloatOrNull() ?: EcosystemApp.DEFAULT_FONT_SIZE
     }
 
 val EcosystemApp.fontLineSpacing: Float
@@ -93,7 +96,7 @@ val EcosystemApp.fontLineSpacing: Float
 
 val EcosystemApp.cardFontName: String
     get() {
-        return metaData?.cardData?.fontName ?: FONT_SAILEC
+        return metaData?.cardData?.fontName ?: EcosystemApp.DEFAULT_FONT
     }
 
 val EcosystemApp.cardTitle: String
@@ -104,9 +107,8 @@ val EcosystemApp.cardTitle: String
 val EcosystemApp.iconUrl: String
     get() = metaData?.iconUrl ?: ""
 
-//TODO change to consts
 val EcosystemApp.cardColor: Int
-    get() = Color.parseColor(metaData?.cardData?.bgColor ?: "#a6a6a6")
+    get() = Color.parseColor(metaData?.cardData?.bgColor ?: EcosystemApp.DEFAULT_CARD_COLOR)
 
 val EcosystemApp.launchActivity: String?
     get() = transferData?.launchActivityFullPath

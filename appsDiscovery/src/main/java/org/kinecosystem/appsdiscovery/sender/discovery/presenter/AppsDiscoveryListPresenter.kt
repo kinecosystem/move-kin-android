@@ -25,7 +25,7 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
             }
 
             override fun onError(error: String) {
-                //TODO notify developer or user
+                //TODO notify developer or user error in list
             }
 
         })
