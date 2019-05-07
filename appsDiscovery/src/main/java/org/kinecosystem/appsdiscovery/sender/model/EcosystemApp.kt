@@ -23,6 +23,7 @@ data class EcosystemApp(
         val DEFAULT_CARD_COLOR = "#a6a6a6"
         val DEFAULT_FONT = FONT_SAILEC
         val DEFAULT_FONT_SIZE = 12f
+        val DEFAULT_GOOGLE_PLAY = "https://play.google.com/store/apps"
     }
 }
 
@@ -106,6 +107,9 @@ val EcosystemApp.cardTitle: String
 
 val EcosystemApp.iconUrl: String
     get() = metaData?.iconUrl ?: ""
+
+val EcosystemApp.downloadUrl: String
+    get() = metaData?.downloadUrl ?: EcosystemApp.DEFAULT_GOOGLE_PLAY
 
 val EcosystemApp.cardColor: Int
     get() = Color.parseColor(metaData?.cardData?.bgColor ?: EcosystemApp.DEFAULT_CARD_COLOR)

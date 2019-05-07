@@ -4,4 +4,12 @@
     <string name="alert_title">There are more ways to enjoy Kin!</string>
     <string name="alert_subtitle">Now you can earn and use your Kin in more of your favorite apps</string>
     <string name="not_now">Not now</string>
+    <string name="app_not_installed">To get started, this app will need to be installed.</string>
+    <string name="app_kin_receive_not_supported">Coming soon!</string>
+    <string name="app_receive_kin">You can now move your Kin around.</string>
+    <string name="app_action_send_kin">Send Kin</string>
+    <string name="app_action_install">Google play</string>
+
+
+
 </resources>
