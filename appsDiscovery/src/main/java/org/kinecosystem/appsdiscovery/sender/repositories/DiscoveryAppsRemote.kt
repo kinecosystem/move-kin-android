@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
+import org.kinecosystem.appsdiscovery.BuildConfig
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemAppResponse
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -19,7 +20,6 @@ class DiscoveryAppsRemote {
         private const val GET_DISCOVERY_APPS_PROD_URL = "$BASE_CDN_URL/discovery_apps_android.json"
         private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stage.json"
         private const val SERVER_TIMEOUT = 30L
-
     }
 
     init {
@@ -34,8 +34,11 @@ class DiscoveryAppsRemote {
     }
 
     fun getDiscoveryAppsServerData(callback: OperationResultCallback<EcosystemAppResponse>) {
-        //TODO switch to prod or dev
-        httpClient.newCall(getRequest(GET_DISCOVERY_APPS_STAGE_URL)).enqueue(object : Callback {
+        var url = GET_DISCOVERY_APPS_PROD_URL
+        if (BuildConfig.DEBUG) {
+            url = GET_DISCOVERY_APPS_STAGE_URL
+        }
+        httpClient.newCall(getRequest(url)).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 callback.onError("server failed get discoveryApps ${e.message}")
             }
@@ -48,9 +51,7 @@ class DiscoveryAppsRemote {
                     } catch (e: JSONException) {
                         callback.onError("wrong json format ${e.message}")
                     }
-
                 } else {
-                    //TODO error with response
                     callback.onError("server response is not successful or no body")
                 }
             }

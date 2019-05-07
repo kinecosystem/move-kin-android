@@ -19,11 +19,8 @@ public abstract class ReceiveKinServiceBase extends Service {
 
     public abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo);
 
-    //TODO need to change to support prefix of the pkg
-    //and change the manifest to the convention for action name is FQN, i.e. org.kinecosystem....KinReceiverTransactionCompleted
-
-    private static final String ACTION_TRANSACTION_COMPLETED = "KinReceiverTransactionCompleted";
-    private static final String ACTION_TRANSACTION_FAILED = "KinReceiverTransactionFailed";
+    private static final String ACTION_TRANSACTION_COMPLETED = "org.kinecosystem.appsdiscovery.receiver.service.KinReceiverTransactionCompleted";
+    private static final String ACTION_TRANSACTION_FAILED = "org.kinecosystem.appsdiscovery.receiver.service.KinReceiverTransactionFailed";
     private static final String SERVICE_ARG_FROM_ADDRESS = "fromAddress";
     private static final String SERVICE_ARG_TO_ADDRESS = "toAddress";
     private static final String SERVICE_ARG_AMOUNT = "amount";
@@ -90,14 +87,10 @@ public abstract class ReceiveKinServiceBase extends Service {
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
         if (resolveInfos.isEmpty()) {
-            //TODO notify error service not found - hence the receiver will not be inform of the transaction
-            Log.d("####", "#### cant find the service " + receiverPackageName + ".ReceiveKinService");
             throw new KinReceiverServiceException(serviceFullPath, true, true);
         } else {
             for (ResolveInfo info : resolveInfos) {
                 if (info.serviceInfo.exported) {
-                    //TODO throw exception service is exported
-                    Log.d("####", "####  service " + receiverPackageName + ".ReceiveKinService export must be declared on manifest false");
                     throw new KinReceiverServiceException(serviceFullPath, false, true);
                 }
             }
