@@ -1,127 +1,115 @@
 package org.kinecosystem.appsdiscovery.receiver.service;
 
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
+import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import java.util.List;
+
+import static org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinManager.*;
 
 public abstract class ReceiveKinServiceBase extends Service {
+    private Handler mainThreadHandler;
+    private IBinder kinReceiverBinder;
 
-    //developer must implements
-    public abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo);
+    /**
+     * This method is called once a transaction sending kin to this app (from another ecosystem app)
+     * has been completed. Method is called on the UI thread. The service will be stopped 10 seconds
+     * after the method completes. If you wish a longer or no delay override #getStopDelayInSeconds
+     *
+     * @param fromAddress   the public address of the wallet sending the kin
+     * @param toAddress     the public address of the wallet receiving the kin
+     * @param amount        the amount received in Kin
+     * @param transactionId the transaction hash
+     * @param memo          the memo in the transaction
+     */
+    protected abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo);
 
-    public abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo);
-
-    private static final String ACTION_TRANSACTION_COMPLETED = "org.kinecosystem.appsdiscovery.receiver.service.KinReceiverTransactionCompleted";
-    private static final String ACTION_TRANSACTION_FAILED = "org.kinecosystem.appsdiscovery.receiver.service.KinReceiverTransactionFailed";
-    private static final String SERVICE_ARG_FROM_ADDRESS = "fromAddress";
-    private static final String SERVICE_ARG_TO_ADDRESS = "toAddress";
-    private static final String SERVICE_ARG_AMOUNT = "amount";
-    private static final String SERVICE_ARG_TRANSACTION_ID = "transactionId";
-    private static final String SERVICE_ARG_MEMO = "memo";
-    private static final String SERVICE_ARG_ERROR = "error";
-    private static final int NO_AMOUNT = 0;
-    private static final String SERVICE_NAME = "ReceiveKinService";
-
-
-    public static class KinReceiverServiceException extends Exception {
-        private String serviceFullPath;
-        private boolean isNotFound;
-        private boolean isServicePublic;
+    /**
+     * This method will be called when an attempt to send kin to this app (from another ecosystem app) has failed.
+     * Method is called on the UI thread. The service will be stopped 10 seconds
+     * after the method completes. If you wish a longer or no delay override #getStopDelayInSeconds
+     *
+     * @param error       error message
+     * @param fromAddress the public address of the wallet attempting to send the kin
+     * @param toAddress   the public address of the wallet attempting to receive the kin
+     * @param amount      the amount in Kin
+     * @param memo        the memo of the transaction
+     */
+    protected abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo);
 
 
-        public KinReceiverServiceException(@NonNull String serviceFullPath, boolean isNotFound, boolean isServicePublic) {
-            super("service " + serviceFullPath + " exception");
-            this.serviceFullPath = serviceFullPath;
-            this.isNotFound = isNotFound;
-            this.isServicePublic = isServicePublic;
-        }
+    /**
+     * This method is called after the user has accepted sharing his public address with another app.
+     * The method is called on the UI thread. Service will be stopped as soon as the method returns.
+     *
+     * @return the public address of the user current Kin Account
+     */
+    protected abstract String getCurrentAccountPublicAddress();
 
-        @Override
-        public String getMessage() {
-            String message = "service exception";
-            if (isNotFound) {
-                message = "serviced " + serviceFullPath + " not found or implemented";
-            } else if (isServicePublic) {
-                message = "serviced " + serviceFullPath + " cant be define exported on manifest";
 
-            }
-            return message;
+    /**
+     * @return the amount of seconds to delay before stopping the service
+     */
+    protected int getStopDelayInSeconds() {
+        return 10;
+    }
+
+    public class KinReceiverBinder extends Binder {
+        public String getCurrentAccountPublicAddress() {
+            return ReceiveKinServiceBase.this.getCurrentAccountPublicAddress();
         }
     }
 
 
-    public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) throws KinReceiverServiceException {
-        Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
-        intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
-        intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
-        intent.putExtra(SERVICE_ARG_AMOUNT, amount);
-        intent.putExtra(SERVICE_ARG_TRANSACTION_ID, transactionId);
-        intent.putExtra(SERVICE_ARG_MEMO, memo);
-        context.startService(intent);
-    }
-
-    public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName, @NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) throws KinReceiverServiceException {
-        Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
-        intent.putExtra(SERVICE_ARG_ERROR, error);
-        intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
-        intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
-        intent.putExtra(SERVICE_ARG_AMOUNT, amount);
-        intent.putExtra(SERVICE_ARG_MEMO, memo);
-        context.startService(intent);
-    }
-
-    private static Intent getTransactionResultIntent(Context context, String receiverPackageName, final Boolean isCompleted) throws KinReceiverServiceException {
-        String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
-        Intent intent = new Intent();
-        intent.setAction(action);
-        String serviceFullPath = receiverPackageName + "." + SERVICE_NAME;
-        intent.setComponent(new ComponentName(receiverPackageName, serviceFullPath));
-        intent.setPackage(receiverPackageName);
-        final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
-        if (resolveInfos.isEmpty()) {
-            throw new KinReceiverServiceException(serviceFullPath, true, true);
-        } else {
-            for (ResolveInfo info : resolveInfos) {
-                if (info.serviceInfo.exported) {
-                    throw new KinReceiverServiceException(serviceFullPath, false, true);
-                }
-            }
-        }
-        return intent;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mainThreadHandler = new Handler(Looper.getMainLooper());
+        kinReceiverBinder = new KinReceiverBinder();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (ACTION_TRANSACTION_COMPLETED.equals(intent.getAction())) {
-            String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
-            String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
-            int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, NO_AMOUNT);
-            String transactionId = intent.getStringExtra(SERVICE_ARG_TRANSACTION_ID);
-            String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
-            onTransactionCompleted(fromAddress, toAddress, amount, transactionId, memo);
+        super.onStartCommand(intent, flags, startId);
+        if (intent != null) {
+            if (ACTION_TRANSACTION_COMPLETED.equals(intent.getAction())) {
+                String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
+                String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
+                int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, NO_AMOUNT);
+                String transactionId = intent.getStringExtra(SERVICE_ARG_TRANSACTION_ID);
+                String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
+                onTransactionCompleted(fromAddress, toAddress, amount, transactionId, memo);
+            }
+            if (ACTION_TRANSACTION_FAILED.equals(intent.getAction())) {
+                String error = intent.getStringExtra(SERVICE_ARG_ERROR);
+                String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
+                String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
+                int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, 0);
+                String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
+                onTransactionFailed(error, fromAddress, toAddress, amount, memo);
+            }
         }
-        if (ACTION_TRANSACTION_FAILED.equals(intent.getAction())) {
-            String error = intent.getStringExtra(SERVICE_ARG_ERROR);
-            String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
-            String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
-            int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, 0);
-            String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
-            onTransactionFailed(error, fromAddress, toAddress, amount, memo);
-        }
-        return super.onStartCommand(intent, flags, startId);
+        stopWithDelay();
+        return START_NOT_STICKY;
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return kinReceiverBinder;
+    }
+
+    private void stopWithDelay() {
+        mainThreadHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                stopSelf();
+            }
+        }, getStopDelayInSeconds());
     }
 }

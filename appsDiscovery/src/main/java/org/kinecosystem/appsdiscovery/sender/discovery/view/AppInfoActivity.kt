@@ -14,6 +14,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
+import org.kinecosystem.appsdiscovery.receiver.service.KinReceiverServiceException
+import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinManager
 import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
@@ -73,22 +75,16 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
                     //TODO notify the transaction bar of complete
                     try {
-                        Log.d("###", "#### transfer complete tx id ${kinTransferComplete.transactionId}")
-                        //notify the receiver of complete
-                        ReceiveKinServiceBase.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
-                    } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
-                        //TODO check if need to update the sender that receiver will not get the update
+                        ReceiveKinManager.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
+                    } catch (kinReceiverServiceException: KinReceiverServiceException) {
                         Log.d("####", "#### error notify receiver of transaction success ${kinReceiverServiceException.message}")
                     }
                 } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
                     //TODO notify the transaction bar of failed
                     Log.d("###", "#### transfer failed tx id ${kinTransferException.senderAddress}")
                     try {
-
-                        //notify the receiver of the error
-                        ReceiveKinServiceBase.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
-                    } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
-                        //TODO check if need to update the sender that receiver will not get the update
+                        ReceiveKinManager.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
+                    } catch (kinReceiverServiceException: KinReceiverServiceException) {
                         Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
                     }
                 }

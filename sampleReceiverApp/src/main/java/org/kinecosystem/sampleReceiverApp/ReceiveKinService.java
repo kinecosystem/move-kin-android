@@ -1,4 +1,4 @@
-package org.kinecosystem.sampleSenderApp;
+package org.kinecosystem.sampleReceiverApp;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -20,5 +20,10 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
     @Override
     public void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) {
         Log.d("####", "##### developer  inform of transaction failed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " error " + error + " memo " + memo);
+    }
+
+    @Override
+    protected String getCurrentAccountPublicAddress() {
+        return "thepublicaddress";
     }
 }
