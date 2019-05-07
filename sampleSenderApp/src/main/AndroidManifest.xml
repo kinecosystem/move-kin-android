@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.swelly">
+    package="org.kinecosystem.sampleSenderApp">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.swelly.SampleActivity">
+        <activity android:name=".SampleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,9 +17,9 @@
             </intent-filter>
         </activity>
         <service
-            android:name="com.swelly.SendKinService"
+            android:name=".SendKinService"
             android:exported="false"/>
-        <service android:name="com.swelly.ReceiveKinService"
+        <service android:name=".ReceiveKinService"
             android:exported="false"/>
     </application>
 

@@ -1,4 +1,4 @@
-package com.swelly;
+package org.kinecosystem.sampleSenderApp;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

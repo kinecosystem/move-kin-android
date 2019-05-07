@@ -1,4 +1,4 @@
-package com.swelly;
+package org.kinecosystem.sampleSenderApp;
 
 import android.support.annotation.NonNull;
 

@@ -1,4 +1,4 @@
-package org.kinecosystem.swelly
+package org.kinecosystem.sampleSenderApp
 
 import org.junit.Test
 

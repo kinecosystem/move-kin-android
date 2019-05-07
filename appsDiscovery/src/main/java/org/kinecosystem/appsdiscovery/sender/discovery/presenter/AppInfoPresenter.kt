@@ -102,7 +102,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         app?.identifier?.let { receiverPackage ->
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
             //TODO remove - for testing
-            //view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, "com.swelly")
+            //view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, "org.kinecosystem.swelly")
         }
 
     }
