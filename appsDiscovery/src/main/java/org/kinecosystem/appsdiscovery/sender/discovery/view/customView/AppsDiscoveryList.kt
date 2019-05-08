@@ -1,4 +1,4 @@
-package org.kinecosystem.appsdiscovery.sender.discovery.view
+package org.kinecosystem.appsdiscovery.sender.discovery.view.customView
 
 import android.content.Context
 import android.os.Handler
@@ -6,7 +6,6 @@ import android.os.Looper
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.IAppsDiscoveryListPresenter
+import org.kinecosystem.appsdiscovery.sender.discovery.view.AppInfoActivity
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsLocal
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
@@ -68,7 +68,7 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): AppsDiscoveryAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context)
                 .inflate(R.layout.app_discovery_item, parent, false)
         return ViewHolder(view)
@@ -78,7 +78,7 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
         return apps.size
     }
 
-    override fun onBindViewHolder(holder: AppsDiscoveryAdapter.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val app: EcosystemApp = apps[position]
         holder?.bind(app)
         holder?.view?.setOnClickListener {

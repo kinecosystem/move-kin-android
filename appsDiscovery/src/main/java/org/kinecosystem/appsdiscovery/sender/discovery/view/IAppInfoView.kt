@@ -2,6 +2,7 @@ package org.kinecosystem.appsdiscovery.sender.discovery.view
 
 import org.kinecosystem.appsdiscovery.base.IBaseView
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 
 interface IAppInfoView : IBaseView {

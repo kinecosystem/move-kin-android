@@ -16,6 +16,7 @@ import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.sender.model.name
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsLocal
@@ -72,6 +73,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
                     //TODO notify the transaction bar of complete
                     try {
+                        Log.d("###", "#### transfer complete tx id ${kinTransferComplete.transactionId}")
                         //notify the receiver of complete
                         ReceiveKinServiceBase.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
@@ -80,8 +82,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     }
                 } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
                     //TODO notify the transaction bar of failed
-                    Log.d("####", "#### kinTransferException ${kinTransferException.message}")
+                    Log.d("###", "#### transfer failed tx id ${kinTransferException.senderAddress}")
                     try {
+
                         //notify the receiver of the error
                         ReceiveKinServiceBase.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
                     } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
@@ -106,8 +109,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         val intent = Intent()
         var receiverPackageName = identifier
 
-        //TODO for testing change to local sample
-        //receiverPackageName = packageName
+        //TODO for testing change to local sample - REMOVE _ TESTING ONLY
+        receiverPackageName = packageName
         intent.component = ComponentName(receiverPackageName, "$receiverPackageName.SendKinService")
         intent.setPackage(receiverPackageName)
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
@@ -148,11 +151,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
         findViewById<TextView>(R.id.name).setText(app?.name)
         findViewById<TextView>(R.id.pkg).setText(app?.identifier)
-
-        findViewById<Button>(R.id.sendBtn).setOnClickListener {
-            // presenter?.onSendKinClicked()
-        }
-
         findViewById<Button>(R.id.approveBtn).setOnClickListener {
             presenter?.onRequestReceiverPublicAddress()
         }
