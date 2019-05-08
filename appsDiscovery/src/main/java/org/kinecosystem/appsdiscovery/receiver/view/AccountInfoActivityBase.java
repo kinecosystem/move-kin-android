@@ -8,19 +8,21 @@ import android.widget.TextView;
 
 import org.kinecosystem.appsdiscovery.R;
 import org.kinecosystem.appsdiscovery.receiver.manager.AccountInfoManager;
+import org.kinecosystem.appsdiscovery.receiver.manager.IAccountInfo;
 import org.kinecosystem.appsdiscovery.receiver.presenter.AccountInfoPresenter;
 import org.kinecosystem.appsdiscovery.receiver.presenter.IAccountInfoPresenter;
 
-
-public class AccountInfoActivity extends AppCompatActivity implements IAccountInfoView {
+public abstract class AccountInfoActivityBase extends AppCompatActivity implements IAccountInfoView, IAccountInfo {
     private IAccountInfoPresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new AccountInfoPresenter(new AccountInfoManager(this), this, getIntent());
         setContentView(R.layout.receiver_activity);
         initViews();
+        presenter = new AccountInfoPresenter(new AccountInfoManager(this, this),
+                getIntent());
+        presenter.onAttach(this);
     }
 
     @Override
@@ -47,6 +49,7 @@ public class AccountInfoActivity extends AppCompatActivity implements IAccountIn
     protected void onDestroy() {
         if (presenter != null) {
             presenter.onDetach();
+            presenter = null;
         }
         super.onDestroy();
     }

@@ -25,12 +25,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     }
 
     override fun onStart() {
-        view?.bindToSendService(app?.identifier)
-    }
-
-    enum class ServiceError {
-        ServiceNotFound,
-        ServiceShouldNotBeExported
+        view?.bindToSendService()
     }
 
     override fun onResume(context: Context) {
@@ -57,14 +52,6 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 view?.navigateTo(app?.downloadUrl!!)
             }
         }
-    }
-
-    override fun onServiceNotFound() {
-        view?.onServiceError(ServiceError.ServiceNotFound)
-    }
-
-    override fun onServiceShouldNotBeExported() {
-        view?.onServiceError(ServiceError.ServiceShouldNotBeExported)
     }
 
     override fun onDestroy() {
@@ -101,8 +88,6 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         val memo = "1-${repository.getStoredMemo()}$memoDelim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
-            //TODO remove - for testing
-            //view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, "org.kinecosystem.swelly")
         }
 
     }

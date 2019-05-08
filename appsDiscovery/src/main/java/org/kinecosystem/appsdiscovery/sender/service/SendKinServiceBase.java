@@ -15,6 +15,7 @@ public abstract class SendKinServiceBase extends Service {
 
     public abstract int getCurrentBalance() throws BalanceException;
 
+
     public final IBinder binder = new KinTransferServiceBinder();
 
     public class KinTransferServiceBinder extends Binder {

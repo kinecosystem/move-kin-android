@@ -6,11 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.List;
 
-public class ReceiveKinManager {
+public class ReceiveKinNotifier {
     static final String ACTION_TRANSACTION_COMPLETED = "org.kinecosystem.KinReceiverTransactionCompleted";
     static final String ACTION_TRANSACTION_FAILED = "org.kinecosystem.KinReceiverTransactionFailed";
     static final String SERVICE_ARG_FROM_ADDRESS = "fromAddress";
@@ -25,7 +24,7 @@ public class ReceiveKinManager {
     public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName,
                                                   @NonNull String fromAddress, @NonNull String toAddress,
                                                   int amount, @NonNull String transactionId,
-                                                  @NonNull String memo) throws KinReceiverServiceException {
+                                                  @NonNull String memo) throws TransferKinServiceException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
         intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
@@ -38,7 +37,7 @@ public class ReceiveKinManager {
     public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName,
                                                @NonNull String error, @NonNull String fromAddress,
                                                @NonNull String toAddress, int amount,
-                                               @NonNull String memo) throws KinReceiverServiceException {
+                                               @NonNull String memo) throws TransferKinServiceException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
         intent.putExtra(SERVICE_ARG_ERROR, error);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
@@ -49,7 +48,7 @@ public class ReceiveKinManager {
     }
 
     private static Intent getTransactionResultIntent(Context context, String receiverPackageName,
-                                                     final Boolean isCompleted) throws KinReceiverServiceException {
+                                                     final Boolean isCompleted) throws TransferKinServiceException {
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
@@ -58,11 +57,11 @@ public class ReceiveKinManager {
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
         if (resolveInfos.isEmpty()) {
-            throw new KinReceiverServiceException(serviceFullPath, "service not found");
+            throw new TransferKinServiceException(serviceFullPath, "service not found");
         } else {
             for (ResolveInfo info : resolveInfos) {
                 if (!info.serviceInfo.exported) {
-                    throw new KinReceiverServiceException(serviceFullPath, "service not public. Make sure it is exported on AndroidManifest.xml");
+                    throw new TransferKinServiceException(serviceFullPath, "service not public. Make sure it is exported on AndroidManifest.xml");
                 }
             }
         }

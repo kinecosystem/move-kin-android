@@ -14,9 +14,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.appsdiscovery.receiver.service.KinReceiverServiceException
-import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinManager
-import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase
+import org.kinecosystem.appsdiscovery.receiver.service.TransferKinServiceException
+import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
@@ -70,23 +69,21 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            exceutorService.execute {
+            try {
+                val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
+                //TODO notify the transaction bar of complete
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
-                    //TODO notify the transaction bar of complete
-                    try {
-                        ReceiveKinManager.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
-                    } catch (kinReceiverServiceException: KinReceiverServiceException) {
-                        Log.d("####", "#### error notify receiver of transaction success ${kinReceiverServiceException.message}")
-                    }
-                } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
-                    //TODO notify the transaction bar of failed
-                    Log.d("###", "#### transfer failed tx id ${kinTransferException.senderAddress}")
-                    try {
-                        ReceiveKinManager.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
-                    } catch (kinReceiverServiceException: KinReceiverServiceException) {
-                        Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
-                    }
+                    ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
+                } catch (transferKinServiceException: TransferKinServiceException) {
+                    Log.d("####", "#### error notify receiver of transaction success ${transferKinServiceException.message}")
+                }
+            } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
+                //TODO notify the transaction bar of failed
+                Log.d("####", "#### kinTransferException ${kinTransferException.message}")
+                try {
+                    ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
+                } catch (transferKinServiceException: TransferKinServiceException) {
+                    Log.d("####", "#### error notify receiver of transaction failed ${transferKinServiceException.message}")
                 }
             }
         }
@@ -97,29 +94,23 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         isBound = false
     }
 
-    override fun onServiceError(serviceNotFound: AppInfoPresenter.ServiceError) {
-        //TODO cant start service show error to user or developer
-    }
 
-    override fun bindToSendService(identifier: String?) {
+    override fun bindToSendService() {
         val intent = Intent()
-        var receiverPackageName = identifier
 
-        //TODO for testing change to local sample - REMOVE _ TESTING ONLY
-        receiverPackageName = packageName
-        intent.component = ComponentName(receiverPackageName, "$receiverPackageName.SendKinService")
-        intent.setPackage(receiverPackageName)
+        var senderPackageName = packageName
+        var serviceName = "SendKinService"
+        intent.component = ComponentName(senderPackageName, "$senderPackageName.$serviceName")
+        intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
         if (!resolveInfos.any()) {
-            presenter?.onServiceNotFound()
+            throw TransferKinServiceException("$senderPackageName.$serviceName", "Service not found")
         }
-        if (resolveInfos.filter {
-                    it.serviceInfo.exported
-                }.any()) {
-            presenter?.onServiceShouldNotBeExported()
-        } else {
-            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
+            throw TransferKinServiceException("$senderPackageName.$serviceName", "Service should not be exported")
         }
+
+        bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onRequestAmountError() {
@@ -131,14 +122,17 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     override fun onRequestReceiverPublicAddressCanceled() {
+        Log.d("###", "onRequestReceiverPublicAddressCanceled")
     }
 
     override fun onRequestReceiverPublicAddressError(error: AppInfoPresenter.RequestReceiverPublicAddressError) {
         //TODO update user
+        Log.d("###", "onRequestReceiverPublicAddressError")
     }
 
     override fun onStartRequestReceiverPublicAddress() {
         //TODO show progress
+        Log.d("###", "onStartRequestReceiverPublicAddress")
     }
 
     override fun initViews(app: EcosystemApp?) {

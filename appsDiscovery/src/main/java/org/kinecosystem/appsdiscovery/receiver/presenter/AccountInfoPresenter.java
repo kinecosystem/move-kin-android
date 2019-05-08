@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
+import org.jetbrains.annotations.NotNull;
 import org.kinecosystem.appsdiscovery.base.BasePresenter;
 import org.kinecosystem.appsdiscovery.receiver.manager.AccountInfoManager;
+import org.kinecosystem.appsdiscovery.receiver.manager.IAccountInfo;
 import org.kinecosystem.appsdiscovery.receiver.view.IAccountInfoView;
 
 import java.lang.annotation.Retention;
@@ -28,24 +30,31 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     private boolean isPaused = false;
     @TaskState
     private int taskState = TASK_STATE_UNDEFINED;
+    private Intent intent;
 
-    public AccountInfoPresenter(@NonNull AccountInfoManager accountInfoManager, @NonNull IAccountInfoView view, @NonNull Intent intent) {
+    public AccountInfoPresenter(@NonNull AccountInfoManager accountInfoManager, @NonNull Intent intent) {
         this.accountInfoManager = accountInfoManager;
-        processIntent(view, intent);
-        startAccountInfoTask();
+        this.intent = intent;
     }
 
-    private void processIntent(IAccountInfoView view, Intent intent) {
+    @Override
+    public void onAttach(@NotNull IAccountInfoView view) {
+        super.onAttach(view);
+        if (processIntent(view)) {
+            startAccountInfoTask(accountInfoManager.getAccountInfo());
+        }
+    }
+
+    private boolean processIntent(IAccountInfoView view) {
         if (intent != null && intent.hasExtra(EXTRA_SOURCE_APP_NAME)) {
             String sourceApp = intent.getStringExtra(EXTRA_SOURCE_APP_NAME);
             if (!sourceApp.isEmpty()) {
                 view.updateSourceApp(sourceApp);
-            } else {
-                onError(view);
+                return true;
             }
-        } else {
-            onError(view);
         }
+        onError(view);
+        return false;
     }
 
     @Override
@@ -77,8 +86,14 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
 
     @Override
     public void onDetach() {
-        asyncTask.cancel(true);
-        asyncTask = null;
+        if (asyncTask != null) {
+            asyncTask.cancel(true);
+            asyncTask = null;
+        }
+        if (accountInfoManager != null) {
+            accountInfoManager.onDestroy();
+            accountInfoManager = null;
+        }
         super.onDetach();
     }
 
@@ -93,8 +108,9 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
         isPaused = true;
     }
 
-    private void startAccountInfoTask() {
-        asyncTask = new AccountInfoAsyncTask();
+
+    private void startAccountInfoTask(IAccountInfo accountInfo) {
+        asyncTask = new AccountInfoAsyncTask(accountInfo);
         asyncTask.execute();
     }
 
@@ -115,22 +131,32 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     }
 
     private void checkTaskState() {
+        IAccountInfoView accountInfoView = getView();
         if (taskState == TASK_STATE_SUCCESS) {
-            if (getView() != null) {
-                getView().enabledAgreeButton();
+            if (accountInfoView != null) {
+                accountInfoView.enabledAgreeButton();
             }
             taskState = TASK_STATE_UNDEFINED;
         } else if (taskState == TASK_STATE_FAILURE) {
-            onError(getView());
+            onError(accountInfoView);
             taskState = TASK_STATE_UNDEFINED;
         }
     }
 
     private class AccountInfoAsyncTask extends AsyncTask<Void, Void, Integer> {
+        private IAccountInfo accountInfo;
+
+        public AccountInfoAsyncTask(IAccountInfo accountInfo) {
+            this.accountInfo = accountInfo;
+        }
+
         @Override
         protected Integer doInBackground(Void... args) {
-            String address = getAccountPublicAddress();
             @TaskState int state = TASK_STATE_FAILURE;
+            String address = null;
+            if (accountInfo != null) {
+                address = accountInfo.getPublicAddress();
+            }
             if (!address.isEmpty() && accountInfoManager != null) {
                 if (accountInfoManager.init(address)) {
                     state = TASK_STATE_SUCCESS;
@@ -145,9 +171,10 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             onTaskComplete(state);
         }
 
-        private String getAccountPublicAddress() {
-            //TODO Implement get account public address
-            return "";
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            accountInfo = null;
         }
     }
 }

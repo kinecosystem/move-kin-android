@@ -2,7 +2,6 @@ package org.kinecosystem.appsdiscovery.receiver.service;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -10,11 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 
-import static org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinManager.*;
+import static org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinNotifier.*;
 
 public abstract class ReceiveKinServiceBase extends Service {
     private Handler mainThreadHandler;
-    private IBinder kinReceiverBinder;
 
     /**
      * This method is called once a transaction sending kin to this app (from another ecosystem app)
@@ -27,7 +25,8 @@ public abstract class ReceiveKinServiceBase extends Service {
      * @param transactionId the transaction hash
      * @param memo          the memo in the transaction
      */
-    protected abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo);
+    protected abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress,
+                                                   int amount, @NonNull String transactionId, @NonNull String memo);
 
     /**
      * This method will be called when an attempt to send kin to this app (from another ecosystem app) has failed.
@@ -40,16 +39,8 @@ public abstract class ReceiveKinServiceBase extends Service {
      * @param amount      the amount in Kin
      * @param memo        the memo of the transaction
      */
-    protected abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo);
-
-
-    /**
-     * This method is called after the user has accepted sharing his public address with another app.
-     * The method is called on the UI thread. Service will be stopped as soon as the method returns.
-     *
-     * @return the public address of the user current Kin Account
-     */
-    protected abstract String getCurrentAccountPublicAddress();
+    protected abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress,
+                                                @NonNull String toAddress, int amount, @NonNull String memo);
 
 
     /**
@@ -59,18 +50,10 @@ public abstract class ReceiveKinServiceBase extends Service {
         return 10;
     }
 
-    public class KinReceiverBinder extends Binder {
-        public String getCurrentAccountPublicAddress() {
-            return ReceiveKinServiceBase.this.getCurrentAccountPublicAddress();
-        }
-    }
-
-
     @Override
     public void onCreate() {
         super.onCreate();
         mainThreadHandler = new Handler(Looper.getMainLooper());
-        kinReceiverBinder = new KinReceiverBinder();
     }
 
     @Override
@@ -98,12 +81,6 @@ public abstract class ReceiveKinServiceBase extends Service {
         return START_NOT_STICKY;
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return kinReceiverBinder;
-    }
-
     private void stopWithDelay() {
         mainThreadHandler.postDelayed(new Runnable() {
             @Override
@@ -111,5 +88,11 @@ public abstract class ReceiveKinServiceBase extends Service {
                 stopSelf();
             }
         }, getStopDelayInSeconds());
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 }

@@ -9,8 +9,8 @@ public class SendKinService extends SendKinServiceBase {
     @Override
     public @NonNull
     KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
-        String transactionId = "myImplswellyTransactionId";
-        String address = "myImpladdressSwellyAddress";
+        String transactionId = "atransactionid";
+        String address = "apublicaddress";
         try {
             //long operation
             Thread.sleep(8000);
@@ -18,7 +18,8 @@ public class SendKinService extends SendKinServiceBase {
 
             //get transaction id
             if (transactionId.isEmpty()) {
-                throw new KinTransferException(address, "swelly cant make the transfer");
+                throw new KinTransferException(address, "Failure while trying to transfer "+amount+" Kin to "
+                        +toAddress+". Empty transaction id");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

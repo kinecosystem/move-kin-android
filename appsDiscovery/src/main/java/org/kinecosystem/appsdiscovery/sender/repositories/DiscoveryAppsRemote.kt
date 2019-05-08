@@ -18,7 +18,7 @@ class DiscoveryAppsRemote {
         //TODO make a nicer url without the kinit
         private const val BASE_CDN_URL = "https://cdn.kinitapp.com"
         private const val GET_DISCOVERY_APPS_PROD_URL = "$BASE_CDN_URL/discovery_apps_android.json"
-        private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stage.json"
+        private const val GET_DISCOVERY_APPS_STAGE_URL = "$BASE_CDN_URL/discovery_apps_android_stageb.json"
         private const val SERVER_TIMEOUT = 30L
     }
 

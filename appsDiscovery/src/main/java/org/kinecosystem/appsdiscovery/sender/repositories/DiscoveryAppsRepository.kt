@@ -3,7 +3,9 @@ package org.kinecosystem.appsdiscovery.sender.repositories
 import android.os.Handler
 import org.kinecosystem.appsdiscovery.sender.model.*
 
-class DiscoveryAppsRepository private constructor(private val currentPackage: String, private val local: DiscoveryAppsLocal, private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
+class DiscoveryAppsRepository
+private constructor(private val currentPackage: String, private val local: DiscoveryAppsLocal,
+                    private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
 
 
     companion object {

@@ -19,15 +19,24 @@ public class AccountInfoManager {
     private static final String FILE_NAME = "accountInfo.txt";
     private static final String FILE_PROVIDER_NAME = "KinTransferAccountInfoFileProvider";
     private static final String FILE_PROVIDER_DIR_NAME = "kintransfer_account_info";
-
     private File file;
     private Activity activity;
+    private IAccountInfo accountInfo;
 
-    public AccountInfoManager(@NonNull Activity activity) {
+    public AccountInfoManager(@NonNull Activity activity, @NonNull IAccountInfo accountInfo) {
         this.activity = activity;
+        this.accountInfo = accountInfo;
     }
 
-    //need to be called first
+    public IAccountInfo getAccountInfo() {
+        return accountInfo;
+    }
+
+    public void onDestroy() {
+        activity = null;
+        accountInfo = null;
+    }
+
     public boolean init(@NonNull final String publicAddress) {
         if (publicAddress.isEmpty() || activity == null) {
             return false;

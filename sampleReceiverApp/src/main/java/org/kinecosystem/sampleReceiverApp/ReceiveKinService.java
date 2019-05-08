@@ -22,8 +22,4 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
         Log.d("####", "##### developer  inform of transaction failed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " error " + error + " memo " + memo);
     }
 
-    @Override
-    protected String getCurrentAccountPublicAddress() {
-        return "thepublicaddress";
-    }
 }

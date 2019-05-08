@@ -12,10 +12,12 @@
         <activity android:name=".SampleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".AccountInfoActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
         <service
             android:name=".ReceiveKinService"
             android:exported="true">
