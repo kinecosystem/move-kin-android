@@ -1,4 +1,4 @@
-package org.kinecosystem.appsdiscovery.sender.discovery.view
+package org.kinecosystem.appsdiscovery.sender.discovery.view.customView
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
@@ -6,6 +6,7 @@ import android.support.v4.widget.TextViewCompat
 import android.util.AttributeSet
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
+import org.kinecosystem.appsdiscovery.sender.discovery.view.AppsDiscoveryActivity
 
 class AppsDiscoveryButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {

@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import org.kinecosystem.appsdiscovery.sender.discovery.view.AppsDiscoveryAlertDialog;
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppsDiscoveryAlertDialog;
 
 public class SampleActivity extends AppCompatActivity {
 

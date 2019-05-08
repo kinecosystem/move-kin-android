@@ -6,7 +6,7 @@ import android.content.Intent
 import android.util.Log
 import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
-import org.kinecosystem.appsdiscovery.sender.discovery.view.ReceiverAppStateView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
