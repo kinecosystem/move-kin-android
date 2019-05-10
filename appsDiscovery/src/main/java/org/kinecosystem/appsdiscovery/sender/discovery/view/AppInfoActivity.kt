@@ -69,21 +69,26 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            try {
-                val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
-                //TODO notify the transaction bar of complete
+            exceutorService.execute {
                 try {
-                    ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
-                } catch (transferKinServiceException: TransferKinServiceException) {
-                    Log.d("####", "#### error notify receiver of transaction success ${transferKinServiceException.message}")
-                }
-            } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
-                //TODO notify the transaction bar of failed
-                Log.d("####", "#### kinTransferException ${kinTransferException.message}")
-                try {
-                    ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
-                } catch (transferKinServiceException: TransferKinServiceException) {
-                    Log.d("####", "#### error notify receiver of transaction failed ${transferKinServiceException.message}")
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete
+                            = transferService?.transferKin(receiverAddress, amount, memo)!!
+                    //TODO notify the transaction bar of complete
+                    try {
+                        ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
+                    } catch (e: TransferKinServiceException) {
+                        e.printStackTrace()
+                        Log.d("####", "#### error notify receiver of transaction success ${e.message}")
+                    }
+                } catch (e: SendKinServiceBase.KinTransferException) {
+                    //TODO notify the transaction bar of failed
+                    Log.d("####", "#### kinTransferException ${e.message}")
+                    try {
+                        ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage, e.toString(), e.senderAddress, receiverAddress, amount, memo)
+                    } catch (e: TransferKinServiceException) {
+                        e.printStackTrace()
+                        Log.d("####", "#### error notify receiver of transaction failed ${e.message}")
+                    }
                 }
             }
         }
@@ -168,7 +173,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             exceutorService.execute {
                 try {
                     transferService?.let {
-                        val currentBalance = it.currentBalance
+                        val currentBalance = it.currentBalance.toInt()
                         presenter?.updateBalance(currentBalance)
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {

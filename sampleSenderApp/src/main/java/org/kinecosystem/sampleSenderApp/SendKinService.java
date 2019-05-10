@@ -3,43 +3,66 @@ package org.kinecosystem.sampleSenderApp;
 import android.support.annotation.NonNull;
 
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase;
+import org.kinecosystem.sampleSenderApp.sampleWallet.SampleWallet;
+
+import java.math.BigDecimal;
+
+import kin.sdk.Transaction;
+import kin.sdk.TransactionId;
 
 public class SendKinService extends SendKinServiceBase {
 
     @Override
     public @NonNull
     KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
-        String transactionId = "atransactionid";
-        String address = "apublicaddress";
-        try {
-            //long operation
-            Thread.sleep(8000);
-            //get its own wallet address - from address
+        SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
+        TransactionId transactionId = null;
+        String sourceAddress = "None";
 
-            //get transaction id
-            if (transactionId.isEmpty()) {
-                throw new KinTransferException(address, "Failure while trying to transfer "+amount+" Kin to "
-                        +toAddress+". Empty transaction id");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!sampleWallet.hasAccount()) {
+
+            throw new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized");
         }
-        return new KinTransferComplete(address, transactionId);
 
+        try {
+            sourceAddress = sampleWallet.account.getPublicAddress();
+
+            int fee = 100; // no whitelisting for sample app, so using a fee
+            Transaction transaction = sampleWallet.account.buildTransactionSync(toAddress,
+                    new BigDecimal(amount), fee, memo);
+            transactionId = sampleWallet.account.sendTransactionSync(transaction);
+
+            // here you may add some code to add the transaction details to
+            // transaction history metadata
+
+            return new KinTransferComplete(sourceAddress, transactionId.id());
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            throw new KinTransferException(sourceAddress,
+                    "Cannot transfer Kin. Exception " + e + ", with message " + e.getMessage());
+
+        }
     }
 
     @Override
-    public int getCurrentBalance() throws BalanceException {
-        int balance = 79;
-        //int balance = -79;
-        try {
-            Thread.sleep(5000);
-            if (balance < 0) {
-                throw new BalanceException("balance not found! no account");
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public BigDecimal getCurrentBalance() throws BalanceException {
+
+        SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
+
+        if (!sampleWallet.hasAccount()) {
+
+            throw new BalanceException("Cannot retrieve Kin balance. Account not initialized");
         }
-        return balance;
+
+        try {
+            return sampleWallet.account.getBalanceSync().value();
+
+        } catch (Exception e) {
+            throw new BalanceException("Unable to retrieve Kin balance. Exception " + e + ", with message " + e.getMessage());
+        }
+
     }
 }

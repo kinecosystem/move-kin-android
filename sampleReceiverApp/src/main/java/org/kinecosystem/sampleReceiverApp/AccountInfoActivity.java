@@ -7,7 +7,8 @@ public class AccountInfoActivity extends AccountInfoActivityBase {
 
     @Override
     public String getPublicAddress() {
-        return "getThePublicAddressFromTheCurrentAccount";
+        return ((ReceiverApplication)getApplicationContext())
+                .getSampleWallet().account.getPublicAddress();
     }
 
 }

@@ -20,6 +20,10 @@ android {
             url 'https://jitpack.io'
         }
     }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {
@@ -30,5 +34,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':appsDiscovery')
-    implementation 'com.github.kinecosystem:kin-sdk-android:1.0.2'
+    implementation 'com.github.kinecosystem:kin-sdk-android:1.0.3.1'
 }

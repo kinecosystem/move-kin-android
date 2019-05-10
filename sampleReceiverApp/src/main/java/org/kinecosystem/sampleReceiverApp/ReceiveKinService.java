@@ -13,13 +13,13 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
 
     @Override
     public void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) {
-        Log.d("####", "##### developer  inform of transaction complete from " + fromAddress + " to " + toAddress+ " amount " + amount+ " transactionId " + transactionId+ " memo " + memo);
+        Log.d("ReceiveKinService", "Transaction completed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " transactionId " + transactionId+ " memo " + memo);
     }
 
     //the error is for the developers - put info as much as possible so the other side app can understand the transfer problem
     @Override
     public void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) {
-        Log.d("####", "##### developer  inform of transaction failed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " error " + error + " memo " + memo);
+        Log.d("ReceiveKinService", "Transaction failed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " error " + error + " memo " + memo);
     }
 
 }
