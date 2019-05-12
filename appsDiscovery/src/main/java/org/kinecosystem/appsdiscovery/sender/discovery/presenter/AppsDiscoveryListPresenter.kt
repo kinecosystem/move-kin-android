@@ -8,6 +8,18 @@ import org.kinecosystem.appsdiscovery.sender.repositories.OperationResultCallbac
 
 class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
 
+    private var loadingListener:LoadingListener? = null
+
+    interface LoadingListener{
+        fun loading()
+        fun loadingComplete()
+        fun loadingFailed()
+    }
+
+    override fun setLoadingListener(loadingListener: LoadingListener) {
+        this.loadingListener = loadingListener
+    }
+
     override fun updateApps(apps: List<EcosystemApp>) {
         view?.updateData(apps)
     }
@@ -16,16 +28,22 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
         view?.navigateToApp(app)
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        loadingListener = null
+    }
+
     override fun onAttach(view: IAppsDiscoveryListView) {
         super.onAttach(view)
-        //every attached it loads data
+        loadingListener?.loading()
         discoveryAppsRepository.loadDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {
             override fun onResult(result: List<EcosystemApp>) {
                 updateApps(result)
+                loadingListener?.loadingComplete()
             }
 
             override fun onError(error: String) {
-                //TODO notify developer or user error in list
+                loadingListener?.loadingFailed()
             }
 
         })

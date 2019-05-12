@@ -4,4 +4,6 @@
     <dimen name="kin_btn_text_padding">17dp</dimen>
     <dimen name="kin_btn_text_size">16sp</dimen>
     <dimen name="kin_alert_text_size">16sp</dimen>
+    <dimen name="padding_normal">18dp</dimen>
+    <dimen name="text_small_size">12sp</dimen>
 </resources>
