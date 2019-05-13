@@ -16,7 +16,6 @@ public class SendKinService extends SendKinServiceBase {
     public @NonNull
     KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
-        TransactionId transactionId = null;
         String sourceAddress = "None";
 
         if (!sampleWallet.hasAccount()) {
@@ -25,12 +24,12 @@ public class SendKinService extends SendKinServiceBase {
         }
 
         try {
-            sourceAddress = sampleWallet.account.getPublicAddress();
+            sourceAddress = sampleWallet.getAccount().getPublicAddress();
 
             int fee = 100; // no whitelisting for sample app, so using a fee
-            Transaction transaction = sampleWallet.account.buildTransactionSync(toAddress,
+            Transaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
                     new BigDecimal(amount), fee, memo);
-            transactionId = sampleWallet.account.sendTransactionSync(transaction);
+            TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
 
             // here you may add some code to add the transaction details to
             // transaction history metadata
@@ -58,7 +57,7 @@ public class SendKinService extends SendKinServiceBase {
         }
 
         try {
-            return sampleWallet.account.getBalanceSync().value();
+            return sampleWallet.getAccount().getBalanceSync().value();
 
         } catch (Exception e) {
             throw new BalanceException("Unable to retrieve Kin balance. Exception " + e + ", with message " + e.getMessage());

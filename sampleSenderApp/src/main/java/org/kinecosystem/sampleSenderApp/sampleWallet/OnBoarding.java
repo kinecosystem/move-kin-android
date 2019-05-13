@@ -17,6 +17,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * This is a sample class used to create and fund an account on Kin testnet blockchain using the friendbot.
+ */
 public class OnBoarding {
 
     private static final int FUND_KIN_AMOUNT = 6000;

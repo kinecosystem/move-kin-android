@@ -15,8 +15,8 @@ import kin.utils.ResultCallback;
 
 public class ReceiverMainActivity extends AppCompatActivity {
     private static final String APP_ID = "recv";
-    SampleWallet sampleWallet;
-    boolean activityCreated = false;
+    private SampleWallet sampleWallet;
+    private boolean activityCreated = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,19 +34,19 @@ public class ReceiverMainActivity extends AppCompatActivity {
 
     private void initAccountAndViews() {
 
-        TextView paddressView = findViewById((R.id.publicAddressView));
+        TextView addressView = findViewById((R.id.publicAddressView));
         if (sampleWallet.hasAccount()) {
-            String text = getString(R.string.public_address, sampleWallet.account.getPublicAddress());
-            paddressView.setText(text);
+            String text = getString(R.string.public_address, sampleWallet.getAccount().getPublicAddress());
+            addressView.setText(text);
             initBalance();
         } else {
-            paddressView.setText(R.string.create_wallet);
+            addressView.setText(R.string.create_wallet);
             sampleWallet.createAccount(new OnBoarding.Callbacks() {
                 @Override
                 public void onSuccess() {
                     if (activityCreated) {
-                        String text = getString(R.string.public_address, sampleWallet.account.getPublicAddress());
-                        paddressView.setText(text);
+                        String text = getString(R.string.public_address, sampleWallet.getAccount().getPublicAddress());
+                        addressView.setText(text);
                         initBalance();
                     }
                 }
@@ -54,7 +54,7 @@ public class ReceiverMainActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Exception e) {
                     if (activityCreated) {
-                        paddressView.setText(R.string.create_wallet_error);
+                        addressView.setText(R.string.create_wallet_error);
                     }
                 }
             });
@@ -71,7 +71,7 @@ public class ReceiverMainActivity extends AppCompatActivity {
 
     private void updateBalance(TextView balanceView) {
         balanceView.setText(R.string.update_balance);
-        Request<Balance> balanceRequest = sampleWallet.account.getBalance();
+        Request<Balance> balanceRequest = sampleWallet.getAccount().getBalance();
         balanceRequest.run(new ResultCallback<Balance>() {
             @Override
             public void onResult(Balance result) {

@@ -12,8 +12,8 @@ public class SampleWallet {
     private static final String SDK_TEST_NETWORK_URL = "https://horizon-testnet.kininfrastructure.com/";
     private static final String SDK_TEST_NETWORK_ID = "Kin Testnet ; December 2018";
 
-    public KinAccount account;
-    public KinClient kinClient;
+    private KinAccount account;
+    private KinClient kinClient;
 
     public SampleWallet(Context context, String appId) {
         kinClient = new KinClient(context,
@@ -25,6 +25,14 @@ public class SampleWallet {
 
     public boolean hasAccount() {
         return account != null;
+    }
+
+    public KinAccount getAccount() {
+        return account;
+    }
+
+    public KinClient getKinClient() {
+        return kinClient;
     }
 
     public void createAccount(OnBoarding.Callbacks callbacks) {

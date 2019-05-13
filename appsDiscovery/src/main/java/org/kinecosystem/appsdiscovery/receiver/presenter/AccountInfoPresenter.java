@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.kinecosystem.appsdiscovery.base.BasePresenter;
@@ -157,7 +158,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             if (accountInfo != null) {
                 address = accountInfo.getPublicAddress();
             }
-            if (!address.isEmpty() && accountInfoManager != null) {
+            if (!TextUtils.isEmpty(address) && accountInfoManager != null) {
                 if (accountInfoManager.init(address)) {
                     state = TASK_STATE_SUCCESS;
                 }

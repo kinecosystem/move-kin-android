@@ -41,7 +41,7 @@ public class SenderMainActivity extends AppCompatActivity {
 
         TextView paddressView = findViewById((R.id.publicAddressView));
         if (sampleWallet.hasAccount()) {
-            String text = getString(R.string.public_address, sampleWallet.account.getPublicAddress());
+            String text = getString(R.string.public_address, sampleWallet.getAccount().getPublicAddress());
             paddressView.setText(text);
             initBalance();
         } else {
@@ -50,7 +50,7 @@ public class SenderMainActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess() {
                     if (activityCreated) {
-                        String text = getString(R.string.public_address, sampleWallet.account.getPublicAddress());
+                        String text = getString(R.string.public_address, sampleWallet.getAccount().getPublicAddress());
                         paddressView.setText(text);
                         initBalance();
                     }
@@ -76,7 +76,7 @@ public class SenderMainActivity extends AppCompatActivity {
 
     private void updateBalance(TextView balanceView) {
         balanceView.setText(R.string.update_balance);
-        Request<Balance> balanceRequest = sampleWallet.account.getBalance();
+        Request<Balance> balanceRequest = sampleWallet.getAccount().getBalance();
         balanceRequest.run(new ResultCallback<Balance>() {
             @Override
             public void onResult(Balance result) {
