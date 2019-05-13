@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".receiver.view.AccountInfoActivity">
+    android:background="@color/white">
 
     <ImageView
         android:id="@+id/close_button"
@@ -19,9 +18,9 @@
 
     <TextView
         android:id="@+id/header_text"
+        style="@style/KinTextRegular.Dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/KinTextRegular.Dark"
         android:text="@string/receiver_activity_title"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/delimiter"
@@ -54,9 +53,9 @@
 
     <TextView
         android:id="@+id/transfer_title"
+        style="@style/KinTextRegular.Dark"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/KinTextRegular.Dark"
         android:layout_marginStart="@dimen/padding_normal"
         android:layout_marginLeft="@dimen/padding_normal"
         android:layout_marginTop="27dp"

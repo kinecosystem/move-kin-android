@@ -5,8 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.Editable
-import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,8 +30,13 @@ class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
     }
 
     override fun initViews(receiverAppIconUrl: String, balance: Int) {
-        findViewById<TextView>(R.id.appName).text = receiverAppIconUrl
-        findViewById<TextView>(R.id.availableBalance).text = balance.toString()
+        if (balance == 0) {
+            findViewById<TextView>(R.id.availableBalance).visibility = View.INVISIBLE
+            findViewById<ImageView>(R.id.currency).visibility = View.INVISIBLE
+            findViewById<TextView>(R.id.postBalance).visibility = View.INVISIBLE
+        } else {
+            findViewById<TextView>(R.id.availableBalance).text = balance.toString()
+        }
         findViewById<ImageView>(R.id.appIcon).load(receiverAppIconUrl)
         findViewById<TextView>(R.id.send).isEnabled = false
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
@@ -43,24 +47,7 @@ class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
         amountView.setOnClickListener {
             amountView.setSelection(amountView.text.length)
         }
-        amountView.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
-
-            override fun afterTextChanged(editable: Editable) {
-                if (editable.length >= 2) {
-                    if (editable[0] == '0') {
-                        editable.delete(0, 1)
-                    }
-                }
-                var amount = 0
-                if (editable.isNotEmpty()) {
-                    amount = editable.toString().toInt()
-                }
-                presenter?.onAmountChanged(amount)
-            }
-        })
+        amountView.addTextChangedListener(presenter)
 
         findViewById<TextView>(R.id.send).setOnClickListener {
             presenter?.onSendKinClicked()
