@@ -26,7 +26,7 @@ class ReceiverAppStateView  @JvmOverloads constructor(context: Context, attrs: A
     init {
         val inflater = context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        inflater.inflate(R.layout.receiver_app_state_view, this, true)
+        inflater.inflate(R.layout.app_state_view, this, true)
         actionBtn = findViewById(R.id.actionBtn)
         title = findViewById(R.id.title)
 
