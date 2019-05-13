@@ -18,7 +18,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.receiver_activity);
+        setContentView(R.layout.receiver_approval_activity);
         initViews();
         presenter = new AccountInfoPresenter();
         presenter.onAttach(this);
