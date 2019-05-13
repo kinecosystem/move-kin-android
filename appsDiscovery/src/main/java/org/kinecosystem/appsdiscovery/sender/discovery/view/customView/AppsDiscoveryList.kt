@@ -28,7 +28,6 @@ const val COLUMNS_COUNT = 2
 
 class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RecyclerView(context, attrs, defStyleAttr), IAppsDiscoveryListView {
-
     private var presenter: IAppsDiscoveryListPresenter? = null
 
     init {
@@ -38,10 +37,26 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
         presenter?.let {
             adapter = AppsDiscoveryAdapter(it)
         }
+
+        addOnAttachStateChangeListener(object :OnAttachStateChangeListener{
+            override fun onViewDetachedFromWindow(v: View?) {
+                presenter = null
+            }
+
+            override fun onViewAttachedToWindow(v: View?) {
+            }
+
+        })
     }
+
+
 
     override fun updateData(apps: List<EcosystemApp>) {
         (adapter as AppsDiscoveryAdapter).updateData(apps)
+    }
+
+    override fun setLoadingListener(loadingListener: AppsDiscoveryListPresenter.LoadingListener) {
+        presenter?.setLoadingListener(loadingListener)
     }
 
     override fun navigateToApp(app: EcosystemApp) {
@@ -91,23 +106,20 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
         private val appName: TextView = view.findViewById(R.id.appName)
         private val colorBg: View = view.findViewById(R.id.colorBg)
         private val actionText: TextView = view.findViewById(R.id.actionText)
-        //private val category: TextView = view.findViewById(R.id.category)
+        private val category: TextView = view.findViewById(R.id.category)
 
         fun bind(app: EcosystemApp) {
             appName.text = app.name
+            category.text = app.category
             colorBg.setBackgroundColor(app.cardColor)
             icon.load(app.iconUrl)
             with(actionText) {
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
                 setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
-                text = app.cardTitle
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
                 typeface = TextUtils.getFontTypeForType(context, app.cardFontName)
                 setLineSpacing(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
                 text = app.cardTitle
             }
-//
-//            category.text = app.category
         }
     }
 

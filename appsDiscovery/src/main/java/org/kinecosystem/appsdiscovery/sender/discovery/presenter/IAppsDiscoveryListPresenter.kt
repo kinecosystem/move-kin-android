@@ -7,4 +7,5 @@ import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 interface IAppsDiscoveryListPresenter : IBasePresenter<IAppsDiscoveryListView> {
     fun onAppClicked(app:EcosystemApp)
     fun updateApps(apps:List<EcosystemApp>)
+    fun setLoadingListener(loadingListener: AppsDiscoveryListPresenter.LoadingListener)
 }
