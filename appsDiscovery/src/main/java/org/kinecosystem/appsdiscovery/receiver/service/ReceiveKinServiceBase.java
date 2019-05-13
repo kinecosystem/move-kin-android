@@ -16,8 +16,11 @@ public abstract class ReceiveKinServiceBase extends Service {
 
     /**
      * This method is called once a transaction sending kin to this app (from another ecosystem app)
-     * has been completed. Method is called on the UI thread. The service will be stopped 10 seconds
-     * after the method completes. If you wish a longer or no delay override #getStopDelayInSeconds
+     * has been completed.
+     * The method is called on the UI thread. The service will be stopped 10 seconds
+     * after the method completes so if you wish to run a background thread within the method,
+     * then you have 10 seconds to complete it. If you need more or less that 10 seconds you can
+     * also configure the delay by overriding {@link ReceiveKinServiceBase#getStopDelayInSeconds()}
      *
      * @param fromAddress   the public address of the wallet sending the kin
      * @param toAddress     the public address of the wallet receiving the kin
@@ -30,8 +33,10 @@ public abstract class ReceiveKinServiceBase extends Service {
 
     /**
      * This method will be called when an attempt to send kin to this app (from another ecosystem app) has failed.
-     * Method is called on the UI thread. The service will be stopped 10 seconds
-     * after the method completes. If you wish a longer or no delay override #getStopDelayInSeconds
+     * The method is called on the UI thread. The service will be stopped 10 seconds
+     * after the method completes so if you wish to run a background thread within the method,
+     * then you have 10 seconds to complete it. If you need more or less that 10 seconds you can
+     * also configure the delay by overriding {@link ReceiveKinServiceBase#getStopDelayInSeconds()}
      *
      * @param error       error message
      * @param fromAddress the public address of the wallet attempting to send the kin
@@ -44,6 +49,11 @@ public abstract class ReceiveKinServiceBase extends Service {
 
 
     /**
+     * This method can be used to configure the number of seconds to delay stopping the service after
+     * {@link ReceiveKinServiceBase#onTransactionCompleted(String, String, int, String, String)}
+     * {@link ReceiveKinServiceBase#onTransactionFailed(String, String, String, int, String)}
+     * methods have completed. If you do not need to run a background thread in the implementation of
+     * onTransactionCompleted/onTransactionFailed, you can override this method and return 0.
      * @return the amount of seconds to delay before stopping the service
      */
     protected int getStopDelayInSeconds() {

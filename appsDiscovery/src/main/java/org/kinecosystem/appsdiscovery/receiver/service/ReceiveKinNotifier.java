@@ -24,7 +24,7 @@ public class ReceiveKinNotifier {
     public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName,
                                                   @NonNull String fromAddress, @NonNull String toAddress,
                                                   int amount, @NonNull String transactionId,
-                                                  @NonNull String memo) throws TransferKinServiceException {
+                                                  @NonNull String memo) throws ServiceConfigurationException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
         intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
@@ -37,7 +37,7 @@ public class ReceiveKinNotifier {
     public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName,
                                                @NonNull String error, @NonNull String fromAddress,
                                                @NonNull String toAddress, int amount,
-                                               @NonNull String memo) throws TransferKinServiceException {
+                                               @NonNull String memo) throws ServiceConfigurationException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
         intent.putExtra(SERVICE_ARG_ERROR, error);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
@@ -48,7 +48,7 @@ public class ReceiveKinNotifier {
     }
 
     private static Intent getTransactionResultIntent(Context context, String receiverPackageName,
-                                                     final Boolean isCompleted) throws TransferKinServiceException {
+                                                     final Boolean isCompleted) throws ServiceConfigurationException {
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
@@ -57,11 +57,11 @@ public class ReceiveKinNotifier {
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
         if (resolveInfos.isEmpty()) {
-            throw new TransferKinServiceException(serviceFullPath, "service not found");
+            throw new ServiceConfigurationException(serviceFullPath, "service not found");
         } else {
             for (ResolveInfo info : resolveInfos) {
                 if (!info.serviceInfo.exported) {
-                    throw new TransferKinServiceException(serviceFullPath, "service not public. Make sure it is exported on AndroidManifest.xml");
+                    throw new ServiceConfigurationException(serviceFullPath, "service not public. Make sure it is exported on AndroidManifest.xml");
                 }
             }
         }

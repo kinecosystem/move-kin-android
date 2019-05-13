@@ -8,4 +8,5 @@ public interface IAccountInfoView extends IBaseView {
     void close();
 
     void updateSourceApp(String sourceApp);
+
 }

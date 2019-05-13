@@ -2,11 +2,11 @@ package org.kinecosystem.appsdiscovery.receiver.service;
 
 import android.support.annotation.NonNull;
 
-public class TransferKinServiceException extends Exception {
+public class ServiceConfigurationException extends Exception {
     private String serviceFullPath;
 
-    public TransferKinServiceException(@NonNull String serviceFullPath, String errorDetails) {
-        super("Service" + serviceFullPath + " not found. " + errorDetails);
+    public ServiceConfigurationException(@NonNull String serviceFullPath, String errorDetails) {
+        super("Unable to use service " + serviceFullPath + ". Reason: " + errorDetails);
         this.serviceFullPath = serviceFullPath;
     }
 

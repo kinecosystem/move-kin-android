@@ -6,10 +6,9 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import org.jetbrains.annotations.NotNull;
 import org.kinecosystem.appsdiscovery.base.BasePresenter;
-import org.kinecosystem.appsdiscovery.receiver.manager.AccountInfoManager;
 import org.kinecosystem.appsdiscovery.receiver.manager.IAccountInfo;
+import org.kinecosystem.appsdiscovery.receiver.manager.IAccountInfoResponder;
 import org.kinecosystem.appsdiscovery.receiver.view.IAccountInfoView;
 
 import java.lang.annotation.Retention;
@@ -26,42 +25,44 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     @interface TaskState {
     }
 
-    private AccountInfoManager accountInfoManager;
+    private IAccountInfoResponder accountInfoResponder;
     private AccountInfoAsyncTask asyncTask;
     private boolean isPaused = false;
     @TaskState
     private int taskState = TASK_STATE_UNDEFINED;
-    private Intent intent;
 
-    public AccountInfoPresenter(@NonNull AccountInfoManager accountInfoManager, @NonNull Intent intent) {
-        this.accountInfoManager = accountInfoManager;
-        this.intent = intent;
+    public AccountInfoPresenter() {
     }
 
     @Override
-    public void onAttach(@NotNull IAccountInfoView view) {
+    public void onAttach(@NonNull IAccountInfoView view) {
         super.onAttach(view);
-        if (processIntent(view)) {
-            startAccountInfoTask(accountInfoManager.getAccountInfo());
+    }
+
+    @Override
+    public void start(IAccountInfoResponder accountInfoResponder, IAccountInfo accountInfo, @NonNull Intent intent) {
+        this.accountInfoResponder = accountInfoResponder;
+        if (processIntent(intent)) {
+            startAccountInfoTask(accountInfo);
         }
     }
 
-    private boolean processIntent(IAccountInfoView view) {
-        if (intent != null && intent.hasExtra(EXTRA_SOURCE_APP_NAME)) {
+    private boolean processIntent(Intent intent) {
+        if (intent != null && intent.hasExtra(EXTRA_SOURCE_APP_NAME) && getView() != null) {
             String sourceApp = intent.getStringExtra(EXTRA_SOURCE_APP_NAME);
             if (!sourceApp.isEmpty()) {
-                view.updateSourceApp(sourceApp);
+                getView().updateSourceApp(sourceApp);
                 return true;
             }
         }
-        onError(view);
+        onError();
         return false;
     }
 
     @Override
     public void agreeClicked() {
-        if (accountInfoManager != null) {
-            accountInfoManager.respondOk();
+        if (accountInfoResponder != null) {
+            accountInfoResponder.respondOk();
             if (getView() != null) {
                 getView().close();
             }
@@ -70,15 +71,15 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
 
     @Override
     public void backButtonPressed() {
-        if (accountInfoManager != null) {
-            accountInfoManager.respondCancel();
+        if (accountInfoResponder != null) {
+            accountInfoResponder.respondCancel();
         }
     }
 
     @Override
     public void closeClicked() {
-        if (accountInfoManager != null) {
-            accountInfoManager.respondCancel();
+        if (accountInfoResponder != null) {
+            accountInfoResponder.respondCancel();
             if (getView() != null) {
                 getView().close();
             }
@@ -91,9 +92,9 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             asyncTask.cancel(true);
             asyncTask = null;
         }
-        if (accountInfoManager != null) {
-            accountInfoManager.onDestroy();
-            accountInfoManager = null;
+        if (accountInfoResponder != null) {
+            accountInfoResponder.onDestroy();
+            accountInfoResponder = null;
         }
         super.onDetach();
     }
@@ -111,15 +112,17 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
 
 
     private void startAccountInfoTask(IAccountInfo accountInfo) {
-        asyncTask = new AccountInfoAsyncTask(accountInfo);
-        asyncTask.execute();
+        if (accountInfo != null) {
+            asyncTask = new AccountInfoAsyncTask(accountInfo);
+            asyncTask.execute();
+        }
     }
 
-    private void onError(IAccountInfoView view) {
-        if (accountInfoManager != null) {
-            accountInfoManager.respondError();
-            if (view != null) {
-                view.close();
+    private void onError() {
+        if (accountInfoResponder != null) {
+            accountInfoResponder.respondError();
+            if (getView() != null) {
+                getView().close();
             }
         }
     }
@@ -139,7 +142,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             }
             taskState = TASK_STATE_UNDEFINED;
         } else if (taskState == TASK_STATE_FAILURE) {
-            onError(accountInfoView);
+            onError();
             taskState = TASK_STATE_UNDEFINED;
         }
     }
@@ -147,7 +150,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     private class AccountInfoAsyncTask extends AsyncTask<Void, Void, Integer> {
         private IAccountInfo accountInfo;
 
-        public AccountInfoAsyncTask(IAccountInfo accountInfo) {
+        AccountInfoAsyncTask(IAccountInfo accountInfo) {
             this.accountInfo = accountInfo;
         }
 
@@ -158,8 +161,8 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             if (accountInfo != null) {
                 address = accountInfo.getPublicAddress();
             }
-            if (!TextUtils.isEmpty(address) && accountInfoManager != null) {
-                if (accountInfoManager.init(address)) {
+            if (!TextUtils.isEmpty(address) && accountInfoResponder != null) {
+                if (accountInfoResponder.init(address)) {
                     state = TASK_STATE_SUCCESS;
                 }
             }

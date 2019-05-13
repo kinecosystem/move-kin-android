@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.kinecosystem.appsdiscovery.R;
-import org.kinecosystem.appsdiscovery.receiver.manager.AccountInfoManager;
+import org.kinecosystem.appsdiscovery.receiver.manager.AccountInfoResponder;
 import org.kinecosystem.appsdiscovery.receiver.manager.IAccountInfo;
 import org.kinecosystem.appsdiscovery.receiver.presenter.AccountInfoPresenter;
 import org.kinecosystem.appsdiscovery.receiver.presenter.IAccountInfoPresenter;
@@ -20,9 +20,10 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.receiver_activity);
         initViews();
-        presenter = new AccountInfoPresenter(new AccountInfoManager(this, this),
-                getIntent());
+        presenter = new AccountInfoPresenter();
         presenter.onAttach(this);
+        presenter.start(new AccountInfoResponder(this),  this,
+                getIntent());
     }
 
     @Override

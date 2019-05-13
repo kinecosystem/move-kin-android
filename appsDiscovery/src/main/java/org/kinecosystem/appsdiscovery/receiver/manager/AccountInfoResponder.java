@@ -14,27 +14,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 
-public class AccountInfoManager {
+public class AccountInfoResponder implements IAccountInfoResponder {
     private static final String EXTRA_HAS_ERROR = "EXTRA_HAS_ERROR";
     private static final String FILE_NAME = "accountInfo.txt";
     private static final String FILE_PROVIDER_NAME = "KinTransferAccountInfoFileProvider";
     private static final String FILE_PROVIDER_DIR_NAME = "kintransfer_account_info";
     private File file;
     private Activity activity;
-    private IAccountInfo accountInfo;
 
-    public AccountInfoManager(@NonNull Activity activity, @NonNull IAccountInfo accountInfo) {
+    public AccountInfoResponder(@NonNull Activity activity) {
         this.activity = activity;
-        this.accountInfo = accountInfo;
-    }
-
-    public IAccountInfo getAccountInfo() {
-        return accountInfo;
     }
 
     public void onDestroy() {
         activity = null;
-        accountInfo = null;
     }
 
     public boolean init(@NonNull final String publicAddress) {
