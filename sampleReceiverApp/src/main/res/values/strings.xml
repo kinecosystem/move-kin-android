@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Sample Receiver App</string>
+    <string name="init_wallet">Initializing wallet... please wait...</string>
+    <string name="init_balance">Initializing balance...please wait...</string>
+    <string name="update_balance">Updating balance...please wait...</string>
+    <string name="create_wallet">Creating wallet...please wait...</string>
+    <string name="create_wallet_error">Unable to create wallet</string>
+    <string name="balance_error">Unable to initialize balance</string>
+    <string name="balance">Account Balance: %1$s</string>
+    <string name="public_address">Account Public Address:\n%1$s</string>
+</resources>

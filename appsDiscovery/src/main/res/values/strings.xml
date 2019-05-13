@@ -9,7 +9,7 @@
     <string name="app_receive_kin">You can now move your Kin around.</string>
     <string name="app_action_send_kin">Send Kin</string>
     <string name="app_action_install">Google play</string>
-
-
-
+    <string name="receiver_activity_title">Kin Ecosystem</string>
+    <string name="receiver_activity_agree">I agree</string>
+    <string name="receiver_activity_message">In order to send Kin, %1$s would like to receive your Kin account information (i.e. your public address) from %2$s.</string>
 </resources>

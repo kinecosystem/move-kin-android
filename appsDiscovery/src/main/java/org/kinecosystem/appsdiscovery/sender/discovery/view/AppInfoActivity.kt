@@ -14,7 +14,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase
+import org.kinecosystem.appsdiscovery.receiver.service.ServiceConfigurationException
+import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
@@ -28,11 +29,12 @@ import org.kinecosystem.appsdiscovery.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
+    private val TAG = AppInfoActivity.javaClass.simpleName
     private var presenter: AppInfoPresenter? = null
     private var receiverAppStateView: ReceiverAppStateView? = null
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
-    private var exceutorService = Executors.newCachedThreadPool()
+    private var excecutorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -68,28 +70,32 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            exceutorService.execute {
+            excecutorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
-                    //TODO notify the transaction bar of complete
-                    try {
-                        Log.d("###", "#### transfer complete tx id ${kinTransferComplete.transactionId}")
-                        //notify the receiver of complete
-                        ReceiveKinServiceBase.notifyTransactionCompleted(baseContext, receiverPackage, kinTransferComplete.senderAddress, receiverAddress, amount, kinTransferComplete.transactionId, memo)
-                    } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
-                        //TODO check if need to update the sender that receiver will not get the update
-                        Log.d("####", "#### error notify receiver of transaction success ${kinReceiverServiceException.message}")
-                    }
-                } catch (kinTransferException: SendKinServiceBase.KinTransferException) {
-                    //TODO notify the transaction bar of failed
-                    Log.d("###", "#### transfer failed tx id ${kinTransferException.senderAddress}")
-                    try {
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete
+                            = transferService?.transferKin(receiverAddress, amount, memo)!!
 
-                        //notify the receiver of the error
-                        ReceiveKinServiceBase.notifyTransactionFailed(baseContext, receiverPackage, kinTransferException.toString(), kinTransferException.senderAddress, receiverAddress, amount, memo)
-                    } catch (kinReceiverServiceException: ReceiveKinServiceBase.KinReceiverServiceException) {
-                        //TODO check if need to update the sender that receiver will not get the update
-                        Log.d("####", "#### error notify receiver of transaction failed ${kinReceiverServiceException.message}")
+                    //TODO need to let the transaction bar know that transaction has completed
+                    try {
+                        ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
+                                kinTransferComplete.senderAddress, receiverAddress, amount,
+                                kinTransferComplete.transactionId, memo)
+                    } catch (e: ServiceConfigurationException) {
+                        // TODO should the user also know that the receiver app is not notified ?
+                        Log.d(TAG, "Error notifying the receiver of transaction success ${e.message}")
+                        e.printStackTrace()
+                    }
+                } catch (e: SendKinServiceBase.KinTransferException) {
+                    //TODO need to let the transaction bar know that transaction has failed
+                    Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
+                    try {
+                        ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
+                                e.toString(), e.senderAddress, receiverAddress, amount, memo)
+                    } catch (e: ServiceConfigurationException) {
+                        // TODO should the user also know that the receiver app is not notified ?
+                        Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
+                        e.printStackTrace()
+
                     }
                 }
             }
@@ -101,29 +107,23 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         isBound = false
     }
 
-    override fun onServiceError(serviceNotFound: AppInfoPresenter.ServiceError) {
-        //TODO cant start service show error to user or developer
-    }
 
-    override fun bindToSendService(identifier: String?) {
+    override fun bindToSendService() {
         val intent = Intent()
-        var receiverPackageName = identifier
 
-        //TODO for testing change to local sample - REMOVE _ TESTING ONLY
-        receiverPackageName = packageName
-        intent.component = ComponentName(receiverPackageName, "$receiverPackageName.SendKinService")
-        intent.setPackage(receiverPackageName)
+        var senderPackageName = packageName
+        var serviceName = "SendKinService"
+        intent.component = ComponentName(senderPackageName, "$senderPackageName.$serviceName")
+        intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
         if (!resolveInfos.any()) {
-            presenter?.onServiceNotFound()
+            throw ServiceConfigurationException("$senderPackageName.$serviceName", "Service not found")
         }
-        if (resolveInfos.filter {
-                    it.serviceInfo.exported
-                }.any()) {
-            presenter?.onServiceShouldNotBeExported()
-        } else {
-            bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
+            throw ServiceConfigurationException("$senderPackageName.$serviceName", "Service should not be exported")
         }
+
+        bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     override fun onRequestAmountError() {
@@ -135,14 +135,17 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     override fun onRequestReceiverPublicAddressCanceled() {
+        Log.d(TAG, "onRequestReceiverPublicAddressCanceled")
     }
 
     override fun onRequestReceiverPublicAddressError(error: AppInfoPresenter.RequestReceiverPublicAddressError) {
         //TODO update user
+        Log.d(TAG, "onRequestReceiverPublicAddressError")
     }
 
     override fun onStartRequestReceiverPublicAddress() {
         //TODO show progress
+        Log.d(TAG, "onStartRequestReceiverPublicAddress")
     }
 
     override fun initViews(app: EcosystemApp?) {
@@ -175,10 +178,10 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     private fun updateBalance() {
         if (isBound) {
-            exceutorService.execute {
+            excecutorService.execute {
                 try {
                     transferService?.let {
-                        val currentBalance = it.currentBalance
+                        val currentBalance = it.currentBalance.toInt()
                         presenter?.updateBalance(currentBalance)
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
@@ -208,9 +211,4 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onDestroy()
     }
 
-//    override fun onStop() {
-//        super.onStop()
-//        unbindService(connection)
-//        isBound = false
-//    }
 }

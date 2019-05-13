@@ -34,7 +34,6 @@ class TransferManager(var activity: Activity?) {
         activity?.let {
             val packageManager = it.packageManager
             val intent = Intent()
-            intent.setPackage(applicationId)
             intent.component = ComponentName(applicationId, launchActivityFullPath)
             val resolveInfos = packageManager.queryIntentActivities(intent, 0)
             if (!resolveInfos.isEmpty()) {

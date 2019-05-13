@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
+import java.math.BigDecimal;
+
 public abstract class SendKinServiceBase extends Service {
 
     //Developer needs to implements
@@ -13,7 +15,8 @@ public abstract class SendKinServiceBase extends Service {
     public abstract @NonNull
     KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
 
-    public abstract int getCurrentBalance() throws BalanceException;
+    public abstract BigDecimal getCurrentBalance() throws BalanceException;
+
 
     public final IBinder binder = new KinTransferServiceBinder();
 
