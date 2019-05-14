@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
+import org.kinecosystem.appsdiscovery.base.Consts
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AmountChooserPresenter
 import org.kinecosystem.appsdiscovery.utils.load
 
@@ -23,14 +24,14 @@ class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
         if (appIconUrl.isNullOrBlank()) {
             finish()
         }
-        val balance = intent.getIntExtra(PARAM_BALANCE, 0)
+        val balance = intent.getIntExtra(PARAM_BALANCE, Consts.NO_BALANCE)
         setContentView(R.layout.amount_chooser_activity)
         presenter = AmountChooserPresenter(appIconUrl, balance)
         presenter?.onAttach(this)
     }
 
     override fun initViews(receiverAppIconUrl: String, balance: Int) {
-        if (balance == 0) {
+        if (balance == Consts.NO_BALANCE) {
             findViewById<TextView>(R.id.availableBalance).visibility = View.INVISIBLE
             findViewById<ImageView>(R.id.currency).visibility = View.INVISIBLE
             findViewById<TextView>(R.id.postBalance).visibility = View.INVISIBLE
