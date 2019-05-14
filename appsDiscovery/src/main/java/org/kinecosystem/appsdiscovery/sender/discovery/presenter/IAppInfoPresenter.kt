@@ -13,4 +13,6 @@ interface IAppInfoPresenter : IBasePresenter<IAppInfoView> {
     fun updateBalance(currentBalance: Int)
     fun onResume(context: Context)
     fun onActionButtonClicked()
+    fun onTransferComplete()
+    fun onTransferFailed()
 }

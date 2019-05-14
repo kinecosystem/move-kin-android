@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 
-class ReceiverAppStateView  @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
+class AppStateView  @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     private var listener: IActionClickListener? = null
     private var actionBtn:TextView

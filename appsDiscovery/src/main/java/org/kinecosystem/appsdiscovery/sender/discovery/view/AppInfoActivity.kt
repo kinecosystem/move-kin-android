@@ -11,15 +11,16 @@ import android.os.IBinder
 import android.os.Looper
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.Button
+import android.view.View
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.appsdiscovery.receiver.service.ServiceConfigurationException
 import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinNotifier
+import org.kinecosystem.appsdiscovery.receiver.service.ServiceConfigurationException
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
-import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
-import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
-import org.kinecosystem.appsdiscovery.sender.model.name
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferInfo
+import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsLocal
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
@@ -29,12 +30,15 @@ import org.kinecosystem.appsdiscovery.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
+
+
     private val TAG = AppInfoActivity.javaClass.simpleName
     private var presenter: AppInfoPresenter? = null
-    private var receiverAppStateView: ReceiverAppStateView? = null
+    private var appStateView: AppStateView? = null
+    private var transferBarView: TransferBarView? = null
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
-    private var excecutorService = Executors.newCachedThreadPool()
+    private var executorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -57,6 +61,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
         setContentView(R.layout.app_info_activity)
         val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        transferBarView = findViewById(R.id.transferBar)
         presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()
@@ -70,32 +75,32 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            excecutorService.execute {
+            executorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete
-                            = transferService?.transferKin(receiverAddress, amount, memo)!!
-
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
+                    presenter?.onTransferComplete()
                     //TODO need to let the transaction bar know that transaction has completed
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
                                 kinTransferComplete.senderAddress, receiverAddress, amount,
                                 kinTransferComplete.transactionId, memo)
+                        Log.d(TAG, "Receiver was notified of transaction complete")
                     } catch (e: ServiceConfigurationException) {
-                        // TODO should the user also know that the receiver app is not notified ?
-                        Log.d(TAG, "Error notifying the receiver of transaction success ${e.message}")
+                        Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
                         e.printStackTrace()
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     //TODO need to let the transaction bar know that transaction has failed
+                    presenter?.onTransferFailed()
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {
                         ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
                                 e.toString(), e.senderAddress, receiverAddress, amount, memo)
+                        Log.d(TAG, "Receiver was notified of transaction failed")
+
                     } catch (e: ServiceConfigurationException) {
-                        // TODO should the user also know that the receiver app is not notified ?
                         Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
                         e.printStackTrace()
-
                     }
                 }
             }
@@ -111,8 +116,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     override fun bindToSendService() {
         val intent = Intent()
 
-        var senderPackageName = packageName
-        var serviceName = "SendKinService"
+        val senderPackageName = packageName
+        val serviceName = "SendKinService"
         intent.component = ComponentName(senderPackageName, "$senderPackageName.$serviceName")
         intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
@@ -126,43 +131,53 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
-    override fun onRequestAmountError() {
-        //TODO update user
-    }
-
     override fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int) {
         startActivityForResult(AmountChooserActivity.getIntent(this, receiverAppIcon, balance), requestCode)
-    }
-
-    override fun onRequestReceiverPublicAddressCanceled() {
-        Log.d(TAG, "onRequestReceiverPublicAddressCanceled")
-    }
-
-    override fun onRequestReceiverPublicAddressError(error: AppInfoPresenter.RequestReceiverPublicAddressError) {
-        //TODO update user
-        Log.d(TAG, "onRequestReceiverPublicAddressError")
-    }
-
-    override fun onStartRequestReceiverPublicAddress() {
-        //TODO show progress
-        Log.d(TAG, "onStartRequestReceiverPublicAddress")
     }
 
     override fun initViews(app: EcosystemApp?) {
         if (app == null) {
             finish()
         }
-        findViewById<TextView>(R.id.name).setText(app?.name)
-        findViewById<TextView>(R.id.pkg).setText(app?.identifier)
-        findViewById<Button>(R.id.approveBtn).setOnClickListener {
-            presenter?.onRequestReceiverPublicAddress()
+        with(app?.metaData?.experienceData) {
+            findViewById<TextView>(R.id.howInfo).text = this?.howTo ?: ""
+            findViewById<TextView>(R.id.experienceName).text = this?.name ?: ""
+            findViewById<TextView>(R.id.experienceInfo).text = this?.about ?: ""
         }
-        receiverAppStateView = findViewById(R.id.receiver_app_state)
-        receiverAppStateView?.setListener(object : ReceiverAppStateView.IActionClickListener {
+        findViewById<TextView>(R.id.byApp).text = resources.getString(R.string.by_app, app?.name)
+        findViewById<TextView>(R.id.aboutAppTitle).text = resources.getString(R.string.about_app, app?.name)
+        findViewById<TextView>(R.id.aboutAppInfo).text = app?.metaData?.about
+
+        findViewById<View>(R.id.headerView).setBackgroundColor(app?.cardColor!!)
+        findViewById<TextView>(R.id.category).text = app.category
+
+        //findViewById<ImageView>(R.id.appIcon).load(app.iconUrl)
+        //findViewById<ImageView>(R.id.appBigIcon).load(app.iconUrl)
+
+        with(findViewById<TextView>(R.id.actionText)) {
+            setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
+            setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
+            typeface = org.kinecosystem.appsdiscovery.utils.TextUtils.getFontTypeForType(context, app.cardFontName)
+            setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
+            text = app.cardTitle
+        }
+        appStateView = findViewById(R.id.appState)
+        appStateView?.setListener(object : AppStateView.IActionClickListener {
             override fun onActionButtonClicked() {
                 presenter?.onActionButtonClicked()
+
+                //            presenter?.onRequestReceiverPublicAddress()
             }
         })
+
+        app.identifier?.let {
+            transferBarView?.update(TransferInfo("", app.iconUrl, app.name, it, 50))
+
+        }
+    }
+
+    override fun updateTransferStatus(status: TransferBarView.TransferStatus) {
+        transferBarView?.update(status)
     }
 
 
@@ -178,7 +193,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     private fun updateBalance() {
         if (isBound) {
-            excecutorService.execute {
+            executorService.execute {
                 try {
                     transferService?.let {
                         val currentBalance = it.currentBalance.toInt()
@@ -196,8 +211,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         navigateToUrl(downloadUrl)
     }
 
-    override fun updateAppState(state: ReceiverAppStateView.State) {
-        receiverAppStateView?.update(state)
+    override fun updateAppState(state: AppStateView.State) {
+        appStateView?.update(state)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

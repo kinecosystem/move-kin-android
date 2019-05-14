@@ -17,4 +17,11 @@
     <string name="discover_title">Kin is now across apps!</string>
     <string name="discover_title_no_data">Oh… Something isn’t working</string>
     <string name="discover_subtitle_no_data">An unknown error occurred. Please close the page and try again later.</string>
+    <string name="by_app">By %s</string>
+    <string name="about_app">About %s</string>
+    <string name="about_experience">About Experience</string>
+    <string name="how_it_works">How it works</string>
+    <string name="close">close</string>
+    <string name="transfer_failed_error">faileddd</string>
+    <string name="go_to_app">go to app</string>
 </resources>

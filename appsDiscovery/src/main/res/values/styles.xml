@@ -48,7 +48,17 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="KinTextMedium.Dark.Header">
+        <item name="android:textSize">@dimen/text_regular_size</item>
+    </style>
 
+    <style name="KinTextRegular.Dark.Body">
+        <item name="android:textSize">@dimen/text_regular_size</item>
+    </style>
+
+    <style name="AppTextInfoBody" parent="KinTextRegular.Dark.Body">
+        <item name="android:lineSpacingExtra">6sp</item>
+    </style>
     <style name="KinAlertText.Title">
         <item name="android:fontFamily">@fonts/sailec_medium</item>
     </style>

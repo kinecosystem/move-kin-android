@@ -6,6 +6,15 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
+    <View
+        android:id="@+id/delimiterInfo"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="#e7e7e7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/title"
         style="@style/KinTextRegular.Dark"
