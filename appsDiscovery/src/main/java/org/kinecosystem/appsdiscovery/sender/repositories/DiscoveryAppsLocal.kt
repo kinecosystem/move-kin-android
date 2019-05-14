@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import org.kinecosystem.appsdiscovery.base.Consts
 import org.kinecosystem.appsdiscovery.base.LocalStore
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 
@@ -43,7 +44,7 @@ class DiscoveryAppsLocal(context: Context) {
 
     var currentBalance: Int
         set(balance) = localStore.updateInt(CURRENT_BALANCE, balance)
-        get() = localStore.getInt(CURRENT_BALANCE, 0)
+        get() = localStore.getInt(CURRENT_BALANCE, Consts.NO_BALANCE)
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>>) {
         val apps = localStore.getString(APPS_DISCOVERY_KEY, "")

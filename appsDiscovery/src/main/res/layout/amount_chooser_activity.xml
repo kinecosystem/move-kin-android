@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    >
+    android:background="@color/white">
 
     <EditText
         android:id="@+id/editTextAmount"
@@ -13,25 +12,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:ems="10"
+        android:digits="0123456789"
         android:inputType="number"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
-
-    <Button
-        android:id="@+id/send00"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="send"
-        style="@style/KinTextRegular.Dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAmount"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/close_x"
@@ -42,52 +29,81 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/kin_x_close_dark" />
 
+    <TextView
+        android:id="@+id/to"
+        style="@style/KinTextRegular.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:text="Send Kin to"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/close_x"
+        app:layout_constraintEnd_toStartOf="@+id/appIcon"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/close_x"
+        app:layout_constraintStart_toStartOf="@+id/close_x"
+        app:layout_constraintTop_toTopOf="@+id/close_x" />
 
     <ImageView
         android:id="@+id/appIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/close_x"
-        />
-
-    <TextView
-        android:id="@+id/to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:text="to"
-        android:textSize="16sp"
-        style="@style/KinTextRegular.Dark"
-        app:layout_constraintBottom_toBottomOf="@+id/appIcon"
-        app:layout_constraintStart_toEndOf="@+id/appIcon"
-        app:layout_constraintTop_toTopOf="@+id/appIcon" />
-
-    <TextView
-        android:id="@+id/appName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        style="@style/KinTextMedium.Dark"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/appIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/to"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/to"
-        app:layout_constraintTop_toTopOf="@+id/appIcon" />
-
-
+        app:layout_constraintTop_toTopOf="@+id/to" />
 
     <View
-        android:id="@+id/delim"
-        android:layout_width="0dp"
+        android:id="@+id/delimiter"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="10dp"
-        android:background="#a6a6a6"
+        android:background="@color/gray_light"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appIcon" />
+        app:layout_constraintTop_toBottomOf="@+id/close_x" />
+
+    <TextView
+        android:id="@+id/postBalance"
+        style="@style/KinTextRegular.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="24dp"
+        android:text="Total Kin available"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delimiter" />
+
+    <ImageView
+        android:id="@+id/currency"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/postBalance"
+        app:layout_constraintStart_toEndOf="@+id/postBalance"
+        app:layout_constraintTop_toTopOf="@+id/postBalance"
+        app:srcCompat="@drawable/kin_currency_purple" />
+
+    <TextView
+        android:id="@+id/availableBalance"
+        style="@style/KinTextMedium.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:textColor="@color/purple"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/currency"
+        app:layout_constraintStart_toEndOf="@+id/currency"
+        app:layout_constraintTop_toTopOf="@+id/currency"
+        tools:text="15000" />
 
 
     <EditText
@@ -95,24 +111,24 @@
         style="@style/KinTextMedium.Dark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@null"
+        android:cursorVisible="false"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:focusedByDefault="true"
         android:gravity="center_horizontal"
         android:hint="0"
         android:inputType="number"
-        android:letterSpacing="-0.02"
         android:textColor="@color/purple"
         android:textColorHint="@color/purple"
         android:textSize="70sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/send"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/delim"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/postBalance" />
 
     <ImageView
         android:id="@+id/kin_coin"
@@ -123,37 +139,23 @@
         app:layout_constraintBottom_toBottomOf="@+id/amount"
         app:layout_constraintEnd_toStartOf="@+id/amount"
         app:layout_constraintTop_toTopOf="@+id/amount"
-        app:srcCompat="@drawable/white_small_kin_logo" />
+        app:srcCompat="@drawable/kin_currency_purple" />
 
     <TextView
         android:id="@+id/send"
+        style="@style/KinTextRegular.Dark"
         android:layout_width="0dp"
         android:layout_height="68dp"
+        android:background="@drawable/kin_button_rectangle_bg"
         android:gravity="center"
         android:letterSpacing="0.06"
         android:text="send kin"
-        android:textSize="18sp"
-        android:clickable="true"
-        android:background="@drawable/kin_button_rectangle_bg"
-        style="@style/KinTextRegular.Dark"
         android:textColor="@drawable/kin_button_text_colors"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/availableBalance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="8dp"
-        style="@style/KinTextRegular.Dark"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/delim"
-        tools:text="15 kin available"/>
-
-
 
 
 </android.support.constraint.ConstraintLayout>
