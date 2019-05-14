@@ -6,11 +6,13 @@ import android.app.Application;
 import org.kinecosystem.sampleSenderApp.sampleWallet.SampleWallet;
 
 public class SenderApplication extends Application {
-
+    private static final String APP_ID = "sndr";
     private SampleWallet sampleWallet;
 
-    public void setSampleWallet(SampleWallet wallet){
-        sampleWallet = wallet;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        sampleWallet = new SampleWallet(this, APP_ID);
     }
 
     public SampleWallet getSampleWallet(){

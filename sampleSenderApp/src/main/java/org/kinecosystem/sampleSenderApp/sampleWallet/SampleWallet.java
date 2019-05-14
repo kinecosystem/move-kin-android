@@ -2,6 +2,7 @@ package org.kinecosystem.sampleSenderApp.sampleWallet;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import kin.sdk.Environment;
 import kin.sdk.KinAccount;
@@ -14,8 +15,10 @@ public class SampleWallet {
 
     private KinAccount account;
     private KinClient kinClient;
+    private SharedPreferences sharedPreferences;
 
     public SampleWallet(Context context, String appId) {
+        sharedPreferences = context.getSharedPreferences("SampleSender", Context.MODE_PRIVATE);
         kinClient = new KinClient(context,
                 new Environment(SDK_TEST_NETWORK_URL, SDK_TEST_NETWORK_ID), appId);
         if (kinClient.hasAccount()) {
@@ -23,26 +26,43 @@ public class SampleWallet {
         }
     }
 
-    public boolean hasAccount() {
-        return account != null;
+    public boolean hasActiveAccount() {
+        return account != null && isAccountCreated();
     }
 
     public KinAccount getAccount() {
         return account;
     }
 
-    public KinClient getKinClient() {
-        return kinClient;
-    }
-
     public void createAccount(OnBoarding.Callbacks callbacks) {
         try {
             account = kinClient.addAccount();
             OnBoarding onboarding = new OnBoarding();
-            onboarding.onBoard(account, callbacks);
+            onboarding.onBoard(account, new OnBoarding.Callbacks() {
+                @Override
+                public void onSuccess() {
+                    setAccountCreated();
+                    callbacks.onSuccess();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    callbacks.onFailure(e);
+                }
+            });
         } catch (CreateAccountException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean isAccountCreated() {
+        return sharedPreferences.getBoolean("account_created", false);
+    }
+
+    private void setAccountCreated() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("account_created", true);
+        editor.apply();
     }
 }

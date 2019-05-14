@@ -6,7 +6,7 @@ public interface IAccountInfoResponder {
 
     boolean init(@NonNull final String publicAddress);
 
-    void respondError();
+    void respondError(String errorMessage);
 
     void respondCancel();
 

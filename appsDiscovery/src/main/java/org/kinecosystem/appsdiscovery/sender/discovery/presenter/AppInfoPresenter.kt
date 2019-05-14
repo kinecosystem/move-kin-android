@@ -94,10 +94,12 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     private fun parsePublicAddressData(requestCode: Int, resultCode: Int, intent: Intent?) {
         transferManager.processResponse(requestCode, resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
+                Log.d("AppInfoPresenter", "Operation cancelled, no public address received")
                 view?.onRequestReceiverPublicAddressCanceled()
             }
 
             override fun onError(error: String) {
+                Log.d("AppInfoPresenter", "Error retrieving public address, error message "+error)
                 view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.BadDataReceived)
 
             }

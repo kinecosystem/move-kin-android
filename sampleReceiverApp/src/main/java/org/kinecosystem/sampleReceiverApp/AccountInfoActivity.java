@@ -9,7 +9,7 @@ public class AccountInfoActivity extends AccountInfoActivityBase {
     @Override
     public String getPublicAddress() {
         SampleWallet sampleWallet = ((ReceiverApplication)getApplicationContext()).getSampleWallet();
-        if (sampleWallet != null && sampleWallet.hasAccount() ) {
+        if (sampleWallet != null && sampleWallet.hasActiveAccount() ) {
             return sampleWallet.getAccount().getPublicAddress();
         }
         return null;

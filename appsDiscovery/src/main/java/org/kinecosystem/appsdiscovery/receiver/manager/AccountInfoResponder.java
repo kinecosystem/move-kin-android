@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
 
+import org.kinecosystem.appsdiscovery.TransferIntent;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +17,6 @@ import java.io.IOException;
 
 
 public class AccountInfoResponder implements IAccountInfoResponder {
-    private static final String EXTRA_HAS_ERROR = "EXTRA_HAS_ERROR";
     private static final String FILE_NAME = "accountInfo.txt";
     private static final String FILE_PROVIDER_NAME = "KinTransferAccountInfoFileProvider";
     private static final String FILE_PROVIDER_DIR_NAME = "kintransfer_account_info";
@@ -60,14 +61,14 @@ public class AccountInfoResponder implements IAccountInfoResponder {
     }
 
     //Can be called anytime (before init returns), when there is some error
-    public void respondError() {
-        respondCancel(true);
+    public void respondError(String errorMessage) {
+        respondCancel(errorMessage);
     }
 
 
     //Can be called anytime (before init returns), when user decline transfer
     public void respondCancel() {
-        respondCancel(false);
+        respondCancel(null);
     }
 
     //Can be called only after init returns true, hence file is not null
@@ -82,10 +83,11 @@ public class AccountInfoResponder implements IAccountInfoResponder {
         }
     }
 
-    private void respondCancel(boolean hasError) {
+    private void respondCancel(String errorMessage) {
         Intent intent = new Intent();
-        if (hasError) {
-            intent.putExtra(EXTRA_HAS_ERROR, hasError);
+        if (errorMessage != null) {
+            intent.putExtra(TransferIntent.EXTRA_HAS_ERROR, true);
+            intent.putExtra(TransferIntent.EXTRA_ERROR_MESSAGE, errorMessage);
         }
         if (activity != null) {
             activity.setResult(Activity.RESULT_CANCELED, intent);
