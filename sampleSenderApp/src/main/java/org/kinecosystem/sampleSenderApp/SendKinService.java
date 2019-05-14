@@ -18,7 +18,7 @@ public class SendKinService extends SendKinServiceBase {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
         String sourceAddress = "None";
 
-        if (!sampleWallet.hasAccount()) {
+        if (!sampleWallet.hasActiveAccount()) {
 
             throw new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized");
         }
@@ -51,7 +51,7 @@ public class SendKinService extends SendKinServiceBase {
 
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
 
-        if (!sampleWallet.hasAccount()) {
+        if (!sampleWallet.hasActiveAccount()) {
 
             throw new BalanceException("Cannot retrieve Kin balance. Account not initialized");
         }

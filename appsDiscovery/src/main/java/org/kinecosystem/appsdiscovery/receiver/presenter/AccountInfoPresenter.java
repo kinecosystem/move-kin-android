@@ -25,11 +25,17 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     @interface TaskState {
     }
 
+    private static class TaskResponse {
+        String errorMessage = null;
+        @TaskState
+        int taskState = TASK_STATE_UNDEFINED;
+    }
+
     private IAccountInfoResponder accountInfoResponder;
     private AccountInfoAsyncTask asyncTask;
     private boolean isPaused = false;
-    @TaskState
-    private int taskState = TASK_STATE_UNDEFINED;
+    private TaskResponse taskResponse = new TaskResponse();
+
 
     public AccountInfoPresenter() {
     }
@@ -55,7 +61,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
                 return true;
             }
         }
-        onError();
+        onError("Unable to initialize confirmation activity. Incoming intent was null or EXTRA_SOURCE_APP_NAME missing or activity killed");
         return false;
     }
 
@@ -118,17 +124,17 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
         }
     }
 
-    private void onError() {
+    private void onError(String errorMessage) {
         if (accountInfoResponder != null) {
-            accountInfoResponder.respondError();
+            accountInfoResponder.respondError(errorMessage);
             if (getView() != null) {
                 getView().close();
             }
         }
     }
 
-    private void onTaskComplete(Integer state) {
-        taskState = state;
+    private void onTaskComplete(TaskResponse response) {
+        taskResponse = response;
         if (!isPaused) {
             checkTaskState();
         }
@@ -136,18 +142,19 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
 
     private void checkTaskState() {
         IAccountInfoView accountInfoView = getView();
+        int taskState = taskResponse.taskState;
         if (taskState == TASK_STATE_SUCCESS) {
             if (accountInfoView != null) {
                 accountInfoView.enabledAgreeButton();
             }
-            taskState = TASK_STATE_UNDEFINED;
+            taskResponse.taskState = TASK_STATE_UNDEFINED;
         } else if (taskState == TASK_STATE_FAILURE) {
-            onError();
-            taskState = TASK_STATE_UNDEFINED;
+            onError(taskResponse.errorMessage);
+            taskResponse.taskState = TASK_STATE_UNDEFINED;
         }
     }
 
-    private class AccountInfoAsyncTask extends AsyncTask<Void, Void, Integer> {
+    private class AccountInfoAsyncTask extends AsyncTask<Void, Void, TaskResponse> {
         private IAccountInfo accountInfo;
 
         AccountInfoAsyncTask(IAccountInfo accountInfo) {
@@ -155,24 +162,29 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
         }
 
         @Override
-        protected Integer doInBackground(Void... args) {
-            @TaskState int state = TASK_STATE_FAILURE;
+        protected TaskResponse doInBackground(Void... args) {
+            TaskResponse response = new TaskResponse();
             String address = null;
+
             if (accountInfo != null) {
                 address = accountInfo.getPublicAddress();
             }
             if (!TextUtils.isEmpty(address) && accountInfoResponder != null) {
                 if (accountInfoResponder.init(address)) {
-                    state = TASK_STATE_SUCCESS;
+                    response.taskState = TASK_STATE_SUCCESS;
                 }
+            } else {
+                response.taskState = TASK_STATE_FAILURE;
+                response.errorMessage = "Unable to retrieve or initialize responder with kin account public address. " +
+                        "Address=" + address + ", accountInfo=" + accountInfo + ", accountInfoResponder=" + accountInfoResponder;
             }
-            return state;
+            return response;
         }
 
         @Override
-        protected void onPostExecute(Integer state) {
-            super.onPostExecute(state);
-            onTaskComplete(state);
+        protected void onPostExecute(TaskResponse response) {
+            super.onPostExecute(response);
+            onTaskComplete(response);
         }
 
         @Override

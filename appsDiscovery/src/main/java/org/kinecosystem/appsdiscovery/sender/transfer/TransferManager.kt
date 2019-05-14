@@ -3,15 +3,13 @@ package org.kinecosystem.appsdiscovery.sender.transfer
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
+import android.util.Log
+import org.kinecosystem.appsdiscovery.TransferIntent
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
 class TransferManager(var activity: Activity?) {
-    private val REQUEST_CODE = 77
-    private val EXTRA_SOURCE_APP_NAME = "EXTRA_SOURCE_APP_NAME"
-    private val EXTRA_HAS_ERROR = "EXTRA_HAS_ERROR"
-    private val EXTRA_ERROR_MESSAGE = "EXTRA_ERROR_MESSAGE"
 
     interface AccountInfoResponseListener {
         fun onCancel()
@@ -40,9 +38,9 @@ class TransferManager(var activity: Activity?) {
                 val exported = resolveInfos[0].activityInfo.exported
                 if (exported) {
                     val appName = it.applicationInfo.loadLabel(packageManager).toString()
-                    intent.putExtra(EXTRA_SOURCE_APP_NAME, appName)
+                    intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
                     try {
-                        it.startActivityForResult(intent, REQUEST_CODE)
+                        it.startActivityForResult(intent, TransferIntent.REQUEST_CODE)
                     } catch (e: Exception) {
                         return false
                     }
@@ -68,7 +66,7 @@ class TransferManager(var activity: Activity?) {
             intent: Intent?,
             accountInfoResponseListener: AccountInfoResponseListener
     ) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == TransferIntent.REQUEST_CODE) {
             if (intent != null) {
                 if (resultCode == Activity.RESULT_OK) {
                     processResultOk(intent, accountInfoResponseListener)
@@ -116,8 +114,8 @@ class TransferManager(var activity: Activity?) {
 
     private fun processResultCanceled(intent: Intent?, accountInfoResponseListener: AccountInfoResponseListener) {
         if (intent != null) {
-            if (intent.getBooleanExtra(EXTRA_HAS_ERROR, false)) {
-                accountInfoResponseListener.onError(intent.getStringExtra(EXTRA_ERROR_MESSAGE))
+            if (intent.getBooleanExtra(TransferIntent.EXTRA_HAS_ERROR, false)) {
+                accountInfoResponseListener.onError(intent.getStringExtra(TransferIntent.EXTRA_ERROR_MESSAGE))
             } else {
                 accountInfoResponseListener.onCancel()
             }

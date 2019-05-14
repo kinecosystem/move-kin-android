@@ -1,9 +1,8 @@
 package org.kinecosystem.sampleReceiverApp;
 
-import android.os.PersistableBundle;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.widget.TextView;
 
 import org.kinecosystem.sampleReceiverApp.sampleWallet.OnBoarding;
@@ -14,8 +13,6 @@ import kin.utils.Request;
 import kin.utils.ResultCallback;
 
 public class ReceiverMainActivity extends AppCompatActivity {
-    private static final String APP_ID = "recv";
-    private SampleWallet sampleWallet;
     private boolean activityCreated = false;
 
     @Override
@@ -23,19 +20,19 @@ public class ReceiverMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sampleWallet = new SampleWallet(this, APP_ID);
-        ((ReceiverApplication) getApplicationContext()).setSampleWallet(sampleWallet);
-
         activityCreated = true;
 
         initAccountAndViews();
     }
 
+    private SampleWallet getSampleWallet() {
+        return ((ReceiverApplication) getApplicationContext()).getSampleWallet();
+    }
 
     private void initAccountAndViews() {
-
+        SampleWallet sampleWallet = getSampleWallet();
         TextView addressView = findViewById((R.id.publicAddressView));
-        if (sampleWallet.hasAccount()) {
+        if (sampleWallet.hasActiveAccount()) {
             String text = getString(R.string.public_address, sampleWallet.getAccount().getPublicAddress());
             addressView.setText(text);
             initBalance();
@@ -71,7 +68,7 @@ public class ReceiverMainActivity extends AppCompatActivity {
 
     private void updateBalance(TextView balanceView) {
         balanceView.setText(R.string.update_balance);
-        Request<Balance> balanceRequest = sampleWallet.getAccount().getBalance();
+        Request<Balance> balanceRequest = getSampleWallet().getAccount().getBalance();
         balanceRequest.run(new ResultCallback<Balance>() {
             @Override
             public void onResult(Balance result) {
