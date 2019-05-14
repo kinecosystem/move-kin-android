@@ -6,7 +6,8 @@ import android.content.Intent
 import android.util.Log
 import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
-import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.ReceiverAppStateView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
@@ -14,9 +15,10 @@ import org.kinecosystem.appsdiscovery.utils.isAppInstalled
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
+
     private val AmountChooserRequestCode = 100
     private val memoDelim = "CrossApps-"
-    private var appState: ReceiverAppStateView.State = ReceiverAppStateView.State.ReceiveKinNotSupported
+    private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
 
@@ -31,12 +33,12 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     override fun onResume(context: Context) {
         app?.identifier?.let {
             appState = if (!context.isAppInstalled(it)) {
-                ReceiverAppStateView.State.NotInstalled
+                AppStateView.State.NotInstalled
             } else {
                 if (app?.canTransferKin!!) {
-                    ReceiverAppStateView.State.ReceiveKinSupported
+                    AppStateView.State.ReceiveKinSupported
                 } else {
-                    ReceiverAppStateView.State.ReceiveKinNotSupported
+                    AppStateView.State.ReceiveKinNotSupported
                 }
             }
             view?.updateAppState(appState)
@@ -45,10 +47,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
 
     override fun onActionButtonClicked() {
         when (appState) {
-            ReceiverAppStateView.State.ReceiveKinSupported -> {
-                view?.onStartRequestReceiverPublicAddress()
+            AppStateView.State.ReceiveKinSupported -> {
+                onRequestReceiverPublicAddress()
             }
-            ReceiverAppStateView.State.NotInstalled -> {
+            AppStateView.State.NotInstalled -> {
                 view?.navigateTo(app?.downloadUrl!!)
             }
         }
@@ -58,11 +60,11 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         view?.unbindToSendService()
     }
 
-    enum class RequestReceiverPublicAddressError {
-        NotStarted,
-        NoPathInfo,
-        BadDataReceived
-    }
+//    enum class RequestReceiverPublicAddressError {
+//        NotStarted,
+//        NoPathInfo,
+//        BadDataReceived
+//    }
 
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == AmountChooserRequestCode) {
@@ -78,7 +80,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 val amountToSend = it.getIntExtra(AmountChooserPresenter.PARAM_AMOUNT, 0)
                 sendKin(amountToSend)
             } ?: kotlin.run {
-                view?.onRequestAmountError()
+                view?.updateTransferStatus(TransferBarView.TransferStatus.FailedAmountNotFound)
             }
         }
     }
@@ -95,23 +97,32 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         transferManager.processResponse(requestCode, resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
                 Log.d("AppInfoPresenter", "Operation cancelled, no public address received")
-                view?.onRequestReceiverPublicAddressCanceled()
+                view?.updateTransferStatus(TransferBarView.TransferStatus.Canceled)
             }
 
             override fun onError(error: String) {
                 Log.d("AppInfoPresenter", "Error retrieving public address, error message "+error)
-                view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.BadDataReceived)
+                view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverAddressNotFound)
+
 
             }
 
             override fun onAddressReceived(address: String) {
                 repository.storeReceiverAppPublicAddress(address)
-                Log.d("####", "#### got address onAddressReceived $address")
+                Log.d("AppInfoPresenter", "got address onAddressReceived $address")
                 app?.iconUrl?.let {
                     view?.startAmountChooserActivity(it, repository.getCurrentBalance(), AmountChooserRequestCode)
                 }
             }
         })
+    }
+
+    override fun onTransferFailed() {
+        view?.updateTransferStatus(TransferBarView.TransferStatus.Failed)
+    }
+
+    override fun onTransferComplete() {
+        view?.updateTransferStatus(TransferBarView.TransferStatus.Complete)
     }
 
     override fun onRequestReceiverPublicAddress() {
@@ -120,15 +131,21 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             app?.identifier?.let { receiverPkg ->
                 val started = transferManager.startTransferRequestActivity(receiverPkg, activityPath)
                 if (!started) {
-                    view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NotStarted)
+                    //TODO
+                    view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverAddressNotFound)
+
                 } else {
-                    view?.onStartRequestReceiverPublicAddress()
+                    //view?.onStartRequestReceiverPublicAddress()
+                    view?.updateTransferStatus(TransferBarView.TransferStatus.Started)
+
                 }
             } ?: kotlin.run {
-                view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NoPathInfo)
+                view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverAddressNotFound)
+
             }
         } ?: kotlin.run {
-            view?.onRequestReceiverPublicAddressError(RequestReceiverPublicAddressError.NoPathInfo)
+            view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverAddressNotFound)
+
         }
     }
 
