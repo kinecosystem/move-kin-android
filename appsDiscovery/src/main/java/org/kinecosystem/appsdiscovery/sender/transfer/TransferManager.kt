@@ -115,7 +115,10 @@ class TransferManager(var activity: Activity?) {
     private fun processResultCanceled(intent: Intent?, accountInfoResponseListener: AccountInfoResponseListener) {
         if (intent != null) {
             if (intent.getBooleanExtra(TransferIntent.EXTRA_HAS_ERROR, false)) {
-                accountInfoResponseListener.onError(intent.getStringExtra(TransferIntent.EXTRA_ERROR_MESSAGE))
+                val errorMessage = if (intent.hasExtra(TransferIntent.EXTRA_ERROR_MESSAGE)) {
+                    intent.getStringExtra(TransferIntent.EXTRA_ERROR_MESSAGE)
+                } else ""
+                accountInfoResponseListener.onError(errorMessage)
             } else {
                 accountInfoResponseListener.onCancel()
             }
