@@ -75,6 +75,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun update(transferInfo: TransferInfo) {
+        //TODO update text
     }
 
     override fun update(status: TransferStatus) {

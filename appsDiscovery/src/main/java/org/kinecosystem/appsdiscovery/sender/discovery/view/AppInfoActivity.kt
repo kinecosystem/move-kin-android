@@ -10,13 +10,17 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.appsdiscovery.receiver.service.ServiceConfigurationException
 import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresenter
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferInfo
@@ -26,16 +30,16 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import org.kinecosystem.appsdiscovery.utils.load
 import org.kinecosystem.appsdiscovery.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
-
-
     private val TAG = AppInfoActivity.javaClass.simpleName
     private var presenter: AppInfoPresenter? = null
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
+    private var list:RecyclerView? = null
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
@@ -60,11 +64,19 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             finish()
         }
         setContentView(R.layout.app_info_activity)
+        list = findViewById(R.id.listImages)
+        list?.isFocusable = false
+        list?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        findViewById<ImageView>(R.id.closeX).setOnClickListener {
+            finish()
+        }
         val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
         transferBarView = findViewById(R.id.transferBar)
         presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()
+
+
     }
 
     override fun onResume() {
@@ -151,8 +163,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<View>(R.id.headerView).setBackgroundColor(app?.cardColor!!)
         findViewById<TextView>(R.id.category).text = app.category
 
-        //findViewById<ImageView>(R.id.appIcon).load(app.iconUrl)
-        //findViewById<ImageView>(R.id.appBigIcon).load(app.iconUrl)
+        findViewById<ImageView>(R.id.icon).load(app.iconUrl)
+        findViewById<ImageView>(R.id.appBigIcon).load(app.iconUrl)
 
         with(findViewById<TextView>(R.id.actionText)) {
             setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
@@ -165,16 +177,17 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         appStateView?.setListener(object : AppStateView.IActionClickListener {
             override fun onActionButtonClicked() {
                 presenter?.onActionButtonClicked()
-
-                //            presenter?.onRequestReceiverPublicAddress()
             }
         })
-
-        app.identifier?.let {
-            transferBarView?.update(TransferInfo("", app.iconUrl, app.name, it, 50))
-
+        app.metaData?.images?.let {
+            list?.adapter = AppImagesListAdapter(this, it)
         }
     }
+
+    override fun initTransfersInfo(transferInfo: TransferInfo) {
+        transferBarView?.update(transferInfo)
+    }
+
 
     override fun updateTransferStatus(status: TransferBarView.TransferStatus) {
         transferBarView?.update(status)

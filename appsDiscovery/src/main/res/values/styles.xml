@@ -25,7 +25,7 @@
     </style>
 
     <style name="KinTextMedium" parent="TextAppearance.AppCompat">
-        <item name="android:fontFamily">@fonts/sailec_medium</item>
+        <item name="android:fontFamily">@font/sailec_medium</item>
     </style>
 
     <style name="KinTextMedium.Dark">
@@ -37,7 +37,7 @@
     </style>
 
     <style name="KinTextRegular" parent="TextAppearance.AppCompat">
-        <item name="android:fontFamily">@fonts/sailec</item>
+        <item name="android:fontFamily">@font/sailec</item>
     </style>
 
     <style name="KinTextRegular.Dark">
@@ -60,11 +60,11 @@
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
     <style name="KinAlertText.Title">
-        <item name="android:fontFamily">@fonts/sailec_medium</item>
+        <item name="android:fontFamily">@font/sailec_medium</item>
     </style>
 
     <style name="KinAlertText.Subtitle">
-        <item name="android:fontFamily">@fonts/sailec</item>
+        <item name="android:fontFamily">@font/sailec</item>
     </style>
 
 </resources>

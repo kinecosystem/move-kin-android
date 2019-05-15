@@ -24,4 +24,6 @@
     <string name="close">close</string>
     <string name="transfer_failed_error">faileddd</string>
     <string name="go_to_app">go to app</string>
+    <string name="send_kin">send kin</string>
+    <string name="total_kin_available">Total Kin available</string>
 </resources>
