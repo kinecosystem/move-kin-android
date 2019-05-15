@@ -23,6 +23,7 @@
         android:layout_marginStart="18dp"
         android:layout_marginLeft="18dp"
         android:textSize="12sp"
+        android:lineSpacingExtra="6sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/actionBtn"
         app:layout_constraintHorizontal_bias="0.5"

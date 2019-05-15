@@ -57,7 +57,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
             override fun onGlobalLayout() {
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
                 hideY = y + height * 2
-                //showY = y
+                showY = y
 
                 // y = hideY
                 requestLayout()
