@@ -49,7 +49,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             val binder = service as SendKinServiceBase.KinTransferServiceBinder
             transferService = binder.service
             isBound = true
-            requestBalance()
+            requestCurrentBalance()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -91,7 +91,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
                     presenter?.onTransferComplete()
-                    //TODO need to let the transaction bar know that transaction has completed
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
                                 kinTransferComplete.senderAddress, receiverAddress, amount,
@@ -102,7 +101,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         e.printStackTrace()
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    //TODO need to let the transaction bar know that transaction has failed
                     presenter?.onTransferFailed()
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {
@@ -193,7 +191,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         transferBarView?.updateStatus(status)
     }
 
-    override fun requestBalance() {
+    override fun requestCurrentBalance() {
         if (isBound) {
             executorService.execute {
                 try {
@@ -202,8 +200,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         presenter?.updateBalance(currentBalance)
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
-                    //TODO show error retrieve balance
-                    Log.d("####", "#### balanceException ${balanceException.message}")
+                    //ignore if we dont get balance - user can send amount with no limit but will fail if it exceeds his balance
+                    Log.d(TAG, "balanceException ${balanceException.message}")
                 }
             }
         }

@@ -24,6 +24,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         Started,
         Complete,
         Failed,
+        Timeout,
         FailedReceiverError,
         FailedConnectionError
     }
@@ -104,6 +105,14 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_failed_error)
+                        transferFailedGroup.visibility = View.VISIBLE
+                    }
+                }
+                TransferStatus.Timeout -> {
+                    hideAndShow {
+                        transferringGroup.visibility = View.GONE
+                        transferCompleteGroup.visibility = View.GONE
+                        errorTitle.text = context.getString(R.string.transfer_failed_timeout)
                         transferFailedGroup.visibility = View.VISIBLE
                     }
                 }
