@@ -45,7 +45,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:text="Show Alert"
+        android:text="@string/show_alert"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/discoverBtn" />
 </android.support.constraint.ConstraintLayout>
