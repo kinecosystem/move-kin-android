@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/KinTextMedium.Dark"
+        style="@style/KinTextMedium.Dark.Header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"
@@ -29,7 +29,6 @@
         android:lineSpacingExtra="8sp"
         android:text="@string/discover_title"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +81,7 @@
 
     <TextView
         android:id="@+id/titleNoData"
-        style="@style/KinTextMedium.Dark"
+        style="@style/KinTextMedium.Dark.Header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"
@@ -94,7 +93,6 @@
         android:lineSpacingExtra="8sp"
         android:text="@string/discover_title_no_data"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

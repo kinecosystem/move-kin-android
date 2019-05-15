@@ -8,6 +8,7 @@ import org.kinecosystem.appsdiscovery.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
+import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferInfo
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
@@ -86,6 +87,11 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     }
 
     private fun sendKin(amountToSend: Int) {
+        app?.let {
+            it.identifier?.let { pkg ->
+                view?.initTransfersInfo(TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend))
+            }
+        }
         val memo = "$memoDelim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
             view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)

@@ -82,7 +82,8 @@
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="9dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/experienceName" />
+                app:layout_constraintTop_toBottomOf="@+id/experienceName"
+                />
 
             <TextView
                 android:id="@+id/byApp"
@@ -221,7 +222,7 @@
         android:id="@+id/appState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="200dp"
+        android:layout_marginBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
@@ -229,9 +230,10 @@
         android:id="@+id/transferBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="80dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:visibility="gone"/>
 
 
 </android.support.constraint.ConstraintLayout>
