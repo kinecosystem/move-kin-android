@@ -1,6 +1,6 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 
-import org.kinecosystem.appsdiscovery.base.BasePresenter
+import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.IAppsDiscoveryListView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository

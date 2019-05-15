@@ -2,8 +2,8 @@ package org.kinecosystem.appsdiscovery.sender.model
 
 import android.graphics.Color
 import com.google.gson.annotations.SerializedName
-import org.kinecosystem.appsdiscovery.utils.ImageUtils
-import org.kinecosystem.appsdiscovery.utils.TextUtils.Companion.FONT_SAILEC
+import org.kinecosystem.common.utils.ImageUtils
+import org.kinecosystem.common.utils.TextUtils.Companion.FONT_SAILEC
 
 
 data class EcosystemApp(

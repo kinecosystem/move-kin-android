@@ -30,8 +30,8 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
-import org.kinecosystem.appsdiscovery.utils.load
-import org.kinecosystem.appsdiscovery.utils.navigateToUrl
+import org.kinecosystem.common.utils.load
+import org.kinecosystem.common.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -169,7 +169,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         with(findViewById<TextView>(R.id.actionText)) {
             setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
-            typeface = org.kinecosystem.appsdiscovery.utils.TextUtils.getFontTypeForType(context, app.cardFontName)
+            typeface = org.kinecosystem.common.utils.TextUtils.getFontTypeForType(context, app.cardFontName)
             setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
             text = app.cardTitle
         }

@@ -20,8 +20,8 @@ import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsLocal
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
-import org.kinecosystem.appsdiscovery.utils.TextUtils
-import org.kinecosystem.appsdiscovery.utils.load
+import org.kinecosystem.common.utils.TextUtils
+import org.kinecosystem.common.utils.load
 
 
 const val COLUMNS_COUNT = 2

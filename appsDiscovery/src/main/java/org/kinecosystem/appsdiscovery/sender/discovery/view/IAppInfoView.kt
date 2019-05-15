@@ -1,6 +1,6 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.view
 
-import org.kinecosystem.appsdiscovery.base.IBaseView
+import org.kinecosystem.common.base.IBaseView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferInfo

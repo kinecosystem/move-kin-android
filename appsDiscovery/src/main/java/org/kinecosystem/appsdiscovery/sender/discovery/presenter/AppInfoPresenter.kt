@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import org.kinecosystem.appsdiscovery.base.BasePresenter
+import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
@@ -13,7 +13,7 @@ import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferI
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
-import org.kinecosystem.appsdiscovery.utils.isAppInstalled
+import org.kinecosystem.common.utils.isAppInstalled
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
