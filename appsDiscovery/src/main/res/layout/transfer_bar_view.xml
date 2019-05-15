@@ -17,7 +17,7 @@
         android:textSize="14sp"
         android:text="Sent 15KIN"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/kin"
+        app:layout_constraintEnd_toStartOf="@id/senderAppIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="sending some Kin" />
@@ -27,34 +27,40 @@
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
         android:background="@color/purple"
         android:indeterminate="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/appIcon"
-        app:layout_constraintStart_toStartOf="@+id/kin"
+        app:layout_constraintEnd_toEndOf="@id/receiverAppIcon"
+        app:layout_constraintStart_toStartOf="@+id/senderAppIcon"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
-        android:id="@+id/kin"
+        android:id="@+id/senderAppIcon"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/appIcon"
+        app:layout_constraintEnd_toStartOf="@+id/receiverAppIcon"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.428" />
+        tools:background="#ff00"
+        app:layout_constraintVertical_bias="0.5" />
 
     <ImageView
-        android:id="@+id/appIcon"
+        android:id="@+id/receiverAppIcon"
         android:layout_width="52dp"
         android:layout_height="52dp"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:background="#fff0" />
 
     <ImageView
         android:id="@+id/errorIcon"
@@ -75,6 +81,7 @@
         android:layout_marginBottom="8dp"
         android:text="@string/transfer_failed_error"
         android:textSize="14sp"
+        android:lineSpacingExtra="4sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/errorClose"
         app:layout_constraintStart_toEndOf="@+id/errorIcon"
@@ -104,13 +111,12 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:textSize="14sp"
-        android:text="You’ve successfully sent 15KIN"
         app:layout_constraintBottom_toTopOf="@+id/completeClose"
         app:layout_constraintEnd_toStartOf="@+id/gotoApp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread"
-        tools:text="complete Kin"
+        tools:text="complete sending Kin"
         tools:visibility="gone" />
 
 
@@ -157,7 +163,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="message,progressBar,kin,appIcon"
+        app:constraint_referenced_ids="message,progressBar,senderAppIcon,receiverAppIcon"
         tools:visibility="visible"/>
 
     <android.support.constraint.Group

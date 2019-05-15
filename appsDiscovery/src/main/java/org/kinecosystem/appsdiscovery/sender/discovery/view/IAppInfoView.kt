@@ -16,4 +16,5 @@ interface IAppInfoView : IBaseView {
     fun updateAppState(state: AppStateView.State)
     fun navigateTo(downloadUrl: String)
     fun updateTransferStatus(status: TransferBarView.TransferStatus)
+    fun requestBalance()
 }
