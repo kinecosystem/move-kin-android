@@ -89,7 +89,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         }
         val memo = "$memoDelim${app?.memo}"
         app?.identifier?.let { receiverPackage ->
-            view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, memo, receiverPackage)
+            app?.name?.let { senderName ->
+                view?.startSendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, memo, receiverPackage)
+            }
         }
 
     }

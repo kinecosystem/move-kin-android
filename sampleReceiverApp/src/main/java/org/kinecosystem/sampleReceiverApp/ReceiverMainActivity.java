@@ -1,12 +1,16 @@
 package org.kinecosystem.sampleReceiverApp;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
+import android.view.View;
 import android.widget.TextView;
 
 import org.kinecosystem.sampleReceiverApp.sampleWallet.OnBoarding;
 import org.kinecosystem.sampleReceiverApp.sampleWallet.SampleWallet;
+import org.kinecosystem.sampleReceiverApp.sampleWallet.TransfersLogs;
 
 import kin.sdk.Balance;
 import kin.utils.Request;
@@ -14,15 +18,20 @@ import kin.utils.ResultCallback;
 
 public class ReceiverMainActivity extends AppCompatActivity {
     private boolean activityCreated = false;
+    private TextView transferLogsView;
+    private TransfersLogs transfersLogs;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         activityCreated = true;
-
         initAccountAndViews();
+    }
+
+    public void clearHistory(View v) {
+        transfersLogs.clear();
+        updateTransfersView();
     }
 
     private SampleWallet getSampleWallet() {
@@ -30,6 +39,9 @@ public class ReceiverMainActivity extends AppCompatActivity {
     }
 
     private void initAccountAndViews() {
+        transferLogsView = findViewById(R.id.history);
+        transferLogsView.setMovementMethod(new ScrollingMovementMethod());
+        transfersLogs = new TransfersLogs(PreferenceManager.getDefaultSharedPreferences(this));
         SampleWallet sampleWallet = getSampleWallet();
         TextView addressView = findViewById((R.id.publicAddressView));
         if (sampleWallet.hasActiveAccount()) {
@@ -56,8 +68,12 @@ public class ReceiverMainActivity extends AppCompatActivity {
                 }
             });
         }
+        updateTransfersView();
     }
 
+    private void updateTransfersView() {
+        transferLogsView.setText(transfersLogs.getTransfers());
+    }
 
     private void initBalance() {
         TextView balanceView = findViewById(R.id.balanceView);

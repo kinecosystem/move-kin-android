@@ -85,7 +85,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
 
-    override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
+    override fun startSendKin(receiverAddress: String, senderAppName:String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
             executorService.execute {
                 try {
@@ -94,7 +94,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     //TODO need to let the transaction bar know that transaction has completed
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-                                kinTransferComplete.senderAddress, receiverAddress, amount,
+                                kinTransferComplete.senderAddress, senderAppName, receiverAddress,  amount,
                                 kinTransferComplete.transactionId, memo)
                         Log.d(TAG, "Receiver was notified of transaction complete")
                     } catch (e: ServiceConfigurationException) {
@@ -107,7 +107,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {
                         ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
-                                e.toString(), e.senderAddress, receiverAddress, amount, memo)
+                                e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
                         Log.d(TAG, "Receiver was notified of transaction failed")
 
                     } catch (e: ServiceConfigurationException) {
