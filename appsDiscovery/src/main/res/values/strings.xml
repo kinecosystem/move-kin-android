@@ -7,7 +7,7 @@
     <string name="app_not_installed">To get started, this app will need to be installed.</string>
     <string name="app_kin_receive_not_supported">Coming soon!</string>
     <string name="app_receive_kin">You can now move your Kin around.</string>
-    <string name="app_action_send_kin">Send Kin</string>
+    <string name="app_action_send_kin">@string/send_kin</string>
     <string name="app_action_install">Google play</string>
     <string name="receiver_activity_title">Kin Ecosystem</string>
     <string name="receiver_activity_agree">I agree</string>
@@ -23,12 +23,13 @@
     <string name="how_it_works">How it works</string>
     <string name="close">close</string>
     <string name="go_to_app">go to app</string>
-    <string name="send_kin">send kin</string>
+    <string name="send_kin">Send Kin</string>
     <string name="total_kin_available">Total Kin available</string>
     <string name="transfer_sending_message">Sending %dKIN</string>
     <string name="transfer_complete_message">You’ve successfully sent %dKIN</string>
     <string name="transfer_failed_error">Transfer failed, try again later</string>
     <string name="transfer_receiver_service_error">This version is not supported. Update %s and try again.</string>
     <string name="transfer_connection_error">We couldn\'t establish a connection. Check back later.</string>
+    <string name="send_kin_to">Send Kin to</string>
 
 </resources>

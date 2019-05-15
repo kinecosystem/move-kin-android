@@ -5,8 +5,10 @@
     <dimen name="kin_btn_text_size">16sp</dimen>
     <dimen name="kin_alert_text_size">16sp</dimen>
     <dimen name="padding_normal">18dp</dimen>
-    <dimen name="text_small_size">12sp</dimen>
+    <dimen name="text_small_size">14sp</dimen>
+    <dimen name="text_smallest_size">12sp</dimen>
     <dimen name="text_regular_size">16sp</dimen>
     <dimen name="transfer_bar_height">80dp</dimen>
+    <dimen name="text_big_size">18sp</dimen>
 
 </resources>

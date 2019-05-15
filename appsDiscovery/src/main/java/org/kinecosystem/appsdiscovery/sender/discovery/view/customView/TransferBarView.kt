@@ -59,6 +59,9 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         findViewById<TextView>(R.id.completeClose).setOnClickListener {
             hide()
         }
+        findViewById<TextView>(R.id.completeMessage).setOnClickListener {
+            hide()
+        }
         findViewById<TextView>(R.id.errorClose).setOnClickListener {
             hide()
         }
