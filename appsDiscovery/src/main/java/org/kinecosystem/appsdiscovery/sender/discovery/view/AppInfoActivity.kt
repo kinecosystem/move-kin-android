@@ -49,7 +49,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             val binder = service as SendKinServiceBase.KinTransferServiceBinder
             transferService = binder.service
             isBound = true
-            updateBalance()
+            requestBalance()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -185,26 +185,15 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     override fun initTransfersInfo(transferInfo: TransferInfo) {
-        transferBarView?.update(transferInfo)
+        transferBarView?.updateViews(transferInfo)
     }
 
 
     override fun updateTransferStatus(status: TransferBarView.TransferStatus) {
-        transferBarView?.update(status)
+        transferBarView?.updateStatus(status)
     }
 
-
-    companion object {
-        private const val PARAM_APP_NAME = "PARAM_APP_NAME"
-
-        fun getIntent(context: Context, appName: String): Intent {
-            val intent = Intent(context, AppInfoActivity::class.java)
-            intent.putExtra(PARAM_APP_NAME, appName)
-            return intent
-        }
-    }
-
-    private fun updateBalance() {
+    override fun requestBalance() {
         if (isBound) {
             executorService.execute {
                 try {
@@ -219,6 +208,18 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             }
         }
     }
+
+    companion object {
+        private const val PARAM_APP_NAME = "PARAM_APP_NAME"
+
+        fun getIntent(context: Context, appName: String): Intent {
+            val intent = Intent(context, AppInfoActivity::class.java)
+            intent.putExtra(PARAM_APP_NAME, appName)
+            return intent
+        }
+    }
+
+
 
     override fun navigateTo(downloadUrl: String) {
         navigateToUrl(downloadUrl)

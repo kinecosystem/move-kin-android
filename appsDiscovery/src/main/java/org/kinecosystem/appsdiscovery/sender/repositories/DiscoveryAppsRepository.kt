@@ -50,11 +50,11 @@ private constructor(private val currentPackage: String, private val local: Disco
             override fun onResult(cachedApps: List<EcosystemApp>) {
                 hasLocalData = true
                 discoveryApps = cachedApps
-                //update ui with cached data
+                //updateViews ui with cached data
                 uiHandler.post {
                     listener.onResult(cachedApps)
                 }
-                //check server data and update local if needed
+                //check server data and updateViews local if needed
                 checkRemoteData(listener)
             }
 
@@ -86,7 +86,7 @@ private constructor(private val currentPackage: String, private val local: Disco
                         discoveryApps = filterApps
                         local.updateDiscoveryApps(discoveryApps)
                         local.discoveryAppVersion = result.version
-                        //update ui with new data from server
+                        //updateViews ui with new data from server
                         uiHandler.post {
                             listener.onResult(discoveryApps)
                         }
