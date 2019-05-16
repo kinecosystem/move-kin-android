@@ -32,9 +32,9 @@ public class SendKinService extends SendKinServiceBase {
             TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
 
             // here you may add some code to add the transaction details to
-            // transaction history metadata
+            // your app's transaction history metadata
 
-            return new KinTransferComplete(sourceAddress, transactionId.id());
+            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo());
 
         } catch (Exception e) {
 

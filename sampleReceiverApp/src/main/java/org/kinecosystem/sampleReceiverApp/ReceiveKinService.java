@@ -13,14 +13,19 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
     }
 
     @Override
-    public void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) {
-        Log.d(TAG, "Transaction completed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " transactionId " + transactionId+ " memo " + memo);
+    public void onTransactionCompleted(@NonNull String fromAddress, @NonNull String senderAppName, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) {
+        Log.d(TAG, "Transaction completed. Account public address: " + toAddress + " received " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
+                + ".\n The transactionId is: " + transactionId + " with memo " + memo);
+
+        // If you display a transaction history in your app, here is the place
+        // to add the metadata of the transaction to your database.
     }
 
-    //the error is for the developers - put info as much as possible so the other side app can understand the transfer problem
     @Override
-    public void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String toAddress, int amount, @NonNull String memo) {
-        Log.d(TAG, "Transaction failed from " + fromAddress + " to " + toAddress+ " amount " + amount+ " error " + error + " memo " + memo);
+    public void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String senderAppName, @NonNull String toAddress, int amount, @NonNull String memo) {
+        Log.d(TAG, "Transaction failed. Account public address: " + toAddress + ", DID NOT receive " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
+                + ". The attempted transaction memo was " + memo + ". The error message is " + error);
+
     }
 
 }

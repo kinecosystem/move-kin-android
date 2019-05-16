@@ -54,10 +54,13 @@ public abstract class SendKinServiceBase extends Service {
     public class KinTransferComplete {
         private final String senderAddress;
         private final String transactionId;
+        private final String transactionMemo;
 
-        public KinTransferComplete(@NonNull String senderAddress, @NonNull String transactionId) {
+        public KinTransferComplete(@NonNull String senderAddress, @NonNull String transactionId,
+                                   @NonNull String transactionMemo) {
             this.senderAddress = senderAddress;
             this.transactionId = transactionId;
+            this.transactionMemo = transactionMemo;
         }
 
         public String getSenderAddress() {
@@ -67,6 +70,8 @@ public abstract class SendKinServiceBase extends Service {
         public String getTransactionId() {
             return transactionId;
         }
+
+        public String getTransactionMemo() { return transactionMemo; }
     }
 
 }

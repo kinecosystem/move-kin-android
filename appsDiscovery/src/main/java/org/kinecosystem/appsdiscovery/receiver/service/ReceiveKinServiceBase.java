@@ -23,12 +23,13 @@ public abstract class ReceiveKinServiceBase extends Service {
      * also configure the delay by overriding {@link ReceiveKinServiceBase#getStopDelayInSeconds()}
      *
      * @param fromAddress   the public address of the wallet sending the kin
+     * @param senderAppName the sender application name
      * @param toAddress     the public address of the wallet receiving the kin
      * @param amount        the amount received in Kin
      * @param transactionId the transaction hash
-     * @param memo          the memo in the transaction
+     * @param memo          the full transaction memo (including the 1-[sourceappid] prefix)
      */
-    protected abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String toAddress,
+    protected abstract void onTransactionCompleted(@NonNull String fromAddress, @NonNull String senderAppName, @NonNull String toAddress,
                                                    int amount, @NonNull String transactionId, @NonNull String memo);
 
     /**
@@ -40,11 +41,12 @@ public abstract class ReceiveKinServiceBase extends Service {
      *
      * @param error       error message
      * @param fromAddress the public address of the wallet attempting to send the kin
+     * @param senderAppName the sender application name
      * @param toAddress   the public address of the wallet attempting to receive the kin
      * @param amount      the amount in Kin
-     * @param memo        the memo of the transaction
+     * @param memo        the full transaction memo (including the 1-[sourceappid] prefix)
      */
-    protected abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress,
+    protected abstract void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String senderAppName,
                                                 @NonNull String toAddress, int amount, @NonNull String memo);
 
 
@@ -72,19 +74,21 @@ public abstract class ReceiveKinServiceBase extends Service {
         if (intent != null) {
             if (ACTION_TRANSACTION_COMPLETED.equals(intent.getAction())) {
                 String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
+                String fromApp = intent.getStringExtra(SERVICE_ARG_FROM_APP);
                 String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
                 int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, NO_AMOUNT);
                 String transactionId = intent.getStringExtra(SERVICE_ARG_TRANSACTION_ID);
                 String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
-                onTransactionCompleted(fromAddress, toAddress, amount, transactionId, memo);
+                onTransactionCompleted(fromAddress, fromApp, toAddress, amount, transactionId, memo);
             }
             if (ACTION_TRANSACTION_FAILED.equals(intent.getAction())) {
                 String error = intent.getStringExtra(SERVICE_ARG_ERROR);
                 String fromAddress = intent.getStringExtra(SERVICE_ARG_FROM_ADDRESS);
+                String fromApp = intent.getStringExtra(SERVICE_ARG_FROM_APP);
                 String toAddress = intent.getStringExtra(SERVICE_ARG_TO_ADDRESS);
                 int amount = intent.getIntExtra(SERVICE_ARG_AMOUNT, 0);
                 String memo = intent.getStringExtra(SERVICE_ARG_MEMO);
-                onTransactionFailed(error, fromAddress, toAddress, amount, memo);
+                onTransactionFailed(error, fromAddress, fromApp, toAddress, amount, memo);
             }
         }
         stopWithDelay();
