@@ -18,9 +18,9 @@ import org.kinecosystem.appsdiscovery.utils.isAppInstalled
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
 
-    private val AmountChooserRequestCode = 100
-    private val TRANSACTION_TIMEOUT = 50 * 1000L
-    private val memoDelim = "-CrossApps-"
+    private val amountChooserRequestCode = 100
+    private val transactionTimeout = 10 * 1000L
+    private val memoPrefix = "CrossApps-"
     private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
@@ -67,7 +67,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     }
 
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (requestCode == AmountChooserRequestCode) {
+        if (requestCode == amountChooserRequestCode) {
             processAmountResponse(resultCode, intent)
         } else {
             parsePublicAddressData(requestCode, resultCode, intent)
@@ -98,7 +98,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         startTimeOutCounter()
     }
 
-    private fun getTransactionMemo() = "${repository.getStoredMemo()}$memoDelim${app?.memo}"
+    private fun getTransactionMemo() = "$memoPrefix${app?.memo}"
 
     private fun startTimeOutCounter() {
         afterTimeout = false
@@ -108,7 +108,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 afterTimeout = true
                 view?.updateTransferStatus(TransferBarView.TransferStatus.Timeout)
             }
-        }, TRANSACTION_TIMEOUT)
+        }, transactionTimeout)
     }
 
     private fun parsePublicAddressData(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -126,7 +126,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 repository.storeReceiverAppPublicAddress(address)
                 Log.d("AppInfoPresenter", "got address onAddressReceived $address")
                 app?.iconUrl?.let {
-                    view?.startAmountChooserActivity(it, repository.getCurrentBalance(), AmountChooserRequestCode)
+                    view?.startAmountChooserActivity(it, repository.getCurrentBalance(), amountChooserRequestCode)
                 }
             }
         })

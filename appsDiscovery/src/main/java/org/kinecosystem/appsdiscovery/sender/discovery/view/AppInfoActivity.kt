@@ -39,8 +39,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var presenter: AppInfoPresenter? = null
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
-    private var list:RecyclerView? = null
-    private var isBound = false
+    private var list: RecyclerView? = null
+    @Volatile private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
@@ -86,10 +86,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
-        if (isBound) {
-            executorService.execute {
+        executorService.execute {
+            if (isBound) {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete =
+                            transferService?.transferKin(receiverAddress, amount, memo)!!
                     presenter?.onTransferComplete()
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
@@ -216,7 +217,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             return intent
         }
     }
-
 
 
     override fun navigateTo(downloadUrl: String) {
