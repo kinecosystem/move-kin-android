@@ -13,6 +13,7 @@ public class ReceiveKinNotifier {
     static final String ACTION_TRANSACTION_COMPLETED = "org.kinecosystem.KinReceiverTransactionCompleted";
     static final String ACTION_TRANSACTION_FAILED = "org.kinecosystem.KinReceiverTransactionFailed";
     static final String SERVICE_ARG_FROM_ADDRESS = "fromAddress";
+    static final String SERVICE_ARG_FROM_APP = "fromApp";
     static final String SERVICE_ARG_TO_ADDRESS = "toAddress";
     static final String SERVICE_ARG_AMOUNT = "amount";
     static final String SERVICE_ARG_TRANSACTION_ID = "transactionId";
@@ -22,11 +23,12 @@ public class ReceiveKinNotifier {
     static final String SERVICE_NAME = "ReceiveKinService";
 
     public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName,
-                                                  @NonNull String fromAddress, @NonNull String toAddress,
+                                                  @NonNull String fromAddress, @NonNull String fromAppName, @NonNull String toAddress,
                                                   int amount, @NonNull String transactionId,
                                                   @NonNull String memo) throws ServiceConfigurationException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, true);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
+        intent.putExtra(SERVICE_ARG_FROM_APP, fromAppName);
         intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
         intent.putExtra(SERVICE_ARG_AMOUNT, amount);
         intent.putExtra(SERVICE_ARG_TRANSACTION_ID, transactionId);
@@ -35,12 +37,13 @@ public class ReceiveKinNotifier {
     }
 
     public static void notifyTransactionFailed(@NonNull Context context, @NonNull String receiverPackageName,
-                                               @NonNull String error, @NonNull String fromAddress,
+                                               @NonNull String error, @NonNull String fromAddress, @NonNull String fromAppName,
                                                @NonNull String toAddress, int amount,
                                                @NonNull String memo) throws ServiceConfigurationException {
         Intent intent = getTransactionResultIntent(context, receiverPackageName, false);
         intent.putExtra(SERVICE_ARG_ERROR, error);
         intent.putExtra(SERVICE_ARG_FROM_ADDRESS, fromAddress);
+        intent.putExtra(SERVICE_ARG_FROM_APP, fromAppName);
         intent.putExtra(SERVICE_ARG_TO_ADDRESS, toAddress);
         intent.putExtra(SERVICE_ARG_AMOUNT, amount);
         intent.putExtra(SERVICE_ARG_MEMO, memo);

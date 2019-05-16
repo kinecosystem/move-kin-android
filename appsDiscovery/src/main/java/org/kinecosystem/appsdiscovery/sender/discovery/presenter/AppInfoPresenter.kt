@@ -93,7 +93,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             }
         }
         app?.identifier?.let { receiverPackage ->
-            view?.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, getTransactionMemo(), receiverPackage)
+            app?.name?.let { senderName ->
+                view?.startSendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, getTransactionMemo(), receiverPackage)
+            }
         }
         startTimeOutCounter()
     }
