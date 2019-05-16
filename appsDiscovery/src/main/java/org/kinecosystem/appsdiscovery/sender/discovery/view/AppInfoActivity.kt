@@ -39,8 +39,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var presenter: AppInfoPresenter? = null
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
-    private var list:RecyclerView? = null
-    private var isBound = false
+    private var list: RecyclerView? = null
+    @Volatile private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
@@ -49,7 +49,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             val binder = service as SendKinServiceBase.KinTransferServiceBinder
             transferService = binder.service
             isBound = true
-            requestBalance()
+            requestCurrentBalance()
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -86,12 +86,12 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
 
     override fun startSendKin(receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
-        if (isBound) {
-            executorService.execute {
+        executorService.execute {
+            if (isBound) {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)!!
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete =
+                            transferService?.transferKin(receiverAddress, amount, memo)!!
                     presenter?.onTransferComplete()
-                    //TODO need to let the transaction bar know that transaction has completed
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
                                 kinTransferComplete.senderAddress, receiverAddress, amount,
@@ -102,7 +102,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         e.printStackTrace()
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    //TODO need to let the transaction bar know that transaction has failed
                     presenter?.onTransferFailed()
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {
@@ -193,7 +192,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         transferBarView?.updateStatus(status)
     }
 
-    override fun requestBalance() {
+    override fun requestCurrentBalance() {
         if (isBound) {
             executorService.execute {
                 try {
@@ -202,8 +201,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         presenter?.updateBalance(currentBalance)
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
-                    //TODO show error retrieve balance
-                    Log.d("####", "#### balanceException ${balanceException.message}")
+                    //ignore if we dont get balance - user can send amount with no limit but will fail if it exceeds his balance
+                    Log.d(TAG, "balanceException ${balanceException.message}")
                 }
             }
         }
@@ -218,7 +217,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             return intent
         }
     }
-
 
 
     override fun navigateTo(downloadUrl: String) {
