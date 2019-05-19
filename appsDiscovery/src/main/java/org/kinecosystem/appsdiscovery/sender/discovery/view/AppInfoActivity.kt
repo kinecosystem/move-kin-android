@@ -35,7 +35,7 @@ import org.kinecosystem.common.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
-    private val TAG = AppInfoActivity.javaClass.simpleName
+    private val TAG = AppInfoActivity::class.java.simpleName
     private var presenter: AppInfoPresenter? = null
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
@@ -228,9 +228,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         appStateView?.update(state)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        presenter?.processResponse(requestCode, resultCode, data)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        presenter?.processResponse(requestCode, resultCode, intent)
     }
 
     //need to think if need to be in onstop - what happen if get response when you are in background
