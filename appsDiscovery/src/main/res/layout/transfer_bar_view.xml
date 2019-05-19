@@ -47,7 +47,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/receiverAppIcon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="#ff00"
+        tools:background="#ff0011"
         app:layout_constraintVertical_bias="0.5" />
 
     <ImageView

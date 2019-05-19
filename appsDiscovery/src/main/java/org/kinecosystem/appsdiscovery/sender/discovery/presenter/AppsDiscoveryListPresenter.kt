@@ -1,16 +1,16 @@
 package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 
-import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.IAppsDiscoveryListView
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.repositories.OperationResultCallback
+import org.kinecosystem.common.base.BasePresenter
 
 class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
 
-    private var loadingListener:LoadingListener? = null
+    private var loadingListener: LoadingListener? = null
 
-    interface LoadingListener{
+    interface LoadingListener {
         fun loading()
         fun loadingComplete()
         fun loadingFailed()
@@ -45,7 +45,6 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
             override fun onError(error: String) {
                 loadingListener?.loadingFailed()
             }
-
         })
     }
 

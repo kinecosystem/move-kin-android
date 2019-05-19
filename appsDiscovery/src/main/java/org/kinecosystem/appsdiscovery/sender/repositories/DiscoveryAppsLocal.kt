@@ -4,9 +4,9 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
-import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.base.LocalStore
 import org.kinecosystem.appsdiscovery.sender.model.EcosystemApp
+import org.kinecosystem.common.base.Consts
 
 
 class DiscoveryAppsLocal(context: Context) {
