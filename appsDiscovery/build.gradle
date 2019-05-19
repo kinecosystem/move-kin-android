@@ -4,13 +4,12 @@ apply plugin: 'kotlin-android'
 
 
 android {
-    compileSdkVersion 26
-
-
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+
         versionCode 1
         versionName "1.0"
 
@@ -18,14 +17,6 @@ android {
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'proguard-rules.pro'
     }
-}
-
-repositories {
-    mavenCentral()
-    jcenter()
-    google()
-    maven { url 'https://maven.fabric.io/public' }
-    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -41,4 +32,5 @@ dependencies {
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.testEspressoCoreVersion"
+    api project(':common')
 }

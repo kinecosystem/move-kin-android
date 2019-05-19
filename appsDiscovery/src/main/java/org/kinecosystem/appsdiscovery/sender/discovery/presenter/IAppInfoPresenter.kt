@@ -2,7 +2,7 @@ package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 
 import android.content.Context
 import android.content.Intent
-import org.kinecosystem.appsdiscovery.base.IBasePresenter
+import org.kinecosystem.common.base.IBasePresenter
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
 
 interface IAppInfoPresenter : IBasePresenter<IAppInfoView> {

@@ -14,8 +14,8 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.appsdiscovery.utils.launchApp
-import org.kinecosystem.appsdiscovery.utils.load
+import org.kinecosystem.common.utils.launchApp
+import org.kinecosystem.common.utils.load
 
 
 class TransferBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr), ITransferBarView {
