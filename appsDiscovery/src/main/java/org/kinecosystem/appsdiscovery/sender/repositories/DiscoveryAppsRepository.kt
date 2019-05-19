@@ -47,12 +47,12 @@ private constructor(private val currentPackage: String, private val local: Disco
         hasLocalData = false
         //get first data from cache
         local.getDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {
-            override fun onResult(cachedApps: List<EcosystemApp>) {
+            override fun onResult(result: List<EcosystemApp>) {
                 hasLocalData = true
-                discoveryApps = cachedApps
+                discoveryApps = result
                 //updateViews ui with cached data
                 uiHandler.post {
-                    listener.onResult(cachedApps)
+                    listener.onResult(result)
                 }
                 //check server data and updateViews local if needed
                 checkRemoteData(listener)

@@ -50,8 +50,8 @@ class DiscoveryAppsLocal(context: Context) {
         val apps = localStore.getString(APPS_DISCOVERY_KEY, "")
         if (apps.isNotEmpty()) {
             try {
-                val apps: List<EcosystemApp> = gson.fromJson<List<EcosystemApp>>(apps, appsListType)
-                callback.onResult(apps)
+                val resultApps: List<EcosystemApp> = gson.fromJson<List<EcosystemApp>>(apps, appsListType)
+                callback.onResult(resultApps)
             } catch (error: JsonSyntaxException) {
                 callback.onError("no valid data")
             }
