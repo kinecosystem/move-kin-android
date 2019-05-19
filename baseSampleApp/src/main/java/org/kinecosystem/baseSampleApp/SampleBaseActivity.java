@@ -30,11 +30,8 @@ public abstract class SampleBaseActivity extends AppCompatActivity {
         activityCreated = true;
 
         initAccountAndViews();
-        initCustomViews();
     }
 
-    protected void initCustomViews() {
-    }
 
     private void initAccountAndViews() {
         SampleWallet sampleWallet = getSampleWallet();
