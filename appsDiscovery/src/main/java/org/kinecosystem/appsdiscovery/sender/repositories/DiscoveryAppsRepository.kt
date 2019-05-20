@@ -73,15 +73,13 @@ private constructor(private val currentPackage: String, private val local: Disco
             override fun onResult(result: EcosystemAppResponse) {
                 if (result.hasNewData(local.discoveryAppVersion)) {
                     result.apps?.let { serverApps ->
-                        var filterApps: List<EcosystemApp> = listOf()
+                        var filterApps: List<EcosystemApp> = serverApps
                         val currentApp: EcosystemApp? = serverApps.firstOrNull { it.identifier == currentPackage }
+                        //if finds this app in the list - remove it from the list
                         currentApp?.let { app ->
                             local.appIconUrl = app.iconUrl
                             local.memo = app.memo
                             filterApps = serverApps.filter { it != app }
-                        } ?: kotlin.run {
-                            listener.onError("cant find in apps the current package $currentPackage")
-                            return
                         }
                         discoveryApps = filterApps
                         local.updateDiscoveryApps(discoveryApps)

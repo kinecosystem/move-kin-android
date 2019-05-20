@@ -1,4 +1,4 @@
-package org.kinecosystem.sampleReceiverApp;
+package org.kinecosystem.sampleReceiverApp.kindiscover;
 
 import android.support.annotation.NonNull;
 import android.util.Log;

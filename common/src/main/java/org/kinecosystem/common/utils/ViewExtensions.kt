@@ -22,12 +22,14 @@ fun Context.isAppInstalled(packageName: String): Boolean {
 }
 
 fun Context.launchApp(packageName: String) {
-    if(isAppInstalled(packageName)){
+    if (isAppInstalled(packageName)) {
         val intent = packageManager.getLaunchIntentForPackage(packageName)
         startActivity(intent)
     }
 }
 
 fun ImageView.load(url: String) {
-    Picasso.get().load(url).into(this)
+    if (url.isNotEmpty()) {
+        Picasso.get().load(url).into(this)
+    }
 }

@@ -3,8 +3,8 @@ package org.kinecosystem.appsdiscovery.sender.discovery.presenter
 import android.text.Editable
 import android.text.TextWatcher
 import org.kinecosystem.common.base.BasePresenter
-import org.kinecosystem.common.base.Consts
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAmountChooserView
+import org.kinecosystem.common.base.Consts
 
 class AmountChooserPresenter(private val appIconUrl: String, private val balance: Int) : BasePresenter<IAmountChooserView>(), IAmountChooserPresenter, TextWatcher {
 

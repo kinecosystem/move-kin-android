@@ -154,7 +154,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 y = (animation.animatedValue as Float)
                 requestLayout()
             }
-            duration = (HIDE_ANIMATION_DURATION * (hideY-y)/(hideY-showY)).toLong()
+            duration = (HIDE_ANIMATION_DURATION * (hideY - y) / (hideY - showY)).toLong()
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationRepeat(p0: Animator?) {
                 }

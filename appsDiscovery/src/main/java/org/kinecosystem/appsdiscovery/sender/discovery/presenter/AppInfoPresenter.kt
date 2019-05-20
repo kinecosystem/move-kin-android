@@ -127,8 +127,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             override fun onAddressReceived(address: String) {
                 repository.storeReceiverAppPublicAddress(address)
                 Log.d("AppInfoPresenter", "got address onAddressReceived $address")
-                app?.iconUrl?.let {
-                    view?.startAmountChooserActivity(it, repository.getCurrentBalance(), AMOUNT_CHOOSER_REQUEST_CODE)
+                app?.let {
+                    view?.startAmountChooserActivity(it.iconUrl, repository.getCurrentBalance(), AMOUNT_CHOOSER_REQUEST_CODE)
                 }
             }
         })

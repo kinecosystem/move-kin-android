@@ -30,6 +30,7 @@ import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
+import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
 import java.util.concurrent.Executors
@@ -129,15 +130,15 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         val intent = Intent()
 
         val senderPackageName = packageName
-        val serviceName = "SendKinService"
-        intent.component = ComponentName(senderPackageName, "$senderPackageName.$serviceName")
+        val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        intent.component = ComponentName(senderPackageName, serviceFullPath)
         intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
         if (!resolveInfos.any()) {
-            throw ServiceConfigurationException("$senderPackageName.$serviceName", "Service not found")
+            throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
         }
         if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
-            throw ServiceConfigurationException("$senderPackageName.$serviceName", "Service should not be exported")
+            throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
         }
 
         bindService(intent, connection, Context.BIND_AUTO_CREATE)

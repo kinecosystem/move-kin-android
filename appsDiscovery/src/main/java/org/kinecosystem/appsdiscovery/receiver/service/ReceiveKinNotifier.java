@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 
+import org.kinecosystem.common.base.Consts;
+
 import java.util.List;
 
 public class ReceiveKinNotifier {
@@ -20,7 +22,6 @@ public class ReceiveKinNotifier {
     static final String SERVICE_ARG_MEMO = "memo";
     static final String SERVICE_ARG_ERROR = "error";
     static final int NO_AMOUNT = 0;
-    static final String SERVICE_NAME = "ReceiveKinService";
 
     public static void notifyTransactionCompleted(@NonNull Context context, @NonNull String receiverPackageName,
                                                   @NonNull String fromAddress, @NonNull String fromAppName, @NonNull String toAddress,
@@ -55,16 +56,16 @@ public class ReceiveKinNotifier {
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
-        String serviceFullPath = receiverPackageName + "." + SERVICE_NAME;
+        String serviceFullPath = receiverPackageName + "." + Consts.SERVICE_DEFAULT_PACKAGE + "." + Consts.RECEIVER_SERVICE_NAME;
         intent.setComponent(new ComponentName(receiverPackageName, serviceFullPath));
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
         if (resolveInfos.isEmpty()) {
-            throw new ServiceConfigurationException(serviceFullPath, "service not found");
+            throw new ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented in order to receive transactions notifications");
         } else {
             for (ResolveInfo info : resolveInfos) {
                 if (!info.serviceInfo.exported) {
-                    throw new ServiceConfigurationException(serviceFullPath, "service not public. Make sure it is exported on AndroidManifest.xml");
+                    throw new ServiceConfigurationException(serviceFullPath, "service is not public. Make sure it is exported on AndroidManifest.xml");
                 }
             }
         }
