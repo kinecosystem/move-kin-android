@@ -26,6 +26,10 @@ public class SampleWallet {
         }
     }
 
+    public KinClient getKinClient(){
+        return kinClient;
+    }
+
     public boolean hasActiveAccount() {
         return account != null && isAccountCreated();
     }
