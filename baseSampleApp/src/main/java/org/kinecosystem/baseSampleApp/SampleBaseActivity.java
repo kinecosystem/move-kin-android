@@ -16,7 +16,9 @@ import kin.utils.ResultCallback;
 public abstract class SampleBaseActivity extends AppCompatActivity {
     private boolean activityCreated = false;
 
-    protected abstract SampleWallet getSampleWallet();
+    protected SampleWallet getSampleWallet() {
+        return ((SampleBaseApplication) getApplicationContext()).getSampleWallet();
+    }
 
     protected int getLayoutId() {
         return R.layout.sample_base;
