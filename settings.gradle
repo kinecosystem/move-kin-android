@@ -1,1 +1,1 @@
-include ':senderSampleApp', ':appsDiscovery', ':receiverSampleApp', ':baseSampleApp', ':transfer'
+include ':senderSampleApp', ':appsDiscovery', ':receiverSampleApp', ':baseSampleApp', ':onewallet', ':linkSampleApp', ':transfer'

@@ -15,6 +15,7 @@ import kin.utils.ResultCallback;
 
 public abstract class SampleBaseActivity extends AppCompatActivity {
     private boolean activityCreated = false;
+    private boolean initialized = false;
 
     protected SampleWallet getSampleWallet() {
         return ((SampleBaseApplication) getApplicationContext()).getSampleWallet();
@@ -28,12 +29,17 @@ public abstract class SampleBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-
         activityCreated = true;
-
-        initAccountAndViews();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!initialized) {
+            initAccountAndViews();
+            initialized = true;
+        }
+    }
 
     private void initAccountAndViews() {
         SampleWallet sampleWallet = getSampleWallet();
