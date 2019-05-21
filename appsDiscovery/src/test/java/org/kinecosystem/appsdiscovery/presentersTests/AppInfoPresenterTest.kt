@@ -37,6 +37,13 @@ class AppInfoPresenterTest {
     private var repository = mock(DiscoveryAppsRepository::class.java)
     private var transferManager: TransferManager = mock(TransferManager::class.java)
 
+    private var app_with_transfer_id_null = EcosystemApp("cat",null,"kit",
+            MetaData("about", "name", "url","url",
+                    ArrayList(),
+                    ExperienceData("about","howto","name"),
+                    CardData("0f","name","size", "bgc", "title")),
+            TransferData("path"))
+
     private var app_with_transfer = EcosystemApp("cat","id","kit",
             MetaData("about", "name", "url","url",
                     ArrayList(),
@@ -130,23 +137,44 @@ class AppInfoPresenterTest {
 
     @Test
     @Throws(Exception::class)
-    fun test_onActionButtonClicked_when_appInstalled(){
+    fun test_onActionButtonClicked_when_appInstalled_startTransferRequestActivity_true(){
         val context = mock(Context::class.java)
         val packageManager = mock(PackageManager::class.java)
-        `when`(repository.getAppByName(appName)).thenReturn(app_without_transfer)
+        `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
+        `when`(transferManager.startTransferRequestActivity(anyString(), anyString())).thenReturn(true)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
 
         val appInfoPresenterSpy = spy(appInfoPresenter)
         appInfoPresenterSpy.onActionButtonClicked()
-        verify(appInfoPresenterSpy).onActionButtonClicked()
+        verify(appInfoPresenterSpy).onRequestReceiverPublicAddress()
+        verify(view, times(0)).updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun test_onActionButtonClicked_when_appInstalled_startTransferRequestActivity_false(){
+        val context = mock(Context::class.java)
+        val packageManager = mock(PackageManager::class.java)
+        `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
+        `when`(context.packageManager).thenReturn(packageManager)
+        `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
+        `when`(transferManager.startTransferRequestActivity(anyString(), anyString())).thenReturn(false)
+
+        appInfoPresenter.onAttach(view)
+        appInfoPresenter.onResume(context)
+
+        val appInfoPresenterSpy = spy(appInfoPresenter)
+        appInfoPresenterSpy.onActionButtonClicked()
+        verify(appInfoPresenterSpy).onRequestReceiverPublicAddress()
+        verify(view).updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
     }
 
 
-//    @Test
+    @Test
     @Throws(Exception::class)
     fun test_processResponse_when_requestCode_AMOUNT_CHOOSER_REQUEST_CODE_resultCode_RESULT_OK(){
         val context = mock(Context::class.java)

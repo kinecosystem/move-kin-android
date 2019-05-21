@@ -158,12 +158,11 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 if (!started) {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                 }
-            } ?: kotlin.run {
+            } ?: kotlin.run { //TODO: Remove, redounded, see L:40
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
             }
-        } ?: kotlin.run {
+        } ?: kotlin.run { //TODO: Remove, redounded, see L:40
             view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
-
         }
     }
 
