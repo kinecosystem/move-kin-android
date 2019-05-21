@@ -18,9 +18,9 @@ import org.kinecosystem.common.utils.isAppInstalled
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
 
-    private val AMOUNT_CHOOSER_REQUEST_CODE = 100
-    private val TRANSACTION_TIMEOUT = 10 * 1000L
-    private val MEMO_PREFIX = "CrossApps-"
+    val AMOUNT_CHOOSER_REQUEST_CODE = 100
+    val TRANSACTION_TIMEOUT = 10 * 1000L
+    val MEMO_PREFIX = "CrossApps-"
     private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
@@ -84,6 +84,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
             }
         }
+        // TODO: @Shaybaz What if not RESULT_OK?
     }
 
     private fun sendKin(amountToSend: Int) {
@@ -120,7 +121,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
             }
 
             override fun onError(error: String) {
-                Log.d("AppInfoPresenter", "Error retrieving public address, error message " + error)
+                Log.d("AppInfoPresenter", "Error retrieving public address, error message $error")
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
             }
 

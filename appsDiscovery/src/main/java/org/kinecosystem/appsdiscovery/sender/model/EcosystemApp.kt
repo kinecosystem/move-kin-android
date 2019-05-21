@@ -117,6 +117,7 @@ val EcosystemApp.cardColor: Int
 val EcosystemApp.launchActivity: String?
     get() = transferData?.launchActivityFullPath
 
+// TODO: Test
 val EcosystemApp.canTransferKin: Boolean
     get() {
         transferData?.launchActivityFullPath?.let {
