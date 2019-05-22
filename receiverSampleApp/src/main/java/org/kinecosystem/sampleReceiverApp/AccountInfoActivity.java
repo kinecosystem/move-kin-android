@@ -1,6 +1,6 @@
 package org.kinecosystem.sampleReceiverApp;
 
-import org.kinecosystem.appsdiscovery.receiver.view.AccountInfoActivityBase;
+import org.kinecosystem.transfer.receiver.view.AccountInfoActivityBase;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 
 

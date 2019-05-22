@@ -3,7 +3,7 @@ package org.kinecosystem.sampleReceiverApp.kindiscover;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.kinecosystem.appsdiscovery.receiver.service.ReceiveKinServiceBase;
+import org.kinecosystem.transfer.receiver.service.ReceiveKinServiceBase;
 
 public class ReceiveKinService extends ReceiveKinServiceBase {
     private static final String TAG = ReceiveKinService.class.getSimpleName();
