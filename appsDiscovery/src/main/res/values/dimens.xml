@@ -10,5 +10,7 @@
     <dimen name="text_regular_size">16sp</dimen>
     <dimen name="transfer_bar_height">80dp</dimen>
     <dimen name="text_big_size">18sp</dimen>
+    <dimen name="button_drawable_padding">6dp</dimen>
+
 
 </resources>

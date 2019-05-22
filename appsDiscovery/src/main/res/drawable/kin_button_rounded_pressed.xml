@@ -7,9 +7,9 @@
         android:topLeftRadius="@dimen/kin_btn_corner"
         android:topRightRadius="@dimen/kin_btn_corner"/>
     <padding
-        android:bottom="@dimen/kin_btn_text_padding"
-        android:top="@dimen/kin_btn_text_padding"
-        android:left="@dimen/kin_btn_text_padding"
-        android:right="@dimen/kin_btn_text_padding"
+        android:bottom="12dp"
+        android:top="12dp"
+        android:left="12dp"
+        android:right="12dp"
         />
 </shape>

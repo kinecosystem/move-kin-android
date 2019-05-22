@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/kin_btn_disable"/>
+    <solid android:color="@color/white"/>
     <corners
         android:bottomLeftRadius="@dimen/kin_btn_corner"
         android:bottomRightRadius="@dimen/kin_btn_corner"

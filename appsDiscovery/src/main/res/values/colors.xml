@@ -2,6 +2,7 @@
 <resources>
     <color name="purple">#6f41e8</color>
     <color name="purple_dark">#4d2da1</color>
+    <color name="purple_light">#e2d9fa</color>
     <color name="grey">#e7e7e7</color>
     <color name="grey_dark">#a6a6a6</color>
     <color name="white">#ffffff</color>
@@ -13,6 +14,7 @@
 
     <color name="kin_btn_disable">@color/grey</color>
     <color name="kin_btn_pressed">@color/purple_dark</color>
+    <color name="kin_btn_pressed_light">@color/purple_light</color>
     <color name="kin_btn">@color/purple</color>
     <color name="kin_btn_text_disable">@color/grey_dark</color>
     <color name="kin_btn_text_pressed">@color/white</color>
