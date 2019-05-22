@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.sender.service;
+package org.kinecosystem.appsdiscovery.service;
 
 import android.app.Service;
 import android.content.Intent;

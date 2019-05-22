@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.base
+package org.kinecosystem.common.base
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 
-import org.kinecosystem.transfer.base.Consts;
+import org.kinecosystem.common.base.Consts;
 
 import java.util.List;
 

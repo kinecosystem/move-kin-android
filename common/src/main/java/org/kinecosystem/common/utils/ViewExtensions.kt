@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.utils
+package org.kinecosystem.common.utils
 
 import android.content.Context
 import android.content.Intent

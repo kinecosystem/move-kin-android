@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple">#6f41e8</color>
+    <color name="purple_dark">#4d2da1</color>
+    <color name="grey">#e7e7e7</color>
+    <color name="grey_dark">#a6a6a6</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000</color>
+    <color name="dark">#1f1f1f</color>
+    <color name="gray_light">#d7dce9</color>
+    <color name="blue">#0000ff</color>
+
+
+    <color name="kin_btn_disable">@color/grey</color>
+    <color name="kin_btn_pressed">@color/purple_dark</color>
+    <color name="kin_btn">@color/purple</color>
+    <color name="kin_btn_text_disable">@color/grey_dark</color>
+    <color name="kin_btn_text_pressed">@color/white</color>
+    <color name="kin_btn_text">@color/white</color>
+    <color name="kin_white_btn_text_pressed">@color/purple</color>
+    <color name="kin_white_btn_text">@color/purple</color>
+    <color name="alert_text">@color/dark</color>
+</resources>

@@ -6,7 +6,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import org.kinecosystem.transfer.base.BasePresenter;
+import org.kinecosystem.common.base.BasePresenter;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfoResponder;
 import org.kinecosystem.transfer.receiver.view.IAccountInfoView;

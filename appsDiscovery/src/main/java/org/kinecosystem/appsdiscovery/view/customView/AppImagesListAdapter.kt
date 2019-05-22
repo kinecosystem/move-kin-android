@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.transfer.utils.DeviceUtils
-import org.kinecosystem.transfer.utils.load
+import org.kinecosystem.common.utils.DeviceUtils
+import org.kinecosystem.common.utils.load
 
 class AppImagesListAdapter(private val context: Context, private val imagesUrl:List<String>): RecyclerView.Adapter<AppImagesListAdapter.ViewHolder>() {
 

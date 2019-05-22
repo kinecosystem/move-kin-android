@@ -1,2 +1,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.kinecosystem.transfer" />
+    package="org.kinecosystem.transfer">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <provider
+            android:name=".receiver.manager.KinTransferAccountInfoFileProvider"
+            android:authorities="${applicationId}.KinTransferAccountInfoFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/kin_transfer_file_provider_paths" />
+        </provider>
+    </application>
+
+</manifest>

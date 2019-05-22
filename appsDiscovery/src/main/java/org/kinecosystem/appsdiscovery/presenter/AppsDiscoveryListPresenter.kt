@@ -4,7 +4,7 @@ import org.kinecosystem.appsdiscovery.view.customView.IAppsDiscoveryListView
 import org.kinecosystem.appsdiscovery.model.EcosystemApp
 import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.repositories.OperationResultCallback
-import org.kinecosystem.transfer.base.BasePresenter
+import org.kinecosystem.common.base.BasePresenter
 
 class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
 

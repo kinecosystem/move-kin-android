@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.utils
+package org.kinecosystem.common.utils
 
 import android.app.Activity
 import android.util.DisplayMetrics

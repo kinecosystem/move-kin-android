@@ -28,11 +28,11 @@ import org.kinecosystem.appsdiscovery.model.*
 import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
 import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
 import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
-import org.kinecosystem.transfer.sender.service.SendKinServiceBase
+import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
-import org.kinecosystem.transfer.base.Consts
-import org.kinecosystem.transfer.utils.load
-import org.kinecosystem.transfer.utils.navigateToUrl
+import org.kinecosystem.common.base.Consts
+import org.kinecosystem.common.utils.load
+import org.kinecosystem.common.utils.navigateToUrl
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -170,7 +170,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         with(findViewById<TextView>(R.id.actionText)) {
             setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, app.cardFontSize)
-            typeface = org.kinecosystem.transfer.utils.TextUtils.getFontTypeForType(context, app.cardFontName)
+            typeface = org.kinecosystem.common.utils.TextUtils.getFontTypeForType(context, app.cardFontName)
             setLineSpacing(android.util.TypedValue.applyDimension(android.util.TypedValue.COMPLEX_UNIT_DIP, app.fontLineSpacing, context.resources.displayMetrics), 1.0f)
             text = app.cardTitle
         }

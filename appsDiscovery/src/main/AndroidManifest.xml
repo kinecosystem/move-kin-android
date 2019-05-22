@@ -5,23 +5,13 @@
     <application
         android:label="@string/app_name"
         >
-        <activity android:name="org.kinecosystem.appsdiscovery.view.AppsDiscoveryActivity"
+        <activity android:name=".view.AppsDiscoveryActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="org.kinecosystem.appsdiscovery.view.AppInfoActivity"
+        <activity android:name=".view.AppInfoActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name="org.kinecosystem.appsdiscovery.view.AmountChooserActivity"
+        <activity android:name=".view.AmountChooserActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
-        <provider
-            android:name="org.kinecosystem.transfer.receiver.manager.KinTransferAccountInfoFileProvider"
-            android:authorities="${applicationId}.KinTransferAccountInfoFileProvider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/kin_transfer_file_provider_paths" />
-        </provider>
     </application>
 
 </manifest>

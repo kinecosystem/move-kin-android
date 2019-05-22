@@ -1,6 +1,6 @@
 package org.kinecosystem.appsdiscovery.view.customView
 
-import org.kinecosystem.transfer.base.IBaseView
+import org.kinecosystem.common.base.IBaseView
 import org.kinecosystem.appsdiscovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.model.EcosystemApp
 

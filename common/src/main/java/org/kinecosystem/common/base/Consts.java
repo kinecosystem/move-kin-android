@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.base;
+package org.kinecosystem.common.base;
 
 public class Consts {
     public static final String SERVICE_DEFAULT_PACKAGE = "kindiscover";

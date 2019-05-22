@@ -9,6 +9,7 @@ import java.io.InputStreamReader
 
 
 class TransferManager(var activity: Activity?) {
+    val REQUEST_CODE = 77
 
     interface AccountInfoResponseListener {
         fun onCancel()
@@ -39,7 +40,7 @@ class TransferManager(var activity: Activity?) {
                     val appName = it.applicationInfo.loadLabel(packageManager).toString()
                     intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
                     try {
-                        it.startActivityForResult(intent, TransferIntent.REQUEST_CODE)
+                        it.startActivityForResult(intent, REQUEST_CODE)
                     } catch (e: Exception) {
                         return false
                     }
@@ -65,7 +66,7 @@ class TransferManager(var activity: Activity?) {
             intent: Intent?,
             accountInfoResponseListener: AccountInfoResponseListener
     ) {
-        if (requestCode == TransferIntent.REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE) {
             if (intent != null) {
                 if (resultCode == Activity.RESULT_OK) {
                     processResultOk(intent, accountInfoResponseListener)

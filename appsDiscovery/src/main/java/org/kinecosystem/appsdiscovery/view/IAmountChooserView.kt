@@ -1,6 +1,6 @@
 package org.kinecosystem.appsdiscovery.view
 
-import org.kinecosystem.transfer.base.IBaseView
+import org.kinecosystem.common.base.IBaseView
 
 interface IAmountChooserView : IBaseView{
     fun initViews(receiverAppIconUrl:String, balance:Int)

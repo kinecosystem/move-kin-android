@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.base
+package org.kinecosystem.common.base
 
 import android.support.annotation.CallSuper
 

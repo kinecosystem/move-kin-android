@@ -11,8 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.presenter.AmountChooserPresenter
-import org.kinecosystem.transfer.base.Consts
-import org.kinecosystem.transfer.utils.load
+import org.kinecosystem.common.base.Consts
+import org.kinecosystem.common.utils.load
 
 class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
 

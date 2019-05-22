@@ -6,11 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import org.kinecosystem.transfer.R;
 import org.kinecosystem.transfer.receiver.manager.AccountInfoResponder;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
 import org.kinecosystem.transfer.receiver.presenter.AccountInfoPresenter;
 import org.kinecosystem.transfer.receiver.presenter.IAccountInfoPresenter;
-import org.kinecosystem.transfer.R;
 
 public abstract class AccountInfoActivityBase extends AppCompatActivity implements IAccountInfoView, IAccountInfo {
     private IAccountInfoPresenter presenter;

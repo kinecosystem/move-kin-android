@@ -29,6 +29,10 @@ dependencies {
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp3Version"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp3Version"
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    androidTestImplementation "com.android.support.test:runner:$rootProject.ext.testRunnerVersion"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.testEspressoCoreVersion"
+
 }
 repositories {
     mavenCentral()

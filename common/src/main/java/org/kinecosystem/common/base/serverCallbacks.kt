@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.base
+package org.kinecosystem.common.base
 
 interface OperationCompletionCallback {
     fun onSuccess()

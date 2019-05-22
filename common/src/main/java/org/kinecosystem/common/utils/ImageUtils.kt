@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.utils
+package org.kinecosystem.common.utils
 
 import com.squareup.picasso.Picasso
 
