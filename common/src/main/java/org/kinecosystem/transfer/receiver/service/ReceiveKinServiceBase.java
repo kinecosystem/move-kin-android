@@ -52,8 +52,8 @@ public abstract class ReceiveKinServiceBase extends Service {
 
     /**
      * This method can be used to configure the number of seconds to delay stopping the service after
-     * {@link ReceiveKinServiceBase#onTransactionCompleted(String, String, int, String, String)}
-     * {@link ReceiveKinServiceBase#onTransactionFailed(String, String, String, int, String)}
+     * {@link ReceiveKinServiceBase#onTransactionCompleted(String, String, String, int, String, String)}
+     * {@link ReceiveKinServiceBase#onTransactionFailed(String, String, String, String, int, String)}
      * methods have completed. If you do not need to run a background thread in the implementation of
      * onTransactionCompleted/onTransactionFailed, you can override this method and return 0.
      * @return the amount of seconds to delay before stopping the service

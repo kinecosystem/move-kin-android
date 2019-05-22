@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 public interface IAccountInfoResponder {
 
-    boolean init(@NonNull final String publicAddress);
+    boolean init(@NonNull final String accountInfo);
 
     void respondError(String errorMessage);
 

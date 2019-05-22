@@ -164,19 +164,19 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
         @Override
         protected TaskResponse doInBackground(Void... args) {
             TaskResponse response = new TaskResponse();
-            String address = null;
+            String info = null;
 
             if (accountInfo != null) {
-                address = accountInfo.getPublicAddress();
+                info = accountInfo.getAccountInfo();
             }
-            if (!TextUtils.isEmpty(address) && accountInfoResponder != null) {
-                if (accountInfoResponder.init(address)) {
+            if (!TextUtils.isEmpty(info) && accountInfoResponder != null) {
+                if (accountInfoResponder.init(info)) {
                     response.taskState = TASK_STATE_SUCCESS;
                 }
             } else {
                 response.taskState = TASK_STATE_FAILURE;
-                response.errorMessage = "Unable to retrieve or initialize responder with kin account public address. " +
-                        "Address=" + address + ", accountInfo=" + accountInfo + ", accountInfoResponder=" + accountInfoResponder;
+                response.errorMessage = "Unable to retrieve or initialize responder with kin account data= " +
+                        info + ", accountInfo=" + accountInfo + ", accountInfoResponder=" + accountInfoResponder;
             }
             return response;
         }

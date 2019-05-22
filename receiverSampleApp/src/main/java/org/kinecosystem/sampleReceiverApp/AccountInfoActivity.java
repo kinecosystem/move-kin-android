@@ -7,7 +7,7 @@ import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 public class AccountInfoActivity extends AccountInfoActivityBase {
 
     @Override
-    public String getPublicAddress() {
+    public String getAccountInfo() {
         SampleWallet sampleWallet = ((ReceiverApplication)getApplicationContext()).getSampleWallet();
         if (sampleWallet != null && sampleWallet.hasActiveAccount() ) {
             return sampleWallet.getAccount().getPublicAddress();

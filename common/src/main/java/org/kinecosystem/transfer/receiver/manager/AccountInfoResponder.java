@@ -31,8 +31,8 @@ public class AccountInfoResponder implements IAccountInfoResponder {
         activity = null;
     }
 
-    public boolean init(@NonNull final String publicAddress) {
-        if (publicAddress.isEmpty() || activity == null) {
+    public boolean init(@NonNull final String accountInfo) {
+        if (accountInfo.isEmpty() || activity == null) {
             return false;
         }
         File dir = new File(getFileProviderDir());
@@ -50,7 +50,7 @@ public class AccountInfoResponder implements IAccountInfoResponder {
                 }
             }
             FileWriter writer = new FileWriter(file);
-            writer.append(publicAddress);
+            writer.append(accountInfo);
             writer.flush();
             writer.close();
         } catch (IOException e) {
