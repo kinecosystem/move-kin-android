@@ -44,17 +44,18 @@ public class OnBoarding {
                 .build();
     }
 
+
     void onBoard(@NonNull KinAccount account, @NonNull Callbacks callbacks) {
-        Runnable accountCreationListeningTimeout = () -> {
-            listenerRegistration.remove();
-            fireOnFailure(callbacks, new TimeoutException("Waiting for account creation event time out"));
-        };
-        listenerRegistration = account.addAccountCreationListener(data -> {
-            listenerRegistration.remove();
-            handler.removeCallbacks(accountCreationListeningTimeout);
-            fireOnSuccess(callbacks);
-        });
-        handler.postDelayed(accountCreationListeningTimeout, 10 * DateUtils.SECOND_IN_MILLIS);
+ //       Runnable accountCreationListeningTimeout = () -> {
+ //           listenerRegistration.remove();
+ //           fireOnFailure(callbacks, new TimeoutException("Waiting for account creation event time out"));
+ //       };
+//        listenerRegistration = account.addAccountCreationListener(data -> {
+//            listenerRegistration.remove();
+//            handler.removeCallbacks(accountCreationListeningTimeout);
+//            fireOnSuccess(callbacks);
+//        });
+ //       handler.postDelayed(accountCreationListeningTimeout, 10 * DateUtils.SECOND_IN_MILLIS);
         createAccount(account, callbacks);
     }
 
@@ -76,6 +77,10 @@ public class OnBoarding {
                         response.close();
                         if (code != 200) {
                             fireOnFailure(callbacks, new Exception("Create account - response code is " + response.code()));
+                        }
+                        else {
+                            //handler.removeCallbacks(accountCreationListeningTimeout);
+                            fireOnSuccess(callbacks);
                         }
                     }
                 });
