@@ -90,7 +90,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     private fun sendKin(amountToSend: Int) {
         app?.let {
             it.identifier?.let { pkg ->
-                view?.initTransfersInfo(TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend))
+                val info = TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend)
+                view?.initTransfersInfo(info)
             }
         }
         app?.identifier?.let { receiverPackage ->

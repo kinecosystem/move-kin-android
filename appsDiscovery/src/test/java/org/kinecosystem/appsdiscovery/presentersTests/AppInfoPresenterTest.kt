@@ -14,13 +14,13 @@ import org.kinecosystem.appsdiscovery.sender.discovery.presenter.AppInfoPresente
 import org.kinecosystem.appsdiscovery.sender.discovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
-import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferInfo
 import org.kinecosystem.appsdiscovery.sender.model.*
 import org.kinecosystem.appsdiscovery.sender.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.sender.transfer.TransferManager
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
@@ -182,6 +182,8 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
+        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
@@ -191,7 +193,66 @@ class AppInfoPresenterTest {
         appInfoPresenter.processResponse(appInfoPresenter.AMOUNT_CHOOSER_REQUEST_CODE, Activity.RESULT_OK, returnIntent)
 
         verify(view).updateTransferStatus(TransferBarView.TransferStatus.Started)
-        verify(view).initTransfersInfo(any(TransferInfo::class.java))
         verify(view).startSendKin(anyString(),anyString(),anyInt(),anyString(),anyString())
+        verify(view, times(0)).updateTransferStatus(TransferBarView.TransferStatus.Timeout)
     }
+
+    @Test
+    @Throws(Exception::class)
+    fun test_processResponse_when_requestCode_NOT_AMOUNT_CHOOSER_REQUEST_CODE_onError(){
+        val context = mock(Context::class.java)
+        val packageManager = mock(PackageManager::class.java)
+        `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
+        `when`(context.packageManager).thenReturn(packageManager)
+        `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
+        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
+
+        appInfoPresenter.onAttach(view)
+        appInfoPresenter.onResume(context)
+
+        val returnIntent = Intent()
+        returnIntent.putExtra(AmountChooserPresenter.PARAM_AMOUNT, amount)
+
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<TransferManager.AccountInfoResponseListener>(3)
+            callback.onError("some error")
+        }.`when`(transferManager).processResponse(anyInt(), anyInt(), any(Intent::class.java), any(TransferManager.AccountInfoResponseListener::class.java))
+
+
+        appInfoPresenter.processResponse(0, 0, returnIntent)
+        verify(view).updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
+    }
+
+    @Throws(Exception::class)
+    fun test_processResponse_when_requestCode_NOT_AMOUNT_CHOOSER_REQUEST_CODE_onAddressReceived(){
+        val context = mock(Context::class.java)
+        val packageManager = mock(PackageManager::class.java)
+        `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
+        `when`(context.packageManager).thenReturn(packageManager)
+        `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
+        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
+        doNothing().`when`(repository.storeReceiverAppPublicAddress(anyString()))
+
+        appInfoPresenter.onAttach(view)
+        appInfoPresenter.onResume(context)
+
+        val returnIntent = Intent()
+        returnIntent.putExtra(AmountChooserPresenter.PARAM_AMOUNT, amount)
+
+        doAnswer { invocation ->
+            val callback = invocation.getArgument<TransferManager.AccountInfoResponseListener>(3)
+            callback.onAddressReceived("address")
+        }.`when`(transferManager).processResponse(anyInt(), anyInt(), any(Intent::class.java), any(TransferManager.AccountInfoResponseListener::class.java))
+
+
+        appInfoPresenter.processResponse(0, 0, returnIntent)
+        verify(view).startAmountChooserActivity(anyString(), anyInt(), anyInt())
+    }
+}
+
+private fun <T> any(type : Class<T>): T {
+    Mockito.any(type)
+    return null as T
 }
