@@ -17,7 +17,7 @@ import org.kinecosystem.common.utils.isAppInstalled
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
-
+    private val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     private val AMOUNT_CHOOSER_REQUEST_CODE = 100
     private val TRANSACTION_TIMEOUT = 10 * 1000L
     private val MEMO_PREFIX = "CrossApps-"
@@ -69,8 +69,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == AMOUNT_CHOOSER_REQUEST_CODE) {
             processAmountResponse(resultCode, intent)
-        } else {
-            parsePublicAddressData(requestCode, resultCode, intent)
+        } else if (requestCode == REMOTE_PUBLIC_ADDRESS_REQUEST_CODE) {
+            parsePublicAddressData(resultCode, intent)
         }
     }
 
@@ -113,8 +113,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         }, TRANSACTION_TIMEOUT)
     }
 
-    private fun parsePublicAddressData(requestCode: Int, resultCode: Int, intent: Intent?) {
-        transferManager.processResponse(requestCode, resultCode, intent, object : TransferManager.AccountInfoResponseListener {
+    private fun parsePublicAddressData(resultCode: Int, intent: Intent?) {
+        transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
                 Log.d("AppInfoPresenter", "Operation cancelled, no public address received")
             }
@@ -124,9 +124,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
             }
 
-            override fun onAddressReceived(address: String) {
+            override fun onResult(address: String) {
                 repository.storeReceiverAppPublicAddress(address)
-                Log.d("AppInfoPresenter", "got address onAddressReceived $address")
+                Log.d("AppInfoPresenter", "got address onResult $address")
                 app?.let {
                     view?.startAmountChooserActivity(it.iconUrl, repository.getCurrentBalance(), AMOUNT_CHOOSER_REQUEST_CODE)
                 }
@@ -153,7 +153,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         repository.clearReceiverAppPublicAddress()
         app?.launchActivity?.let { activityPath ->
             app?.identifier?.let { receiverPkg ->
-                val started = transferManager.startTransferRequestActivity(receiverPkg, activityPath)
+                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE,
+                        receiverPkg, activityPath)
                 if (!started) {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                 }

@@ -9,14 +9,13 @@ import java.io.InputStreamReader
 
 
 class TransferManager(var activity: Activity?) {
-    val REQUEST_CODE = 77
 
     interface AccountInfoResponseListener {
         fun onCancel()
 
         fun onError(error: String)
 
-        fun onAddressReceived(address: String)
+        fun onResult(data: String)
     }
 
     /**
@@ -28,7 +27,8 @@ class TransferManager(var activity: Activity?) {
      * returning a result with the destination app public address
      * @return boolean true if the destination activity has been started
      */
-    fun startTransferRequestActivity(applicationId: String, launchActivityFullPath: String): Boolean {
+    fun startTransferRequestActivity(requestCode: Int, applicationId: String,
+                                     launchActivityFullPath: String): Boolean {
         activity?.let {
             val packageManager = it.packageManager
             val intent = Intent()
@@ -40,7 +40,7 @@ class TransferManager(var activity: Activity?) {
                     val appName = it.applicationInfo.loadLabel(packageManager).toString()
                     intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
                     try {
-                        it.startActivityForResult(intent, REQUEST_CODE)
+                        it.startActivityForResult(intent, requestCode)
                     } catch (e: Exception) {
                         return false
                     }
@@ -55,61 +55,42 @@ class TransferManager(var activity: Activity?) {
      * Method should be called from onActivityResult
      *
      * @param context                     The activity context is needed to process the result
-     * @param requestCode                 The requestCode received in onActivityResult
      * @param resultCode                  The resultCode received in onActivityResult
      * @param intent                      The intent received in onActivityResult
      * @param accountInfoResponseListener A listener that can handle the response
      */
-    fun processResponse(
-            requestCode: Int,
-            resultCode: Int,
-            intent: Intent?,
-            accountInfoResponseListener: AccountInfoResponseListener
-    ) {
-        if (requestCode == REQUEST_CODE) {
-            if (intent != null) {
-                if (resultCode == Activity.RESULT_OK) {
-                    processResultOk(intent, accountInfoResponseListener)
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    processResultCanceled(intent, accountInfoResponseListener)
-                }
-            }else{
-                accountInfoResponseListener.onError("no data")
+    fun processResponse(resultCode: Int, intent: Intent?,
+            accountInfoResponseListener: AccountInfoResponseListener) {
+
+        if (intent != null) {
+            if (resultCode == Activity.RESULT_OK) {
+                processResultOk(intent, accountInfoResponseListener)
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+                processResultCanceled(intent, accountInfoResponseListener)
             }
+        } else {
+            accountInfoResponseListener.onError("no data")
         }
+
     }
 
 
-    private fun processResultOk(
-            intent: Intent,
-            accountInfoResponseListener: AccountInfoResponseListener
-    ) {
+    private fun processResultOk(intent: Intent,
+            accountInfoResponseListener: AccountInfoResponseListener) {
+
         try {
             val uri = intent.data
             val inputStream = activity?.contentResolver?.openInputStream(uri!!)
-
             val reader = BufferedReader(InputStreamReader(inputStream!!))
-            val stringBuilder = StringBuilder()
-
             var data: String? = reader.readLine()
-            while (data != null) {
-                stringBuilder.append(data).append('\n')
-                data = reader.readLine()
-            }
-            val address = stringBuilder.toString()
-            if (address.isNotEmpty()) {
-                accountInfoResponseListener.onAddressReceived(address)
-            } else {
-                accountInfoResponseListener.onError("unable to retrieve public address, input stream contained no data")
+            data?.let {
+                accountInfoResponseListener.onResult(it)
+            } ?: run {
+                accountInfoResponseListener.onError("unable to retrieve account info, input stream contained no data")
             }
         } catch (e: Exception) {
-            var message =  ""
-            e.message?.let {
-                message = it
-            }
-            accountInfoResponseListener.onError(message)
+            accountInfoResponseListener.onError("Exception $e with message ${e.message.orEmpty()}")
         }
-
     }
 
     private fun processResultCanceled(intent: Intent?, accountInfoResponseListener: AccountInfoResponseListener) {
