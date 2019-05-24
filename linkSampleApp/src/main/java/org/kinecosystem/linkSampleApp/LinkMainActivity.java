@@ -26,7 +26,8 @@ public class LinkMainActivity extends SampleBaseActivity {
 
         Button linkButton =  findViewById(R.id.linkButton);
         linkButton.setOnClickListener(v ->
-                linkingClient.startLinkingWalletForResult("MyAppName", REQUEST_CODE, this)
+                linkingClient.startLinkingWalletForResult("MyAppName", "org.kinecosystem.linkSampleApp",
+                        sampleWallet.getAccount().getPublicAddress(), REQUEST_CODE, this)
 
         );
     }
