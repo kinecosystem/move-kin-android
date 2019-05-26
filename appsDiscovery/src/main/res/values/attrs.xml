@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="AppsDiscoveryButton">
-        <attr name="has_drawable" format="boolean" />
         <attr name="button_theme" format="enum">
             <enum name="DARK" value="0"/>
             <enum name="LIGHT" value="1"/>
