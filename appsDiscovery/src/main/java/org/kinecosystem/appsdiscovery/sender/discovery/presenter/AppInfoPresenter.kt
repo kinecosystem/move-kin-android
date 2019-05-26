@@ -84,14 +84,16 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
             }
         }
-        // TODO: @Shaybaz What if not RESULT_OK?
+        else {
+            view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
+        }
     }
 
     private fun sendKin(amountToSend: Int) {
         app?.let {
             it.identifier?.let { pkg ->
-                val info = TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend)
-                view?.initTransfersInfo(info)
+                val transferInfo = TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend)
+                view?.initTransfersInfo(transferInfo)
             }
         }
         app?.identifier?.let { receiverPackage ->
@@ -159,10 +161,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
                 if (!started) {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                 }
-            } ?: kotlin.run { //TODO: Remove, redounded, see L:40
+            } ?: kotlin.run {
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
             }
-        } ?: kotlin.run { //TODO: Remove, redounded, see L:40
+        } ?: kotlin.run {
             view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
         }
     }
