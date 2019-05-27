@@ -18,8 +18,8 @@ class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: Attr
 
     init {
         text = resources.getString(R.string.transfer_kin)
-        TextViewCompat.setTextAppearance(this, R.style.kinTextButtonRounded_Purple)
-        background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
+        TextViewCompat.setTextAppearance(this, R.style.kinTextButtonRounded_Hollow)
+        background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_hollow_drawable)
         setOnClickListener {
             startAppsDiscoveryActivity()
         }

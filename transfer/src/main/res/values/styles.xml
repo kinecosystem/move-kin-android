@@ -13,6 +13,13 @@
         <item name="android:gravity">center_horizontal</item>
     </style>
 
+    <style name="kinTextButtonRounded.Hollow">
+        <item name="android:textColor">@drawable/kin_button_hollow_text_colors</item>
+        <item name="android:background">@drawable/kin_button_rounded_hollow_drawable</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+
     <style name="kinTextButtonRounded.White">
         <item name="android:textColor">@drawable/kin_white_button_text_colors</item>
         <item name="android:background">@drawable/kin_white_button_rounded_drawable</item>
