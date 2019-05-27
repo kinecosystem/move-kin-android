@@ -3,8 +3,6 @@ package org.kinecosystem.appsdiscovery.view.customView
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.Group
 import android.util.AttributeSet
@@ -38,7 +36,6 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     private val transferFailedGroup: Group
     private val errorTitle: TextView
     private var receiverServiceError = ""
-    private val uiHandler = Handler(Looper.getMainLooper())
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -79,6 +76,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         findViewById<TextView>(R.id.gotoApp).setOnClickListener {
             context.launchApp(transferInfo.receiverPackage)
         }
+        findViewById<TextView>(R.id.gotoApp).text = context.getString(R.string.go_to_app, transferInfo.receiverAppName)
         receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
     }
 

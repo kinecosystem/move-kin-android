@@ -10,11 +10,9 @@
     <color name="dark">#1f1f1f</color>
     <color name="gray_light">#d7dce9</color>
     <color name="blue">#0000ff</color>
-
-
     <color name="kin_btn_disable">@color/grey</color>
     <color name="kin_btn_pressed">@color/purple_dark</color>
-    <color name="kin_btn_hollow_pressed">@color/purple_light</color>
+    <color name="kin_btn_hollow_pressed">#e2d9fa</color>
     <color name="kin_btn">@color/purple</color>
     <color name="kin_btn_text_disable">@color/grey_dark</color>
     <color name="kin_btn_text_pressed">@color/white</color>

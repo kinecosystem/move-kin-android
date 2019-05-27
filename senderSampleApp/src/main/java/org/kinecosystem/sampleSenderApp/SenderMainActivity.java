@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 
 import org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryAlertDialog;
+import org.kinecosystem.appstransfer.view.customview.AppsTransferDialog;
 import org.kinecosystem.baseSampleApp.SampleBaseActivity;
 
 public class SenderMainActivity extends SampleBaseActivity {
@@ -20,5 +21,13 @@ public class SenderMainActivity extends SampleBaseActivity {
             AppsDiscoveryAlertDialog dialog = new AppsDiscoveryAlertDialog(SenderMainActivity.this);
             dialog.show();
         });
+
+        findViewById(R.id.transferAlertBtn).setOnClickListener(v -> {
+            AppsTransferDialog dialog = new AppsTransferDialog(SenderMainActivity.this);
+            dialog.show();
+        });
+
+
+
     }
 }

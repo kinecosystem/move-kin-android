@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:alignmentMode="alignBounds"
+    app:columnCount="3">
+
+    <TextView
+        android:id="@+id/one"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="1"
+        android:text="1"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/two"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="2"
+        android:text="2"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/three"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="3"
+        android:text="3"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/four"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="4"
+        android:text="4"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/five"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="5"
+        android:text="5"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/six"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="6"
+        android:text="6"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+    <TextView
+        android:id="@+id/seven"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="7"
+
+        android:text="7"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+    <TextView
+        android:id="@+id/eight"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="8"
+        android:text="8"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <TextView
+        android:id="@+id/nine"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="9"
+        android:text="9"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+    <TextView
+        android:id="@+id/zeros"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onZerosClicked"
+        android:text="00"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+    <TextView
+        android:id="@+id/zero"
+        style="@style/kinTextDigit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onDigitClicked"
+        android:tag="0"
+        android:text="0"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+
+    <View
+        android:id="@+id/del"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:longClickable="true"
+        android:background="@drawable/dell_background_drawable"
+        android:clickable="true"
+        android:gravity="center"
+        android:onClick="onDellClicked"
+        app:layout_columnWeight="1"
+        app:layout_gravity="fill"
+        app:layout_rowWeight="1" />
+
+</android.support.v7.widget.GridLayout>
