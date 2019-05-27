@@ -4,6 +4,7 @@ package org.kinecosystem.linkSampleApp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Button;
 
 import org.kinecosystem.baseSampleApp.SampleBaseActivity;
@@ -22,14 +23,17 @@ public class LinkMainActivity extends SampleBaseActivity {
         super.onCreate(savedInstanceState);
 
         SampleWallet sampleWallet = ((SampleBaseApplication) getApplication()).getSampleWallet();
-        linkingClient = new LinkingClient(sampleWallet.getKinClient());
 
-        Button linkButton =  findViewById(R.id.linkButton);
-        linkButton.setOnClickListener(v ->
-                linkingClient.startLinkingWalletForResult("MyAppName", "org.kinecosystem.linkSampleApp",
-                        sampleWallet.getAccount().getPublicAddress(), REQUEST_CODE, this)
-
+        Button linkButton = findViewById(R.id.linkButton);
+        linkButton.setOnClickListener(v -> {
+                    linkingClient = new LinkingClient(sampleWallet.getAccount());
+                     Log.d("Linking", "Will link public address: "+sampleWallet.getAccount().getPublicAddress());
+                    linkingClient.startLinkingTransactionRequest(this, REQUEST_CODE,
+                            "org.kinecosystem.linkSampleApp",
+                            sampleWallet.getAccount().getPublicAddress());
+                }
         );
+
     }
 
     @Override
@@ -41,7 +45,8 @@ public class LinkMainActivity extends SampleBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE) {
-            linkingClient.processLinkingResult(resultCode, data, findViewById(R.id.linkingBar));
+            linkingClient.processLinkingTransactionResult(
+                    this, resultCode, data, findViewById(R.id.linkingBar));
         }
     }
 }

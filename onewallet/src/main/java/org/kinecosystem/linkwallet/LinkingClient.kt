@@ -1,54 +1,67 @@
 package org.kinecosystem.linkwallet
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.util.Log
 import android.view.View
-import kin.sdk.KinClient
+import kin.sdk.KinAccount
+import org.kinecosystem.transfer.sender.manager.TransferManager
+import java.util.concurrent.Executors
 
-class LinkingClient constructor(val kinClient: KinClient) {
+
+class LinkingClient constructor(val kinAccount: KinAccount) {
+    private var executorService = Executors.newCachedThreadPool()
+
     companion object {
         val ONE_WALLET_APP_ID = "org.kinecosystem.kinit"
         val ONE_WALLET_LINK_ACTIVITY = "org.kinecosystem.kinit.view.onewallet.LinkAccountActivity"
-        val EXTRA_SOURCE_APP_NAME = "EXTRA_SOURCE_APP_NAME"
         val EXTRA_APP_PACKAGE_ID = "EXTRA_APP_PACKAGE_ID"
         val EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS = "EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS"
     }
 
-    class MasterWalletUnreachableException(message: String) : Exception(message)
-
-    fun startLinkingWalletForResult(appName: String, appPackageId:String, appAccountPublicAddress:String,
-                                    requestCode: Int, activity: Activity) {
-        val intent = getIntentForRemoteActivity(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY,
-                activity.packageManager)
-
-        intent.putExtra(EXTRA_SOURCE_APP_NAME, appName)
-        intent.putExtra(EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS, appAccountPublicAddress)
-        intent.putExtra(EXTRA_APP_PACKAGE_ID, appPackageId)
-        activity.startActivityForResult(intent, requestCode)
+    fun startLinkingTransactionRequest(activity: Activity, requestCode: Int,
+                                       appPackageId: String, appAccountPublicAddress: String) {
+        val transferManger = TransferManager(activity)
+        transferManger.requestBuilder(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY)
+                .addParam(EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS, appAccountPublicAddress)
+                .addParam(EXTRA_APP_PACKAGE_ID, appPackageId)
+                .start(requestCode)
     }
 
-    fun processLinkingResult(resultCode: Int, intent: Intent, view: View) {
-        Log.d("","$resultCode $intent ")
-   //     intent.getExtraString("")
+    fun processLinkingTransactionResult(activity: Activity, resultCode: Int,
+                                        intent: Intent, view: View) {
+        Log.d("Linking", "$resultCode $intent ")
+
+        val transferManager = TransferManager(activity)
+        transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
+            override fun onCancel() {
+                Log.d("Linking", "linking canceled")
+            }
+
+            override fun onError(error: String) {
+                Log.d("Linking", "linking error in building transaction in Kinit. Error is: " + error)
+            }
+
+            override fun onResult(data: String) {
+                Log.d("Linking", "The linking transaction envelope is: " + data)
+                // create transaction from envelope
+                // sign it with app's signature
+                // send to blockchain using whitelisting
+                executorService.execute {
+                    try {
+                        var id = kinAccount.sendLinkAccountsTransaction(data)
+                        Log.d("Linking", "Yay! The linking transaction was sent successfully and the transaction id is "+id.id())
+                    }
+                    catch (e: Exception){
+                        Log.d("Linking", "Linking transaction failed with exception $e and message ${e.message}")
+                        e.printStackTrace()
+                    }
+                }
+            }
+        })
 
     }
 
-    private fun getIntentForRemoteActivity(remoteAppId: String, remoteAppActivity:String, packageManager: PackageManager): Intent {
-        val intent = Intent()
 
-        intent.component = (ComponentName(remoteAppId, remoteAppActivity))
-        val resolveInfos = packageManager.queryIntentActivities(intent, 0)
-        if (resolveInfos.isEmpty()) {
-            throw MasterWalletUnreachableException("")
-        }
-
-        val exported = resolveInfos[0].activityInfo.exported
-        if (!exported)
-            throw MasterWalletUnreachableException("Error in Master Wallet App configuration")
-        return intent
-    }
 }
 
