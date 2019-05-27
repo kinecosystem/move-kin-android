@@ -217,7 +217,7 @@
     </ScrollView>
 
 
-    <org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppStateView
+    <org.kinecosystem.appsdiscovery.view.customView.AppStateView
         android:id="@+id/appState"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
-    <org.kinecosystem.appsdiscovery.sender.discovery.view.customView.TransferBarView
+    <org.kinecosystem.appsdiscovery.view.customView.TransferBarView
         android:id="@+id/transferBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

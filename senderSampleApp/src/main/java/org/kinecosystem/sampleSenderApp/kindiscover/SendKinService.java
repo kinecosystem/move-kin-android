@@ -2,7 +2,7 @@ package org.kinecosystem.sampleSenderApp.kindiscover;
 
 import android.support.annotation.NonNull;
 
-import org.kinecosystem.appsdiscovery.sender.service.SendKinServiceBase;
+import org.kinecosystem.appsdiscovery.service.SendKinServiceBase;
 
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 import org.kinecosystem.sampleSenderApp.SenderApplication;

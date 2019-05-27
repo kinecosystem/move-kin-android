@@ -3,7 +3,7 @@ package org.kinecosystem.sampleSenderApp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppsDiscoveryAlertDialog;
+import org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryAlertDialog;
 import org.kinecosystem.baseSampleApp.SampleBaseActivity;
 
 public class SenderMainActivity extends SampleBaseActivity {

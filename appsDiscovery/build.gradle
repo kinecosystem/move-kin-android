@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-
+    testOptions.unitTests.includeAndroidResources = true
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -17,9 +17,18 @@ android {
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles 'proguard-rules.pro'
     }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
+    testCompile "org.mockito:mockito-core:2.27.0"
+    testImplementation "org.mockito:mockito-inline:2.27.0"
+    testImplementation 'org.robolectric:robolectric:4.2'
+    androidTestCompile 'org.mockito:mockito-android:2.27.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayoutVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.ext.appCompatVersion"
@@ -32,5 +41,5 @@ dependencies {
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     androidTestImplementation "com.android.support.test:runner:$rootProject.ext.testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.testEspressoCoreVersion"
-    api project(':common')
+    api project(':transfer')
 }
