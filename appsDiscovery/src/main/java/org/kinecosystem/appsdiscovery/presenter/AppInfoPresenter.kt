@@ -10,10 +10,10 @@ import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
+import org.kinecosystem.transfer.model.*
 
 class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 

@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">appsTransfer</string>
     <string name="transfer_kin">Transfer Kin</string>
+    <string name="coming_soon">Coming soon!</string>
+    <string name="learn_more">Lean More</string>
+    <string name="not_installed">Not installed</string>
 
 </resources>

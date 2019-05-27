@@ -11,6 +11,7 @@ import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryList
 
+
 class AppsDiscoveryActivity : AppCompatActivity() {
 
     lateinit var dataGroup: Group

@@ -1,12 +1,15 @@
-package org.kinecosystem.appsdiscovery.presenter
+package org.kinecosystem.appstransfer.presenter
 
-import org.kinecosystem.appsdiscovery.view.customView.IAppsDiscoveryListView
+import org.kinecosystem.appstransfer.view.customview.IAppsTransferListView
+import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.model.canTransferKin
+import org.kinecosystem.transfer.model.downloadUrl
 import org.kinecosystem.transfer.repositories.DiscoveryAppsRepository
 import org.kinecosystem.transfer.repositories.OperationResultCallback
-import org.kinecosystem.common.base.BasePresenter
 
-class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
+
+class AppsTransferListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsTransferListView>(), IAppsTransferListPresenter {
 
     private var loadingListener: LoadingListener? = null
 
@@ -25,7 +28,13 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
     }
 
     override fun onAppClicked(app: EcosystemApp) {
-        view?.navigateToApp(app)
+        if (app.canTransferKin) {
+            //TODO start transfer
+            view?.transferToApp(app)
+        } else {
+            view?.navigateToUrl(app.downloadUrl)
+        }
+
     }
 
     override fun onDetach() {
@@ -33,7 +42,7 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
         loadingListener = null
     }
 
-    override fun onAttach(view: IAppsDiscoveryListView) {
+    override fun onAttach(view: IAppsTransferListView) {
         super.onAttach(view)
         loadingListener?.loading()
         discoveryAppsRepository.loadDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {

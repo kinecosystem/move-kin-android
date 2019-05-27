@@ -24,15 +24,15 @@ import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
+import org.kinecosystem.transfer.repositories.DiscoveryAppsLocal
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRemote
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
+import org.kinecosystem.transfer.model.*
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {

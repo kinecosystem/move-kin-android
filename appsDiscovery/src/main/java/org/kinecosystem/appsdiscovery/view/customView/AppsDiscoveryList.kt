@@ -16,12 +16,12 @@ import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.presenter.IAppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.view.AppInfoActivity
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
+import org.kinecosystem.transfer.repositories.DiscoveryAppsLocal
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRemote
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRepository
 import org.kinecosystem.common.utils.TextUtils
 import org.kinecosystem.common.utils.load
+import org.kinecosystem.transfer.model.*
 
 
 const val COLUMNS_COUNT = 2

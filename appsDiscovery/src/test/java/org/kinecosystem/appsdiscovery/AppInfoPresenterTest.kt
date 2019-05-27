@@ -9,13 +9,13 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.kinecosystem.appsdiscovery.model.*
 import org.kinecosystem.appsdiscovery.presenter.AmountChooserPresenter
 import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
+import org.kinecosystem.transfer.repositories.DiscoveryAppsRepository
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
+import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
@@ -36,18 +36,18 @@ class AppInfoPresenterTest {
     private var repository = mock(DiscoveryAppsRepository::class.java)
     private var transferManager: TransferManager = mock(TransferManager::class.java)
 
-    private var app_with_transfer = EcosystemApp("cat","id","kit",
-            MetaData("about", "name", "url","url",
+    private var app_with_transfer = EcosystemApp("cat", "id", "kit",
+            MetaData("about", "name", "url", "url",
                     ArrayList(),
-                    ExperienceData("about","howto","name"),
-                    CardData("0f","name","size", "bgc", "title")),
+                    ExperienceData("about", "howto", "name"),
+                    CardData("0f", "name", "size", "bgc", "title")),
             TransferData("path"))
 
-    private var app_without_transfer = EcosystemApp("cat","id","kit",
-            MetaData("about", "name", "url","url",
+    private var app_without_transfer = EcosystemApp("cat", "id", "kit",
+            MetaData("about", "name", "url", "url",
                     ArrayList(),
-                    ExperienceData("about","howto","name"),
-                    CardData("0f","name","size", "bgc", "title")),
+                    ExperienceData("about", "howto", "name"),
+                    CardData("0f", "name", "size", "bgc", "title")),
             null)
 
     @Before

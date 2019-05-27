@@ -1,7 +1,7 @@
-package org.kinecosystem.appsdiscovery.repositories
+package org.kinecosystem.transfer.repositories
 
 import android.os.Handler
-import org.kinecosystem.appsdiscovery.model.*
+import org.kinecosystem.transfer.model.*
 
 class DiscoveryAppsRepository
 private constructor(private val currentPackage: String, private val local: DiscoveryAppsLocal,

@@ -1,11 +1,11 @@
-package org.kinecosystem.appsdiscovery.repositories
+package org.kinecosystem.transfer.repositories
 
 import com.google.gson.Gson
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
-import org.kinecosystem.appsdiscovery.BuildConfig
-import org.kinecosystem.appsdiscovery.model.EcosystemAppResponse
+import org.kinecosystem.transfer.BuildConfig
+import org.kinecosystem.transfer.model.EcosystemAppResponse
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 

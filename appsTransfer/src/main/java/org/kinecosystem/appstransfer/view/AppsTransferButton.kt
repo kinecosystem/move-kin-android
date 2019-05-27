@@ -12,7 +12,7 @@ class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: Attr
         TextView(context, attrs, defStyleAttr) {
 
     private fun startAppsDiscoveryActivity() {
-       // context.startActivity(AppsDiscoveryActivity.getIntent(context))
+        // context.startActivity(AppsDiscoveryActivity.getIntent(context))
         Log.d("", "#### startAppsTransferActivity")
     }
 
