@@ -45,7 +45,7 @@ You can embed the button in any of your layout xml files.
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout>
     ...
-    <org.kinecosystem.appsdiscovery.sender.discovery.view.customView.AppsDiscoveryButton
+    <org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             />
