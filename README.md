@@ -138,14 +138,14 @@ To enable your app to receive Kin from other apps in the ecosystem, do the follo
 </application>
 ```
 4. The *AccountInfoActivity* class must extend the abstract activity *AccountInfoActivityBase* and implement the abstract method:
-    - *getPublicAddress* 
+    - *getAccountInfo*
 
 
 ```java
 public class AccountInfoActivity extends AccountInfoActivityBase {
 
     @Override
-    public String getPublicAddress() {
+    public String getAccountInfo() {
         
         //get user public address
         
@@ -160,7 +160,7 @@ It is asynchronous and can perform long operations.
 ## Receive Transfer Notifications from Other Apps  
 To get notifications from other apps when they send Kin to your app, do the following:
 
-1. In your root project, add new package named *Kindiscover*.
+1. In your root project, add new package named *kindiscover*.
 2. In the kindiscover directory, create a service class named *ReceiveKinService* and declare it in your *manifest.xml*.
 3. **Important!** Configure the service as exported - true.
 
