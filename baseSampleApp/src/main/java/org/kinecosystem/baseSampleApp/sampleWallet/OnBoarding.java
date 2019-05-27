@@ -26,7 +26,6 @@ public class OnBoarding {
     private static final String URL_CREATE_ACCOUNT = "https://friendbot-testnet.kininfrastructure.com?addr=%s&amount=" + String.valueOf(FUND_KIN_AMOUNT);
     private final OkHttpClient okHttpClient;
     private final Handler handler;
-    private ListenerRegistration listenerRegistration;
 
     public interface Callbacks {
 
@@ -46,16 +45,6 @@ public class OnBoarding {
 
 
     void onBoard(@NonNull KinAccount account, @NonNull Callbacks callbacks) {
- //       Runnable accountCreationListeningTimeout = () -> {
- //           listenerRegistration.remove();
- //           fireOnFailure(callbacks, new TimeoutException("Waiting for account creation event time out"));
- //       };
-//        listenerRegistration = account.addAccountCreationListener(data -> {
-//            listenerRegistration.remove();
-//            handler.removeCallbacks(accountCreationListeningTimeout);
-//            fireOnSuccess(callbacks);
-//        });
- //       handler.postDelayed(accountCreationListeningTimeout, 10 * DateUtils.SECOND_IN_MILLIS);
         createAccount(account, callbacks);
     }
 
@@ -79,7 +68,6 @@ public class OnBoarding {
                             fireOnFailure(callbacks, new Exception("Create account - response code is " + response.code()));
                         }
                         else {
-                            //handler.removeCallbacks(accountCreationListeningTimeout);
                             fireOnSuccess(callbacks);
                         }
                     }
