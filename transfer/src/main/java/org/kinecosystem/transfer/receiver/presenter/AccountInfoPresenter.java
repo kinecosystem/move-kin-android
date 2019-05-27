@@ -167,7 +167,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             String info = null;
 
             if (accountInfo != null) {
-                info = accountInfo.getAccountInfo();
+                info = accountInfo.getData();
             }
             if (!TextUtils.isEmpty(info) && accountInfoResponder != null) {
                 if (accountInfoResponder.init(info)) {

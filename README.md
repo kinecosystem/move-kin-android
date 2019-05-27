@@ -138,14 +138,14 @@ To enable your app to receive Kin from other apps in the ecosystem, do the follo
 </application>
 ```
 4. The *AccountInfoActivity* class must extend the abstract activity *AccountInfoActivityBase* and implement the abstract method:
-    - *getAccountInfo*
+    - *getData*
 
 
 ```java
 public class AccountInfoActivity extends AccountInfoActivityBase {
 
     @Override
-    public String getAccountInfo() {
+    public String getData() {
         
         //get user public address
         
