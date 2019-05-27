@@ -3,8 +3,6 @@ package org.kinecosystem.appsdiscovery.view.customView
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.Group
 import android.util.AttributeSet
@@ -38,7 +36,6 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     private val transferFailedGroup: Group
     private val errorTitle: TextView
     private var receiverServiceError = ""
-    private val uiHandler = Handler(Looper.getMainLooper())
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -79,58 +76,60 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         findViewById<TextView>(R.id.gotoApp).setOnClickListener {
             context.launchApp(transferInfo.receiverPackage)
         }
+        findViewById<TextView>(R.id.gotoApp).text = context.getString(R.string.go_to_app, transferInfo.receiverAppName)
         receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
-        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, transferInfo.amount)
-        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, transferInfo.amount)
+    }
+
+    override fun updateAmount(amount: Int) {
+        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, amount)
+        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, amount)
     }
 
     override fun updateStatus(status: TransferStatus) {
-        uiHandler.post {
-            when (status) {
-                TransferStatus.Started -> {
-                    transferCompleteGroup.visibility = View.GONE
+        when (status) {
+            TransferStatus.Started -> {
+                transferCompleteGroup.visibility = View.GONE
+                transferFailedGroup.visibility = View.GONE
+                transferringGroup.visibility = View.VISIBLE
+                show()
+            }
+            TransferStatus.Complete -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
                     transferFailedGroup.visibility = View.GONE
-                    transferringGroup.visibility = View.VISIBLE
-                    show()
+                    transferCompleteGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Complete -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferFailedGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.Failed -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_failed_error)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Failed -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_error)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.Timeout -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_failed_timeout)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Timeout -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_timeout)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.FailedReceiverError -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = receiverServiceError
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.FailedReceiverError -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = receiverServiceError
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
-                }
-                TransferStatus.FailedConnectionError -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_connection_error)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.FailedConnectionError -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_connection_error)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
             }
         }
@@ -187,4 +186,4 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
 
 }
 
-data class TransferInfo(val senderIconUrl: String, val receiverIconUrl: String, val receiverAppName: String, val receiverPackage: String, val amount: Int)
+data class TransferInfo(val senderIconUrl: String, val receiverIconUrl: String, val receiverAppName: String, val receiverPackage: String)

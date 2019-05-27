@@ -1,12 +1,12 @@
 package org.kinecosystem.appsdiscovery.presenter
 
 import org.kinecosystem.appsdiscovery.view.customView.IAppsDiscoveryListView
-import org.kinecosystem.appsdiscovery.model.EcosystemApp
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
-import org.kinecosystem.appsdiscovery.repositories.OperationResultCallback
+import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.repositories.OperationResultCallback
 import org.kinecosystem.common.base.BasePresenter
 
-class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
+class AppsDiscoveryListPresenter(private val repository: EcosystemAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
 
     private var loadingListener: LoadingListener? = null
 
@@ -36,7 +36,7 @@ class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryA
     override fun onAttach(view: IAppsDiscoveryListView) {
         super.onAttach(view)
         loadingListener?.loading()
-        discoveryAppsRepository.loadDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {
+        repository.loadDiscoveryApps(object : OperationResultCallback<List<EcosystemApp>> {
             override fun onResult(result: List<EcosystemApp>) {
                 updateApps(result)
                 loadingListener?.loadingComplete()

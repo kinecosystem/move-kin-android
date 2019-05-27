@@ -24,15 +24,16 @@ import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
+import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
+import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.repositories.KinTransferCallback
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -41,9 +42,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
     private var list: RecyclerView? = null
-    @Volatile private var isBound = false
+    @Volatile
+    private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
+    private lateinit var uiHandler: Handler
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -60,6 +63,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        uiHandler = Handler(Looper.getMainLooper())
         val appName = intent.getStringExtra(PARAM_APP_NAME)
         if (appName.isNullOrBlank()) {
             finish()
@@ -71,12 +75,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<ImageView>(R.id.closeX).setOnClickListener {
             finish()
         }
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
         transferBarView = findViewById(R.id.transferBar)
-        presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
+        presenter = AppInfoPresenter(appName, repository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()
-
 
     }
 
@@ -85,35 +88,68 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
+    private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
+            override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+                uiHandler.post {
+                    presenter?.onTransferComplete()
+                    notifyTransactionCompleted(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
+                }
+            }
 
-    override fun startSendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+            override fun onError(e: SendKinServiceBase.KinTransferException) {
+                uiHandler.post {
+                    presenter?.onTransferFailed()
+                    notifyTransactionFailed(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
+                }
+            }
+
+        })
+    }
+
+    private fun notifyTransactionCompleted(kinTransferComplete: SendKinServiceBase.KinTransferComplete, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int) {
+        try {
+            ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
+                    kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
+                    kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+            Log.d(TAG, "Receiver was notified of transaction complete")
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    private fun notifyTransactionFailed(e: SendKinServiceBase.KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String) {
+        Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
+        try {
+            ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
+                    e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
+            Log.d(TAG, "Receiver was notified of transaction failed")
+
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
-
             if (isBound) {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete =
-                            transferService?.transferKin(receiverAddress, amount, memo)!!
-                    presenter?.onTransferComplete()
-                    try {
-                        ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-                                kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
-                                kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                        Log.d(TAG, "Receiver was notified of transaction complete")
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
-                        e.printStackTrace()
+                    Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
+                    val kinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)
+                    kinTransferComplete?.let {
+                        uiHandler.post {
+                            presenter?.onTransferComplete()
+                            notifyTransactionCompleted(it, receiverPackage, senderAppName, receiverAddress, amount)
+                        }
+                    } ?: run {
+                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    presenter?.onTransferFailed()
-                    Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
-                    try {
-                        ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
-                                e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
-                        Log.d(TAG, "Receiver was notified of transaction failed")
-
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
-                        e.printStackTrace()
+                    uiHandler.post {
+                        presenter?.onTransferFailed()
+                        notifyTransactionFailed(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
                     }
                 }
             }
@@ -189,6 +225,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         transferBarView?.updateViews(transferInfo)
     }
 
+    override fun updateAmount(amount: Int) {
+        transferBarView?.updateAmount(amount)
+    }
 
     override fun updateTransferStatus(status: TransferBarView.TransferStatus) {
         transferBarView?.updateStatus(status)
@@ -238,6 +277,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
+        transferService?.cancelCallback()
     }
 
 }

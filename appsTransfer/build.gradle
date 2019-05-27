@@ -33,6 +33,8 @@ dependencies {
     implementation "com.android.support.constraint:constraint-layout:$rootProject.ext.constraintLayoutVersion"
     implementation "com.android.support:appcompat-v7:$rootProject.ext.appCompatVersion"
     implementation "com.android.support:recyclerview-v7:$rootProject.ext.recyclerViewVersion"
+    implementation "com.android.support:gridlayout-v7:$rootProject.ext.gridLayoutVersion"
+
     implementation "com.android.support:support-annotations:$rootProject.ext.supportAnnotationsVersion"
     implementation "com.google.code.gson:gson:$rootProject.ext.gsonVersion"
     implementation "com.squareup.picasso:picasso:$rootProject.ext.picassoVersion"
