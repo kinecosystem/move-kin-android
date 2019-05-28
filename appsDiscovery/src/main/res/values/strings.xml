@@ -13,8 +13,6 @@
     <string name="learn_more">Learn more</string>
     <string name="discover_subtitle">Find the best experiences with Kin from other apps and send your Kin across apps.</string>
     <string name="discover_title">Kin is now across apps!</string>
-    <string name="discover_title_no_data">Oh… Something isn\’t working</string>
-    <string name="discover_subtitle_no_data">An unknown error occurred. Please close the page and try again later.</string>
     <string name="by_app">By %s</string>
     <string name="about_app">About %s</string>
     <string name="about_experience">About Experience</string>

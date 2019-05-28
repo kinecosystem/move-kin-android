@@ -1,4 +1,4 @@
-package org.kinecosystem.appsdiscovery.repositories
+package org.kinecosystem.transfer.repositories
 
 import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
 

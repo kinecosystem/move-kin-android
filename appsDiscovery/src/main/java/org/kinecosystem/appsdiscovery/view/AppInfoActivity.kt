@@ -17,20 +17,16 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.appsdiscovery.model.*
+import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
+import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
-import org.kinecosystem.appsdiscovery.repositories.KinTransferCallback
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.common.base.Consts
-import org.kinecosystem.common.utils.load
-import org.kinecosystem.common.utils.navigateToUrl
+import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.transfer.sender.manager.TransferManager
@@ -75,9 +71,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<ImageView>(R.id.closeX).setOnClickListener {
             finish()
         }
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(packageName, DiscoveryAppsLocal(this), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
         transferBarView = findViewById(R.id.transferBar)
-        presenter = AppInfoPresenter(appName, discoveryAppsRepository, TransferManager(this))
+        presenter = AppInfoPresenter(appName, repository, TransferManager(this))
         presenter?.onAttach(this)
         presenter?.onStart()
 
