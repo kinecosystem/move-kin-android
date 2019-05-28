@@ -22,7 +22,7 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.kinecosystem.move-kin-android:appsDiscovery::<latest release>'
+    implementation 'com.github.kinecosystem.move-kin-android:appsDiscovery:<latest release>'
 }
 ```
 
