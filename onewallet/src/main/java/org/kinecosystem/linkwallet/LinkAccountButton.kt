@@ -10,8 +10,7 @@ class LinkAccountButton @JvmOverloads constructor(context: Context, attrs: Attri
         Button(context, attrs, defStyleAttr) {
 
     init {
-        text = "Link Account" //resources.getString(R.string.explore_kin)
-        //TextViewCompat.setTextAppearance(this, R.style.kinTextButtonRounded_Purple)
-        //background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
+        text = "Link Account"
+        // TODO create customized button
     }
 }

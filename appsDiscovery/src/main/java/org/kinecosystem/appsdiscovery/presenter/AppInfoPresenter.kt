@@ -154,7 +154,8 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         repository.clearReceiverAppPublicAddress()
         app?.launchActivity?.let { activityPath ->
             app?.identifier?.let { receiverPkg ->
-                val started = transferManager.requestBuilder(receiverPkg, activityPath)
+                val started = transferManager.intentBuilder(receiverPkg, activityPath)
+                        .build()
                         .start(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE)
                 if (!started) {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)

@@ -21,10 +21,11 @@ class LinkingClient constructor(val kinAccount: KinAccount) {
 
     fun startLinkingTransactionRequest(activity: Activity, requestCode: Int,
                                        appPackageId: String, appAccountPublicAddress: String) {
-        val transferManger = TransferManager(activity)
-        transferManger.requestBuilder(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY)
+        val transferManager = TransferManager(activity)
+        transferManager.intentBuilder(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY)
                 .addParam(EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS, appAccountPublicAddress)
                 .addParam(EXTRA_APP_PACKAGE_ID, appPackageId)
+                .build()
                 .start(requestCode)
     }
 

@@ -17,34 +17,42 @@ class TransferManager(var activity: Activity?) {
         fun onResult(data: String)
     }
 
-    fun requestBuilder(applicationId: String, launchActivityFullPath: String): RequestBuilder {
-        return RequestBuilder(activity, applicationId, launchActivityFullPath)
+    fun intentBuilder(applicationId: String, launchActivityFullPath: String): IntentBuilder {
+        return IntentBuilder(activity, applicationId, launchActivityFullPath)
     }
 
-    class RequestBuilder constructor(private val activity:Activity?,
+    class IntentBuilder constructor(private val activity:Activity?,
                                      private val applicationId: String,
                                      private val launchActivityFullPath: String) {
         val intent: Intent = Intent()
 
 
-        fun addParam(key: String, value: String): RequestBuilder {
+        fun addParam(key: String, value: String): IntentBuilder {
             intent.putExtra(key, value)
             return this
         }
 
+        fun build(): IntentBuilder {
+            return this
+        }
+
         fun start(requestCode: Int): Boolean {
-            activity?.let {
-                val packageManager = it.packageManager
-                intent.component = ComponentName(applicationId, launchActivityFullPath)
-                val resolveInfos = packageManager.queryIntentActivities(intent, 0)
-                if (!resolveInfos.isEmpty()) {
-                    if (resolveInfos[0].activityInfo.exported) {
-                        val appName = activity.applicationInfo.loadLabel(activity.packageManager).toString()
-                        intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
-                        activity.startActivityForResult(intent, requestCode)
-                        return true
+            try {
+                activity?.let {
+                    val packageManager = it.packageManager
+                    intent.component = ComponentName(applicationId, launchActivityFullPath)
+                    val resolveInfos = packageManager.queryIntentActivities(intent, 0)
+                    if (!resolveInfos.isEmpty()) {
+                        if (resolveInfos[0].activityInfo.exported) {
+                            val appName = activity.applicationInfo.loadLabel(activity.packageManager).toString()
+                            intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
+                            activity.startActivityForResult(intent, requestCode)
+                            return true
+                        }
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
             return false
         }

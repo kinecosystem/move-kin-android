@@ -135,7 +135,9 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(transferManager.startTransferRequestActivity(anyInt(), anyString(), anyString())).thenReturn(true)
+        val intentBuilder = mock(TransferManager.IntentBuilder::class.java)
+        `when`(transferManager.intentBuilder(anyString(), anyString())).thenReturn(intentBuilder)
+        `when`(intentBuilder.start(anyInt())).thenReturn(true)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
@@ -154,7 +156,9 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(transferManager.startTransferRequestActivity(anyInt(),anyString(), anyString())).thenReturn(false)
+        val intentRequestBuilder = mock(TransferManager.IntentBuilder::class.java)
+        `when`(transferManager.intentBuilder(anyString(), anyString())).thenReturn(intentRequestBuilder)
+        `when`(intentRequestBuilder.start(anyInt())).thenReturn(false)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
