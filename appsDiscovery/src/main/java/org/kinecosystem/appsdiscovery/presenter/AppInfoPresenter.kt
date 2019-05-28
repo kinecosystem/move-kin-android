@@ -15,7 +15,8 @@ import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
 
-class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
+class AppInfoPresenter(private val appName: String?, private val repository: DiscoveryAppsRepository,
+                       private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
@@ -153,8 +154,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         repository.clearReceiverAppPublicAddress()
         app?.launchActivity?.let { activityPath ->
             app?.identifier?.let { receiverPkg ->
-                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE,
-                        receiverPkg, activityPath)
+                val started = transferManager.intentBuilder(receiverPkg, activityPath)
+                        .build()
+                        .start(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE)
                 if (!started) {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                 }
