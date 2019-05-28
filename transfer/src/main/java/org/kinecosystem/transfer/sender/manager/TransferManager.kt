@@ -7,7 +7,6 @@ import org.kinecosystem.transfer.TransferIntent
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
-
 class TransferManager(var activity: Activity?) {
 
     interface AccountInfoResponseListener {
@@ -18,49 +17,49 @@ class TransferManager(var activity: Activity?) {
         fun onResult(data: String)
     }
 
-    /**
-     * Checks that the move kin launching activity in the given application exists and if it does,
-     * starts it using startActivityForResult
-     *
-     * @param applicationId          The application id of the destination application
-     * @param launchActivityFullPath The full path to the activity in the destination app that is responsible for
-     * returning a result with the destination app public address
-     * @return boolean true if the destination activity has been started
-     */
-    fun startTransferRequestActivity(requestCode: Int, applicationId: String,
-                                     launchActivityFullPath: String): Boolean {
-        activity?.let {
-            val packageManager = it.packageManager
-            val intent = Intent()
-            intent.component = ComponentName(applicationId, launchActivityFullPath)
-            val resolveInfos = packageManager.queryIntentActivities(intent, 0)
-            if (!resolveInfos.isEmpty()) {
-                val exported = resolveInfos[0].activityInfo.exported
-                if (exported) {
-                    val appName = it.applicationInfo.loadLabel(packageManager).toString()
-                    intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
-                    try {
-                        it.startActivityForResult(intent, requestCode)
-                    } catch (e: Exception) {
-                        return false
-                    }
-                    return true
-                }
-            }
-        }
-        return false
+    fun intentBuilder(applicationId: String, launchActivityFullPath: String): IntentBuilder {
+        return IntentBuilder(activity, applicationId, launchActivityFullPath)
     }
 
-    /**
-     * Method should be called from onActivityResult
-     *
-     * @param context                     The activity context is needed to process the result
-     * @param resultCode                  The resultCode received in onActivityResult
-     * @param intent                      The intent received in onActivityResult
-     * @param accountInfoResponseListener A listener that can handle the response
-     */
+    class IntentBuilder constructor(private val activity:Activity?,
+                                     private val applicationId: String,
+                                     private val launchActivityFullPath: String) {
+        val intent: Intent = Intent()
+
+
+        fun addParam(key: String, value: String): IntentBuilder {
+            intent.putExtra(key, value)
+            return this
+        }
+
+        fun build(): IntentBuilder {
+            return this
+        }
+
+        fun start(requestCode: Int): Boolean {
+            try {
+                activity?.let {
+                    val packageManager = it.packageManager
+                    intent.component = ComponentName(applicationId, launchActivityFullPath)
+                    val resolveInfos = packageManager.queryIntentActivities(intent, 0)
+                    if (!resolveInfos.isEmpty()) {
+                        if (resolveInfos[0].activityInfo.exported) {
+                            val appName = activity.applicationInfo.loadLabel(activity.packageManager).toString()
+                            intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
+                            activity.startActivityForResult(intent, requestCode)
+                            return true
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return false
+        }
+    }
+
     fun processResponse(resultCode: Int, intent: Intent?,
-            accountInfoResponseListener: AccountInfoResponseListener) {
+                        accountInfoResponseListener: AccountInfoResponseListener) {
 
         if (intent != null) {
             if (resultCode == Activity.RESULT_OK) {

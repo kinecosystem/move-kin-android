@@ -2,11 +2,13 @@ package org.kinecosystem.transfer.receiver.presenter;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.kinecosystem.common.base.BasePresenter;
+import org.kinecosystem.transfer.TransferIntent;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfoResponder;
 import org.kinecosystem.transfer.receiver.view.IAccountInfoView;
@@ -15,7 +17,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implements IAccountInfoPresenter {
-    private static final String EXTRA_SOURCE_APP_NAME = "EXTRA_SOURCE_APP_NAME";
     private static final int TASK_STATE_UNDEFINED = 0;
     private static final int TASK_STATE_SUCCESS = 10;
     private static final int TASK_STATE_FAILURE = 20;
@@ -54,8 +55,8 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     }
 
     private boolean processIntent(Intent intent) {
-        if (intent != null && intent.hasExtra(EXTRA_SOURCE_APP_NAME) && getView() != null) {
-            String sourceApp = intent.getStringExtra(EXTRA_SOURCE_APP_NAME);
+        if (intent != null && intent.hasExtra(TransferIntent.EXTRA_SOURCE_APP_NAME) && getView() != null) {
+            String sourceApp = intent.getStringExtra(TransferIntent.EXTRA_SOURCE_APP_NAME);
             if (!sourceApp.isEmpty()) {
                 getView().updateSourceApp(sourceApp);
                 return true;
