@@ -3,4 +3,6 @@
     <string name="receiver_activity_title">Kin Ecosystem</string>
     <string name="receiver_activity_agree">I agree</string>
     <string name="receiver_activity_message">In order to send Kin, %1$s would like to receive your Kin account information (i.e. your public address) from %2$s.</string>
+    <string name="error_title_no_data">Oh… Something isn\’t working</string>
+    <string name="error_subtitle_no_data">An unknown error occurred. Please close the page and try again later.</string>
 </resources>
