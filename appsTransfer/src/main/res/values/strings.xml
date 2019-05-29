@@ -4,4 +4,7 @@
     <string name="coming_soon">Coming soon!</string>
     <string name="learn_more">Lean More</string>
     <string name="not_installed">Not installed</string>
+    <string name="ok">Ok</string>
+    <string name="connection_error">We couldn\'t connect to %s. Please try again later.</string>
+    <string name="connection_failed">%s isn\'t up to date. Update to the latest version and try again. </string>
 </resources>

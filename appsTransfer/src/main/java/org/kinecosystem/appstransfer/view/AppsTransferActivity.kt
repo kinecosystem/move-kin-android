@@ -5,15 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.constraint.Group
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.presenter.AppsTransferPresenter
 import org.kinecosystem.appstransfer.view.customview.AppsTransferList
+import org.kinecosystem.appstransfer.view.customview.TransferErrorDialog
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
@@ -24,13 +25,16 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
     private lateinit var list: AppsTransferList
     private var presenter: AppsTransferPresenter? = null
 
-    override fun onTransferError() {
-        //TODO
-        Log.d("", "show pop up error")
+    override fun onTransferError(appName: String) {
+        TransferErrorDialog(this, TransferErrorDialog.ErrorType.ConnectionError, appName).show()
     }
 
-    override fun startAmountChooserActivity(app: EcosystemApp, receiverPublicAddress: String) {
-        Log.d("", "AppsTransferActivity  start startAmountChooserActivity")
+    override fun onCantFindReceiverInfo(appName: String) {
+        TransferErrorDialog(this, TransferErrorDialog.ErrorType.ConnectionFailed, appName).show()
+    }
+
+    override fun startTransferAmountActivity(app: EcosystemApp, receiverPublicAddress: String) {
+        startActivity(TransferAmountActivity.getIntent(this, app.name, receiverPublicAddress))
     }
 
     override fun navigateToAppStore(url: String) {

@@ -27,7 +27,7 @@ import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
