@@ -10,7 +10,7 @@ import org.kinecosystem.appsdiscovery.view.AppsDiscoveryActivity
 class AppsDiscoveryAlertDialog(context: Context) : AlertDialog(context) {
 
     init {
-        val dialogView = View.inflate(context, R.layout.apps_discovery_dialog, null)
+        val dialogView = View.inflate(context, R.layout.apps_discovery_module_dialog, null)
         setView(dialogView)
         dialogView.findViewById<TextView>(R.id.positiveBtn).setOnClickListener {
             startAppsDiscoveryActivity()

@@ -85,7 +85,7 @@ class AppsDiscoveryAdapter(private val presenter: IAppsDiscoveryListPresenter) :
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context)
-                .inflate(R.layout.app_discovery_item, parent, false)
+                .inflate(R.layout.app_discovery_module_app_discovery_item, parent, false)
         return ViewHolder(view)
     }
 

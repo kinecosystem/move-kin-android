@@ -64,7 +64,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         if (appName.isNullOrBlank()) {
             finish()
         }
-        setContentView(R.layout.app_info_activity)
+        setContentView(R.layout.app_discovery_module_app_info_activity)
         list = findViewById(R.id.listImages)
         list?.isFocusable = false
         list?.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

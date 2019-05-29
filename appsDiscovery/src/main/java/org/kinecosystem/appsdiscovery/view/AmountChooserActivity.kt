@@ -25,7 +25,7 @@ class AmountChooserActivity : AppCompatActivity(), IAmountChooserView {
             finish()
         }
         val balance = intent.getIntExtra(PARAM_BALANCE, Consts.NO_BALANCE)
-        setContentView(R.layout.amount_chooser_activity)
+        setContentView(R.layout.app_discovery_module_amount_chooser_activity)
         presenter = AmountChooserPresenter(appIconUrl, balance)
         presenter?.onAttach(this)
     }

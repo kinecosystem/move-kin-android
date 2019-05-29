@@ -19,7 +19,7 @@ class AppsDiscoveryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.apps_discovery_activity)
+        setContentView(R.layout.apps_discovery_module_activity)
         dataGroup = findViewById(R.id.data)
         noDataGroup = findViewById(R.id.noData)
         loader = findViewById(R.id.loader)
