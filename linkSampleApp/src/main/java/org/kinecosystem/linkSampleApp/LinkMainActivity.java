@@ -4,19 +4,22 @@ package org.kinecosystem.linkSampleApp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Button;
+import android.text.TextUtils;
 
 import org.kinecosystem.baseSampleApp.SampleBaseActivity;
 import org.kinecosystem.baseSampleApp.SampleBaseApplication;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
-import org.kinecosystem.linkwallet.LinkingClient;
+import org.kinecosystem.onewallet.OneWalletActionButton;
+import org.kinecosystem.onewallet.OneWalletClient;
+
+import kin.sdk.KinAccount;
 
 public class LinkMainActivity extends SampleBaseActivity {
 
-    private static final int REQUEST_CODE = 50;
+    private static final int ONE_WALLET_REQUEST_CODE = 50;
 
-    private LinkingClient linkingClient;
+    private OneWalletClient oneWalletClient;
+    private OneWalletActionButton oneWalletActionButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -24,16 +27,14 @@ public class LinkMainActivity extends SampleBaseActivity {
 
         SampleWallet sampleWallet = ((SampleBaseApplication) getApplication()).getSampleWallet();
 
-        Button linkButton = findViewById(R.id.linkButton);
-        linkButton.setOnClickListener(v -> {
-                    linkingClient = new LinkingClient(sampleWallet.getAccount());
-                     Log.d("Linking", "Will link public address: "+sampleWallet.getAccount().getPublicAddress());
-                    linkingClient.startLinkingTransactionRequest(this, REQUEST_CODE,
-                            "org.kinecosystem.linkSampleApp",
-                            sampleWallet.getAccount().getPublicAddress());
-                }
-        );
+        oneWalletClient = new OneWalletClient(sampleWallet.getAccount());
+        oneWalletActionButton = findViewById(R.id.oneWalletActionButton);
 
+        KinAccount account = sampleWallet.getAccount();
+        if (account != null && !TextUtils.isEmpty(account.getPublicAddress())) {
+            oneWalletClient.init(this, ONE_WALLET_REQUEST_CODE,
+                    account.getPublicAddress(), oneWalletActionButton);
+        }
     }
 
     @Override
@@ -44,9 +45,11 @@ public class LinkMainActivity extends SampleBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            linkingClient.processLinkingTransactionResult(
-                    this, resultCode, data, findViewById(R.id.linkingBar));
+        if (requestCode == ONE_WALLET_REQUEST_CODE) {
+            oneWalletClient.processResult(
+                    this, resultCode, data,
+                    oneWalletActionButton,
+                    findViewById(R.id.oneWalletProgressBar));
         }
     }
 }

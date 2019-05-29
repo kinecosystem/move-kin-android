@@ -26,7 +26,6 @@ class TransferManager(var activity: Activity?) {
                                      private val launchActivityFullPath: String) {
         val intent: Intent = Intent()
 
-
         fun addParam(key: String, value: String): IntentBuilder {
             intent.putExtra(key, value)
             return this

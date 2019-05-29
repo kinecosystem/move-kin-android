@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     tools:context=".LinkMainActivity">
 
-    <org.kinecosystem.linkwallet.LinkAccountButton
-        android:id="@+id/linkButton"
+    <org.kinecosystem.onewallet.OneWalletActionButton
+        android:id="@+id/oneWalletActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -16,16 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/balanceView" />
 
-    <TextView
-        android:id="@+id/linkingBar"
-        android:text="a custom view displaying the linking status"
+    <org.kinecosystem.onewallet.OneWalletProgressBar
+        android:id="@+id/oneWalletProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linkButton" />
+        app:layout_constraintTop_toBottomOf="@id/oneWalletActionButton" />
+
 
     <include layout="@layout/sample_base" />
 
