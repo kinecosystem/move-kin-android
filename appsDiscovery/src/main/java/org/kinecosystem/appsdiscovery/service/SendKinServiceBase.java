@@ -6,6 +6,8 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
+import org.kinecosystem.appsdiscovery.repositories.kinTransferCallback;
+
 import java.math.BigDecimal;
 
 public abstract class SendKinServiceBase extends Service {
@@ -13,7 +15,7 @@ public abstract class SendKinServiceBase extends Service {
     //Developer needs to implements
     //these is called from background thread so can be called async
     public abstract @NonNull
-    KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
+    KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo, kinTransferCallback param);
 
     public abstract BigDecimal getCurrentBalance() throws BalanceException;
 

@@ -2,6 +2,7 @@ package org.kinecosystem.sampleSenderApp.kindiscover;
 
 import android.support.annotation.NonNull;
 
+import org.kinecosystem.appsdiscovery.repositories.kinTransferCallback;
 import org.kinecosystem.appsdiscovery.service.SendKinServiceBase;
 
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
@@ -16,7 +17,7 @@ public class SendKinService extends SendKinServiceBase {
 
     @Override
     public @NonNull
-    KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
+    KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo, kinTransferCallback param) {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
         String sourceAddress = "None";
 
