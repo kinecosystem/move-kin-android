@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <solid android:color="@color/gray_light" />
+            <corners
+                android:bottomLeftRadius="@dimen/kin_btn_corner"
+                android:bottomRightRadius="@dimen/kin_btn_corner"
+                android:topLeftRadius="@dimen/kin_btn_corner"
+                android:topRightRadius="@dimen/kin_btn_corner" />
+        </shape>
+    </item>
+    <item android:bottom="2dp" android:end="2dp">
+        <shape>
+            <solid android:color="@color/white" />
+            <stroke
+                android:width="1dp"
+                android:color="@color/light_gray_border" />
+            <corners
+                android:bottomLeftRadius="@dimen/kin_btn_corner"
+                android:bottomRightRadius="@dimen/kin_btn_corner"
+                android:topLeftRadius="@dimen/kin_btn_corner"
+                android:topRightRadius="@dimen/kin_btn_corner" />
+            <padding
+                android:bottom="@dimen/kin_btn_text_padding"
+                android:left="@dimen/kin_btn_text_padding"
+                android:right="@dimen/kin_btn_text_padding"
+                android:top="@dimen/kin_btn_text_padding" />
+        </shape>
+    </item>
+
+</layer-list>
+
+
+    <!--&lt;!&ndash; "shadow" &ndash;&gt;--><!--<item>--><!--<shape android:shape="rectangle" >--><!--<solid android:color="#000000"/>--><!--<corners android:radius="12dp" />--><!--</shape>--><!--</item>-->
+
+
+    <!--<item android:bottom="3px">--><!--<shape android:shape="rectangle">--><!--<solid android:color="#90ffffff"/>--><!--<corners android:radius="12dp" />--><!--</shape>--><!--</item>-->
+

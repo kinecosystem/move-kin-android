@@ -2,9 +2,11 @@ package org.kinecosystem.onewallet
 
 import android.app.Activity
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import kin.sdk.KinAccount
 import org.kinecosystem.common.base.LocalStore
@@ -35,7 +37,7 @@ class OneWalletClient constructor(private val kinAccount: KinAccount) : IOneWall
         actionButton.type = getButtonTypeFromStore()
         Log.d("OneWalletClient", "button.type = ${actionButton.type}")
         button.setOnClickListener {
-            if (button.type == OneWalletActionButton.Type.LINK) {
+            if (actionButton.type == OneWalletActionButton.Type.LINK) {
                 val transferManager = TransferManager(activity)
                 transferManager.intentBuilder(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY)
                         .addParam(EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS, appAccountPublicAddress)
@@ -56,6 +58,7 @@ class OneWalletClient constructor(private val kinAccount: KinAccount) : IOneWall
         actionButton = button
         progressBar = bar
         actionButton.isEnabled = false
+        progressBar.visibility = View.VISIBLE
         val transferManager = TransferManager(activity)
         transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
@@ -71,7 +74,6 @@ class OneWalletClient constructor(private val kinAccount: KinAccount) : IOneWall
             }
 
             override fun onResult(data: String) {
-                progressBar.text = "Linking In Progress..."
                 processLinkingTransactionResult(data)
             }
         })
@@ -109,9 +111,12 @@ class OneWalletClient constructor(private val kinAccount: KinAccount) : IOneWall
         Log.d("OneWalletClient", "Wallet status " + buttonTypeString)
 
         if (buttonTypeString == OneWalletActionButton.Type.TOP_UP.toString()) {
+            Log.d("OneWalletClient", "buttonTypeString is TOP_UP ($buttonTypeString) return ${OneWalletActionButton.Type.TOP_UP}")
             return OneWalletActionButton.Type.TOP_UP
+        } else {
+            Log.d("OneWalletClient", "buttonTypeString is Link return: (${OneWalletActionButton.Type.LINK})")
+            return OneWalletActionButton.Type.LINK
         }
-        return OneWalletActionButton.Type.LINK
     }
 
     private fun resetButtonType(type: OneWalletActionButton.Type) {
