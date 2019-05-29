@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.kinecosystem.appstransfer" />
+package="org.kinecosystem.appstransfer">
+
+<uses-permission android:name="android.permission.INTERNET" />
+<application
+    android:label="@string/app_name"
+    >
+    <activity android:name=".view.AppsTransferActivity"
+        android:screenOrientation="portrait"/>
+</application>
+
+</manifest>
