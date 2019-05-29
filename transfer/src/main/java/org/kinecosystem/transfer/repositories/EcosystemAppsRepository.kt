@@ -1,19 +1,19 @@
-package org.kinecosystem.appsdiscovery.repositories
+package org.kinecosystem.transfer.repositories
 
 import android.os.Handler
-import org.kinecosystem.appsdiscovery.model.*
+import org.kinecosystem.transfer.model.*
 
-class DiscoveryAppsRepository
-private constructor(private val currentPackage: String, private val local: DiscoveryAppsLocal,
-                    private val remote: DiscoveryAppsRemote, private val uiHandler: Handler) {
+class EcosystemAppsRepository
+private constructor(private val currentPackage: String, private val local: EcosystemAppsLocalRepo,
+                    private val remote: EcosystemAppsRemoteRepo, private val uiHandler: Handler) {
 
 
     companion object {
-        private var instance: DiscoveryAppsRepository? = null
+        private var instance: EcosystemAppsRepository? = null
 
-        fun getInstance(currentPackage: String, local: DiscoveryAppsLocal, remote: DiscoveryAppsRemote, uiHandler: Handler): DiscoveryAppsRepository {
+        fun getInstance(currentPackage: String, local: EcosystemAppsLocalRepo, remote: EcosystemAppsRemoteRepo, uiHandler: Handler): EcosystemAppsRepository {
             if (instance == null) {
-                instance = DiscoveryAppsRepository(currentPackage, local, remote, uiHandler)
+                instance = EcosystemAppsRepository(currentPackage, local, remote, uiHandler)
             }
             return instance!!
         }

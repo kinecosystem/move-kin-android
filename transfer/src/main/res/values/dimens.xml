@@ -2,6 +2,7 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="text_big_size">18sp</dimen>
     <dimen name="padding_normal">18dp</dimen>
+    <dimen name="padding_small">12dp</dimen>
     <dimen name="text_regular_size">16sp</dimen>
     <dimen name="text_small_size">14sp</dimen>
     <dimen name="text_smallest_size">12sp</dimen>

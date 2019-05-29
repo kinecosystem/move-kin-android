@@ -1,4 +1,4 @@
-package org.kinecosystem.appsdiscovery.model
+package org.kinecosystem.transfer.model
 
 import android.graphics.Color
 import com.google.gson.annotations.SerializedName

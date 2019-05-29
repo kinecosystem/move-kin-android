@@ -1,15 +1,15 @@
-package org.kinecosystem.appsdiscovery.repositories
+package org.kinecosystem.transfer.repositories
 
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import org.kinecosystem.common.base.LocalStore
-import org.kinecosystem.appsdiscovery.model.EcosystemApp
+import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.common.base.Consts
 
 
-class DiscoveryAppsLocal(context: Context) {
+class EcosystemAppsLocalRepo(context: Context) {
 
     private val localStore = LocalStore(context, APPS_DISCOVERY_STORE)
     private val gson = Gson()

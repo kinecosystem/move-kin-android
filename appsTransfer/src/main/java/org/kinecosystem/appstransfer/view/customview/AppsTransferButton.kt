@@ -1,19 +1,18 @@
-package org.kinecosystem.appstransfer.view
+package org.kinecosystem.appstransfer.view.customview
 
 import android.content.Context
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.TextViewCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.TextView
 import org.kinecosystem.appstransfer.R
+import org.kinecosystem.appstransfer.view.AppsTransferActivity
 
 class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {
 
     private fun startAppsDiscoveryActivity() {
-       // context.startActivity(AppsDiscoveryActivity.getIntent(context))
-        Log.d("", "#### startAppsTransferActivity")
+        context.startActivity(AppsTransferActivity.getIntent(context))
     }
 
     init {
