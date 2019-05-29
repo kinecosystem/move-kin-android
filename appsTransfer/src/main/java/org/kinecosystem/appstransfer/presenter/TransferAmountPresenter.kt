@@ -1,6 +1,10 @@
 package org.kinecosystem.appstransfer.presenter
 
 import org.kinecosystem.appstransfer.view.ITransferAmountView
+<<<<<<< HEAD
+=======
+import org.kinecosystem.appstransfer.view.customview.TransferBarView
+>>>>>>> KINNO-550_build_calc
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.model.EcosystemApp
@@ -38,6 +42,18 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         }
     }
 
+<<<<<<< HEAD
+=======
+
+    override fun onTransferFailed() {
+        view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+    }
+
+    override fun onTransferComplete() {
+        view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+    }
+
+>>>>>>> KINNO-550_build_calc
     override fun onFullDel() {
         amountStr = ZEROE
         amount = 0

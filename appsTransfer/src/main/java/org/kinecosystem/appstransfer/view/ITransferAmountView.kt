@@ -1,5 +1,6 @@
 package org.kinecosystem.appstransfer.view
 
+import org.kinecosystem.appstransfer.view.customview.TransferBarView
 import org.kinecosystem.common.base.IBaseView
 
 interface ITransferAmountView : IBaseView {
@@ -9,4 +10,5 @@ interface ITransferAmountView : IBaseView {
     fun updateAmount(amount:String)
     fun onStartSendingKin(amount:Int, appName: String, appIconUrl:String, appPackage:String)
     fun setSendEnable(isEnabled: Boolean)
+    fun updateTransferBar(status:TransferBarView.TransferStatus)
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="send_height">68dp</dimen>
+    <dimen name="transfer_bar_height">@dimen/send_height</dimen>
+
+</resources>

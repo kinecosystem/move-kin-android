@@ -17,16 +17,6 @@
     <string name="about_app">About %s</string>
     <string name="about_experience">About Experience</string>
     <string name="how_it_works">How it works</string>
-    <string name="close">close</string>
-    <string name="go_to_app">go to app</string>
     <string name="send_kin">Send Kin</string>
     <string name="total_kin_available">Total Kin available</string>
-    <string name="transfer_sending_message">Sending %dKIN</string>
-    <string name="transfer_complete_message">You’ve successfully sent %dKIN</string>
-    <string name="transfer_failed_error">Transfer failed, try again later</string>
-    <string name="transfer_failed_timeout">No confirmation for transfer yet, check your balance later.</string>
-    <string name="transfer_receiver_service_error">This version is not supported. Update %s and try again.</string>
-    <string name="transfer_connection_error">We couldn\'t establish a connection. Check back later.</string>
-    <string name="send_kin_to">Send Kin to</string>
-
 </resources>
