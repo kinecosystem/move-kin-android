@@ -1,0 +1,11 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="kinTextDigit" parent="TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/sailec_bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:background">@drawable/digit_background_drawable</item>
+        <item name="android:textColor">@drawable/digit_text_colors</item>
+        <item name="android:clickable">true</item>
+    </style>
+</resources>

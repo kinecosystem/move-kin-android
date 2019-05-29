@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <EditText
+        android:id="@+id/editTextAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:digits="0123456789"
+        android:ems="10"
+        android:inputType="number"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/close_x"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:scaleType="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/kin_x_close_dark" />
+
+    <TextView
+        android:id="@+id/to"
+        style="@style/KinTextRegular.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:text="@string/send_kin_to"
+        android:textSize="@dimen/text_regular_size"
+        app:layout_constraintBottom_toBottomOf="@+id/close_x"
+        app:layout_constraintEnd_toStartOf="@+id/appIcon"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/close_x"
+        app:layout_constraintStart_toStartOf="@+id/close_x"
+        app:layout_constraintTop_toTopOf="@+id/close_x" />
+
+    <ImageView
+        android:id="@+id/appIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="@+id/to"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/to"
+        app:layout_constraintTop_toTopOf="@+id/to"
+        />
+
+    <View
+        android:id="@+id/delimiter"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray_light"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/close_x" />
+
+    <TextView
+        android:id="@+id/postBalance"
+        style="@style/KinTextRegular.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="35dp"
+        android:text="@string/total_kin_available"
+        android:textSize="@dimen/text_regular_size"
+        app:layout_constraintBottom_toTopOf="@id/calc"
+        app:layout_constraintEnd_toStartOf="@+id/currency"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/currency"
+        android:layout_width="6dp"
+        android:layout_height="6dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="@+id/postBalance"
+        app:layout_constraintEnd_toStartOf="@+id/availableBalance"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/postBalance"
+        app:layout_constraintTop_toTopOf="@+id/postBalance"
+        app:srcCompat="@drawable/kin_currency_purple" />
+
+    <TextView
+        android:id="@+id/availableBalance"
+        style="@style/KinTextMedium.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginLeft="3dp"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/text_regular_size"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintBottom_toBottomOf="@+id/currency"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/currency"
+        app:layout_constraintTop_toTopOf="@+id/currency"
+        tools:text="15000" />
+
+
+    <EditText
+        android:id="@+id/amount"
+        style="@style/KinTextMedium.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:cursorVisible="false"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:focusedByDefault="true"
+        android:gravity="center_horizontal"
+        android:hint="0"
+        android:inputType="number"
+        android:textColor="@color/purple"
+        android:textColorHint="@color/purple"
+        android:textSize="70sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/postBalance"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/delimiter" />
+
+    <ImageView
+        android:id="@+id/kin_coin"
+        android:layout_width="wrap_content"
+        android:layout_height="15dp"
+        android:layout_marginEnd="4dp"
+        android:baselineAlignBottom="@+id/amount"
+        app:layout_constraintBottom_toBottomOf="@+id/amount"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
+        app:layout_constraintTop_toTopOf="@+id/amount"
+        app:srcCompat="@drawable/kin_currency_purple" />
+
+
+    <android.support.v7.widget.GridLayout
+        android:id="@+id/calc"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:alignmentMode="alignBounds"
+        app:columnCount="3"
+        app:layout_constraintBottom_toTopOf="@id/send">
+
+
+        <TextView
+            android:id="@+id/one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="2"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/four"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/five"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="5"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/six"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:text="6"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/seven"
+            android:tag="7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="7"
+            android:onClick="onDigitClicked"
+
+            style="@style/kinTextDigit"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/eight"
+            android:tag="8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8"
+            android:onClick="onDigitClicked"
+
+            style="@style/kinTextDigit"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+
+        <TextView
+            android:id="@+id/nine"
+            android:tag="9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="9"
+            android:onClick="onDigitClicked"
+            style="@style/kinTextDigit"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/zeros"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            style="@style/kinTextDigit"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+        <TextView
+            android:id="@+id/zero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            style="@style/kinTextDigit"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+
+        <ImageView
+            android:id="@+id/del"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="@font/sailec_bold"
+            android:gravity="center"
+            android:src="@drawable/kin_purple_logo"
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            app:layout_columnWeight="1"
+            app:layout_gravity="fill"
+            app:layout_rowWeight="1" />
+
+    </android.support.v7.widget.GridLayout>
+
+    <TextView
+        android:id="@+id/send"
+        style="@style/KinTextRegular.Dark"
+        android:layout_width="0dp"
+        android:layout_height="68dp"
+        android:background="@drawable/kin_button_rectangle_drawable"
+        android:gravity="center"
+        android:letterSpacing="0.06"
+        android:text="@string/send_kin"
+        android:textColor="@drawable/kin_button_text_colors"
+        android:textSize="@dimen/text_big_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>

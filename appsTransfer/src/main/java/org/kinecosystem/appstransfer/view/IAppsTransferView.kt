@@ -5,7 +5,7 @@ import org.kinecosystem.transfer.model.EcosystemApp
 
 interface IAppsTransferView : IBaseView {
     fun close()
-    fun startAmountChooserActivity(app: EcosystemApp)
+    fun startTransferAmountActivity(app: EcosystemApp)
     fun invalidateList()
     fun showLoading()
     fun showData()

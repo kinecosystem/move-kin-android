@@ -76,7 +76,7 @@ class AppsTransferPresenter(private val repository: EcosystemAppsRepository, pri
                 repository.storeReceiverAppPublicAddress(address)
                 Log.d("AppInfoPresenter", "got address onResult $address")
                 app?.let {
-                    view?.startAmountChooserActivity(it)
+                    view?.startTransferAmountActivity(it)
                 }
             }
         })
