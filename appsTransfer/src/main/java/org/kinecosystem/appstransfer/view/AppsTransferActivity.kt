@@ -14,9 +14,11 @@ import org.kinecosystem.appstransfer.presenter.AppsTransferPresenter
 import org.kinecosystem.appstransfer.view.customview.AppsTransferList
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
+
 
     private lateinit var dataGroup: Group
     private lateinit var noDataGroup: Group
@@ -29,8 +31,8 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         Log.d("", "show pop up error")
     }
 
-    override fun startAmountChooserActivity(app: EcosystemApp, receiverPublicAddress: String) {
-        Log.d("", "AppsTransferActivity  start startAmountChooserActivity")
+    override fun startTransferAmountActivity(app: EcosystemApp, receiverPublicAddress: String) {
+        startActivity(TransferAmountActivity.getIntent(this, app.name, receiverPublicAddress))
     }
 
     override fun navigateToAppStore(url: String) {
@@ -63,6 +65,11 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         finish()
     }
 
+    override fun finish() {
+        // balanceServiceBinder.unbind()
+        super.finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.apps_transfer_activity)
@@ -91,6 +98,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
     override fun onResume() {
         super.onResume()
         presenter?.onResume()
+        // balanceServiceBinder.requestCurrentBalance()
     }
 
     companion object {

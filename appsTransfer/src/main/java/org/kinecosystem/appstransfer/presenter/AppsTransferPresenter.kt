@@ -73,7 +73,7 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
             override fun onResult(address: String) {
                 Log.d("AppInfoPresenter", "got address onResult $address")
                 app?.let {
-                    view?.startAmountChooserActivity(it, address)
+                    view?.startTransferAmountActivity(it, address)
                 }
             }
         })

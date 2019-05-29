@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import org.kinecosystem.common.utils.ImageUtils
 import org.kinecosystem.common.utils.TextUtils.Companion.FONT_SAILEC
 
-
+const val MEMO_PREFIX = "CrossApps-"
 data class EcosystemApp(
         @SerializedName("category_name")
         val category: String?,
@@ -123,3 +123,4 @@ val EcosystemApp.canTransferKin: Boolean
             return it.isNotEmpty()
         } ?: return false
     }
+fun  EcosystemApp.getTransactionMemo() = "$MEMO_PREFIX$memo"
