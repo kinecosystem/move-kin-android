@@ -145,7 +145,7 @@
         android:id="@+id/send"
         style="@style/KinTextRegular.Dark"
         android:layout_width="0dp"
-        android:layout_height="68dp"
+        android:layout_height="@dimen/send_height"
         android:background="@drawable/kin_button_rectangle_drawable"
         android:gravity="center"
         android:letterSpacing="0.06"

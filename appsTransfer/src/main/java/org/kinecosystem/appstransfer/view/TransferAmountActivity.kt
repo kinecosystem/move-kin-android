@@ -6,12 +6,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
+import org.kinecosystem.appstransfer.view.customview.TransferBarView
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
@@ -52,7 +54,16 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         amount = findViewById(R.id.amount)
     }
 
+    override fun updateTransferBar(status: TransferBarView.TransferStatus) {
+        //todo
+        Log.d("####", "#### update transfer bar $status")
+    }
+
     override fun onStartSendingKin(amount: Int, appName: String, appIconUrl: String, appPackage: String) {
+        send?.isClickable = false
+        //initTransferBar()
+        //init state
+        //show
         //TODO update transfer bar
     }
 
