@@ -5,11 +5,12 @@ import org.kinecosystem.transfer.model.EcosystemApp
 
 interface IAppsTransferView : IBaseView {
     fun close()
-    fun startAmountChooserActivity(app: EcosystemApp, receiverPublicAddress:String)
+    fun startTransferAmountActivity(app: EcosystemApp, receiverPublicAddress: String)
     fun invalidateList()
     fun showLoading()
     fun showData()
     fun showNoData()
     fun navigateToAppStore(url: String)
-    fun onTransferError()
+    fun onTransferError(appName: String)
+    fun onCantFindReceiverInfo(appName: String)
 }

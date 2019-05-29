@@ -1,25 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-
-
-    <style name="KinAlertText" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/alert_text</item>
-        <item name="android:textSize">@dimen/kin_alert_text_size</item>
-        <item name="android:gravity">center_horizontal</item>
-    </style>
-
- 
-
-
+<resources>
 
     <style name="AppTextInfoBody" parent="KinTextRegular.Dark.Body">
         <item name="android:lineSpacingExtra">6sp</item>
-    </style>
-    <style name="KinAlertText.Title">
-        <item name="android:fontFamily">@font/sailec_medium</item>
-    </style>
-
-    <style name="KinAlertText.Subtitle">
-        <item name="android:fontFamily">@font/sailec</item>
     </style>
 
 </resources>
