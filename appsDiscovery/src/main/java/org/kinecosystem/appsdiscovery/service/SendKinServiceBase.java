@@ -14,8 +14,8 @@ public abstract class SendKinServiceBase extends Service {
 
     //Developer needs to implements
     //these is called from background thread so can be called async
-    public abstract @NonNull
-    KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo, kinTransferCallback param);
+    public abstract
+    void transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo, kinTransferCallback param);
 
     public abstract BigDecimal getCurrentBalance() throws BalanceException;
 

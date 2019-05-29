@@ -16,14 +16,14 @@ import kin.sdk.TransactionId;
 public class SendKinService extends SendKinServiceBase {
 
     @Override
-    public @NonNull
-    KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo, kinTransferCallback param) {
+    public
+    void transferKin(@NonNull String toAddress, int amount, @NonNull String memo, kinTransferCallback callback) {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
         String sourceAddress = "None";
 
         if (!sampleWallet.hasActiveAccount()) {
 
-            throw new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized");
+            callback.onError(new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized"));
         }
 
         try {
@@ -37,14 +37,14 @@ public class SendKinService extends SendKinServiceBase {
             // here you may add some code to add the transaction details to
             // your app's transaction history metadata
 
-            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo());
+            callback.onSuccess(new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo()));
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            throw new KinTransferException(sourceAddress,
-                    "Cannot transfer Kin. Exception " + e + ", with message " + e.getMessage());
+            callback.onError(new KinTransferException(sourceAddress,
+                    "Cannot transfer Kin. Exception " + e + ", with message " + e.getMessage()));
 
         }
     }
