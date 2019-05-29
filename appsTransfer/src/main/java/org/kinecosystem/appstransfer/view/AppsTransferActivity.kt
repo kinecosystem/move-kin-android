@@ -3,8 +3,6 @@ package org.kinecosystem.appstransfer.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.constraint.Group
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -16,13 +14,9 @@ import org.kinecosystem.appstransfer.presenter.AppsTransferPresenter
 import org.kinecosystem.appstransfer.view.customview.AppsTransferList
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.EcosystemApp
-import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
-import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
-import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
-
 
     private lateinit var dataGroup: Group
     private lateinit var noDataGroup: Group
@@ -31,12 +25,12 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
     private var presenter: AppsTransferPresenter? = null
 
     override fun onTransferError() {
-        Log.d("####", "#### show pop up error")
+        //TODO
+        Log.d("", "show pop up error")
     }
 
-
-    override fun transferToApp(app: EcosystemApp) {
-         Log.d("####", "#### AppsTransferActivity  start transferToApp")
+    override fun startAmountChooserActivity(app: EcosystemApp, receiverPublicAddress: String) {
+        Log.d("", "AppsTransferActivity  start startAmountChooserActivity")
     }
 
     override fun navigateToAppStore(url: String) {
@@ -69,11 +63,6 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         finish()
     }
 
-    override fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int) {
-        //TODO
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.apps_transfer_activity)
@@ -82,7 +71,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         loader = findViewById(R.id.loader)
         list = findViewById(R.id.list)
         list.clickListener = presenter
-        presenter = AppsTransferPresenter(EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), TransferManager(this))
+        presenter = AppsTransferPresenter(TransferManager(this))
 
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
             presenter?.onCloseClicked()
@@ -92,6 +81,11 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
             findViewById<AppsTransferList>(R.id.list).setLoadingListener(it)
             list.clickListener = it
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        presenter?.processResponse(requestCode, resultCode, data)
     }
 
     override fun onResume() {

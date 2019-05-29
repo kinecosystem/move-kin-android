@@ -82,7 +82,7 @@ class TransferManager(var activity: Activity?) {
             val uri = intent.data
             val inputStream = activity?.contentResolver?.openInputStream(uri!!)
             val reader = BufferedReader(InputStreamReader(inputStream!!))
-            var data: String? = reader.readLine()
+            val data: String? = reader.readLine()
             data?.let {
                 accountInfoResponseListener.onResult(it)
             } ?: run {
