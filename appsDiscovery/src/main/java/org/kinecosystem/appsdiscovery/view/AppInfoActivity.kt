@@ -27,8 +27,7 @@ import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
-import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
-import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import java.util.concurrent.Executors
 

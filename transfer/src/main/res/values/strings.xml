@@ -5,4 +5,7 @@
     <string name="receiver_activity_message">In order to send Kin, %1$s would like to receive your Kin account information (i.e. your public address) from %2$s.</string>
     <string name="error_title_no_data">Oh… Something isn\’t working</string>
     <string name="error_subtitle_no_data">An unknown error occurred. Please close the page and try again later.</string>
+    <string name="total_kin_available">Total Kin available</string>
+    <string name="send_kin">Send Kin</string>
+
 </resources>
