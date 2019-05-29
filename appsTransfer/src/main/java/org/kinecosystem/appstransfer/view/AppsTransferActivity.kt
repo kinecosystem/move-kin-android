@@ -23,7 +23,6 @@ import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
 
-
     private lateinit var dataGroup: Group
     private lateinit var noDataGroup: Group
     private lateinit var loader: ProgressBar
@@ -34,9 +33,8 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         Log.d("####", "#### show pop up error")
     }
 
-
-    override fun transferToApp(app: EcosystemApp) {
-         Log.d("####", "#### AppsTransferActivity  start transferToApp")
+    override fun startAmountChooserActivity(app: EcosystemApp) {
+        Log.d("####", "#### AppsTransferActivity  start startAmountChooserActivity")
     }
 
     override fun navigateToAppStore(url: String) {
@@ -69,11 +67,6 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         finish()
     }
 
-    override fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int) {
-        //TODO
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.apps_transfer_activity)
@@ -92,6 +85,11 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
             findViewById<AppsTransferList>(R.id.list).setLoadingListener(it)
             list.clickListener = it
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        presenter?.processResponse(requestCode, resultCode, data)
     }
 
     override fun onResume() {
