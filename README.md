@@ -98,9 +98,10 @@ In enable your app to send Kin to other application, do the following:
 public class SendKinService extends SendKinServiceBase {
     @NonNull
     @Override
-    public KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
+    public KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo, @NonNull KinTransferCallback callback) throws KinTransferException {
         
         // perform the transaction
+        // call onSuccess(new KinTransferComplete(...)) or onError(new KinTransferException(...))
     }
 
     @Override
