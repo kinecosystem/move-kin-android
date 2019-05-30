@@ -3,50 +3,51 @@ package org.kinecosystem.sampleSenderApp.kindiscover;
 import android.support.annotation.NonNull;
 
 import org.jetbrains.annotations.NotNull;
-import org.kinecosystem.appsdiscovery.repositories.kinTransferCallback;
+import org.kinecosystem.appsdiscovery.repositories.KinTransferCallback;
 import org.kinecosystem.appsdiscovery.service.SendKinServiceBase;
-
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 import org.kinecosystem.sampleSenderApp.SenderApplication;
 
 import java.math.BigDecimal;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import kin.sdk.Transaction;
 import kin.sdk.TransactionId;
 
 public class SendKinService extends SendKinServiceBase {
+    private ExecutorService executorService = Executors.newCachedThreadPool();
 
     @Override
     public
-    void transferKin(@NonNull String toAddress, int amount, @NonNull String memo, @NotNull kinTransferCallback callback) {
+    void transferKin(@NonNull String toAddress, int amount, @NonNull String memo, @NotNull KinTransferCallback callback) {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
-        String sourceAddress = "None";
+
+        transferKinCallback = callback;
 
         if (!sampleWallet.hasActiveAccount()) {
-            callback.onError(new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized"));
+            if (transferKinCallback != null)
+                transferKinCallback.onError(new KinTransferException("None", "Cannot transfer Kin. Account not initialized"));
         }
+        executorService.execute(() -> {
+            try {
+                String sourceAddress = sampleWallet.getAccount().getPublicAddress();
+                int fee = 100; // no whitelisting for sample app, so using a fee
+                Transaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
+                        new BigDecimal(amount), fee, memo);
+                TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
+                // here you may add some code to add the transaction details to
+                // your app's transaction history metadata
+                if (transferKinCallback != null)
+                    transferKinCallback.onSuccess(new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (transferKinCallback != null)
+                    transferKinCallback.onError(new KinTransferException("None",
+                        "Cannot transfer Kin. Exception " + e + ", with message " + e.getMessage()));
 
-        try {
-            sourceAddress = sampleWallet.getAccount().getPublicAddress();
-
-            int fee = 100; // no whitelisting for sample app, so using a fee
-            Transaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
-                    new BigDecimal(amount), fee, memo);
-            TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
-
-            // here you may add some code to add the transaction details to
-            // your app's transaction history metadata
-
-            callback.onSuccess(new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo()));
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            callback.onError(new KinTransferException(sourceAddress,
-                    "Cannot transfer Kin. Exception " + e + ", with message " + e.getMessage()));
-
-        }
+            }
+        });
     }
 
     @Override

@@ -86,7 +86,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
         if (isBound) {
-            transferService?.transferKin(receiverAddress, amount, memo, object: kinTransferCallback {
+            transferService?.transferKin(receiverAddress, amount, memo, object: KinTransferCallback {
                 override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                     presenter?.onTransferComplete()
                     try {
@@ -236,6 +236,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     override fun onDestroy() {
         super.onDestroy()
         presenter?.onDestroy()
+        transferService?.cancelCallback()
     }
 
 }

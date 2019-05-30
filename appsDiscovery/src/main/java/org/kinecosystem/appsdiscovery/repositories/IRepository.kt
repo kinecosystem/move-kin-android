@@ -12,7 +12,7 @@ interface OperationResultCallback<in T> {
     fun onError(error: String)
 }
 
-interface kinTransferCallback {
+interface KinTransferCallback {
     fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
     fun onError(e: SendKinServiceBase.KinTransferException)
 }
