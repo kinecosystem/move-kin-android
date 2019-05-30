@@ -114,7 +114,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     }
                 }
 
-            })!!
+            })
         }
     }
 

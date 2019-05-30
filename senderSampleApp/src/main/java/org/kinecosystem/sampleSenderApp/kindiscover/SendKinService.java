@@ -23,7 +23,6 @@ public class SendKinService extends SendKinServiceBase {
         String sourceAddress = "None";
 
         if (!sampleWallet.hasActiveAccount()) {
-
             callback.onError(new KinTransferException(sourceAddress, "Cannot transfer Kin. Account not initialized"));
         }
 
