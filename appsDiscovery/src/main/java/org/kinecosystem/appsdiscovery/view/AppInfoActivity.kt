@@ -105,6 +105,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
         })
     }
+
     private fun sendKinOnSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int) {
         try {
             ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
@@ -117,7 +118,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    private fun sendKinOnError(e: SendKinServiceBase.KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String){
+    private fun sendKinOnError(e: SendKinServiceBase.KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String) {
         Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
         try {
             ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
@@ -134,16 +135,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         executorService.execute {
             if (isBound) {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? =
-                            transferService?.transferKin(receiverAddress, amount, memo)!!
-                    if (kinTransferComplete != null){
+                    transferService?.transferKin(receiverAddress, amount, memo)?.let { kinTransferComplete ->
                         handler.post {
                             presenter?.onTransferComplete()
                             sendKinOnSuccess(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
                         }
-                    }
-                    else
+                    } ?: run {
                         sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
+                    }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     handler.post {
                         presenter?.onTransferFailed()
