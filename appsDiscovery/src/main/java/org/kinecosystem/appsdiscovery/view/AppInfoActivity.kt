@@ -17,20 +17,23 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
-import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
-import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.appsdiscovery.model.*
 import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
+import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
+import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
+import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
+import org.kinecosystem.appsdiscovery.repositories.KinTransferCallback
+import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
 import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.*
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
-import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
+import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
+import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.transfer.sender.manager.TransferManager
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -39,7 +42,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
     private var list: RecyclerView? = null
-    @Volatile private var isBound = false
+    @Volatile
+    private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
     private val connection = object : ServiceConnection {
@@ -75,7 +79,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onAttach(this)
         presenter?.onStart()
 
-
     }
 
     override fun onResume() {
@@ -83,24 +86,58 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
+    private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
+            override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+                presenter?.onTransferComplete()
+                try {
+                    ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
+                            kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
+                            kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+                    Log.d(TAG, "Receiver was notified of transaction complete")
+                } catch (e: ServiceConfigurationException) {
+                    Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
+                    e.printStackTrace()
+                }
+            }
+
+            override fun onError(e: SendKinServiceBase.KinTransferException) {
+                presenter?.onTransferFailed()
+                Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
+                try {
+                    ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
+                            e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
+                    Log.d(TAG, "Receiver was notified of transaction failed")
+
+                } catch (e: ServiceConfigurationException) {
+                    Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
+                    e.printStackTrace()
+                }
+            }
+
+        })
+    }
 
     override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
-        if (isBound) {
-            transferService?.transferKin(receiverAddress, amount, memo, object: KinTransferCallback {
-                override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-                    presenter?.onTransferComplete()
+        executorService.execute {
+            if (isBound) {
+                try {
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? =
+                            transferService?.transferKin(receiverAddress, amount, memo)!!
+                    if (kinTransferComplete == null)
+                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
+                    else
+                        presenter?.onTransferComplete()
                     try {
                         ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-                                kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
+                                kinTransferComplete!!.senderAddress, senderAppName, receiverAddress, amount,
                                 kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
                         Log.d(TAG, "Receiver was notified of transaction complete")
                     } catch (e: ServiceConfigurationException) {
                         Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
                         e.printStackTrace()
                     }
-                }
-
-                override fun onError(e: SendKinServiceBase.KinTransferException) {
+                } catch (e: SendKinServiceBase.KinTransferException) {
                     presenter?.onTransferFailed()
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {
@@ -113,8 +150,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                         e.printStackTrace()
                     }
                 }
-
-            })
+            }
         }
     }
 

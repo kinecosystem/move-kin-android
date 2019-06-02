@@ -17,7 +17,10 @@ public abstract class SendKinServiceBase extends Service {
     public void cancelCallback() { transferKinCallback = null; }
 
     public abstract
-    void transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo,@NonNull KinTransferCallback callback);
+    KinTransferComplete transferKin(@NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
+
+    public
+    void transferKinAsync(@NonNull final String toAddress, final int amount, @NonNull final String memo, @NonNull KinTransferCallback callback){}
 
     public abstract BigDecimal getCurrentBalance() throws BalanceException;
 
