@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import org.kinecosystem.baseSampleApp.SampleBaseActivity;
 import org.kinecosystem.baseSampleApp.SampleBaseApplication;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
+import org.kinecosystem.onewallet.IOneWalletClient;
 import org.kinecosystem.onewallet.OneWalletClient;
 
 import kin.sdk.KinAccount;
@@ -17,7 +18,7 @@ public class LinkMainActivity extends SampleBaseActivity {
 
     private static final int ONE_WALLET_REQUEST_CODE = 50;
 
-    private OneWalletClient oneWalletClient;
+    private IOneWalletClient oneWalletClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
