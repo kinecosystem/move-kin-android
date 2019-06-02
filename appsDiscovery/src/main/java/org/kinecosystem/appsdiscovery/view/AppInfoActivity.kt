@@ -46,6 +46,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
+    private var handler = Handler()
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -89,33 +90,44 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
         transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-                presenter?.onTransferComplete()
-                try {
-                    ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-                            kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
-                            kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                    Log.d(TAG, "Receiver was notified of transaction complete")
-                } catch (e: ServiceConfigurationException) {
-                    Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
-                    e.printStackTrace()
+                handler.post {
+                    presenter?.onTransferComplete()
+                    sendKinOnSuccess(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
                 }
             }
 
             override fun onError(e: SendKinServiceBase.KinTransferException) {
-                presenter?.onTransferFailed()
-                Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
-                try {
-                    ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
-                            e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
-                    Log.d(TAG, "Receiver was notified of transaction failed")
-
-                } catch (e: ServiceConfigurationException) {
-                    Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
-                    e.printStackTrace()
+                handler.post {
+                    presenter?.onTransferFailed()
+                    sendKinOnError(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
                 }
             }
 
         })
+    }
+    private fun sendKinOnSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int) {
+        try {
+            ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
+                    kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
+                    kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+            Log.d(TAG, "Receiver was notified of transaction complete")
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    private fun sendKinOnError(e: SendKinServiceBase.KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String){
+        Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
+        try {
+            ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
+                    e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
+            Log.d(TAG, "Receiver was notified of transaction failed")
+
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
+            e.printStackTrace()
+        }
     }
 
     override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
@@ -124,30 +136,18 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? =
                             transferService?.transferKin(receiverAddress, amount, memo)!!
-                    if (kinTransferComplete == null)
-                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
-                    else
-                        presenter?.onTransferComplete()
-                    try {
-                        ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-                                kinTransferComplete!!.senderAddress, senderAppName, receiverAddress, amount,
-                                kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                        Log.d(TAG, "Receiver was notified of transaction complete")
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
-                        e.printStackTrace()
+                    if (kinTransferComplete != null){
+                        handler.post {
+                            presenter?.onTransferComplete()
+                            sendKinOnSuccess(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
+                        }
                     }
+                    else
+                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    presenter?.onTransferFailed()
-                    Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
-                    try {
-                        ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
-                                e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
-                        Log.d(TAG, "Receiver was notified of transaction failed")
-
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
-                        e.printStackTrace()
+                    handler.post {
+                        presenter?.onTransferFailed()
+                        sendKinOnError(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
                     }
                 }
             }
