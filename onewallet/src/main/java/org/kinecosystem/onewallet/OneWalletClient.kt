@@ -32,7 +32,7 @@ class OneWalletClient : IOneWalletClient {
         uiHandler = Handler(Looper.getMainLooper())
         val localStore = LocalStore(activity.applicationContext, "ONE_WALLET")
 
-        linkWalletPresenter = LinkWalletPresenter(localStore)
+        linkWalletPresenter = LinkWalletPresenter(localStore, uiHandler)
         linkWalletPresenter?.onAttach(LinkWalletViewHolder(
                 activity.findViewById(actionButtonResId),
                 activity.findViewById(progressBarResId)))
@@ -68,12 +68,11 @@ class OneWalletClient : IOneWalletClient {
         val transferManager = TransferManager(activity)
         transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
-                Log.d("Linking", "linking canceled")
                 linkWalletPresenter?.onLinkWalletCancelled()
             }
 
             override fun onError(error: String) {
-                Log.d("Linking", "linking error in building transaction in Kinit. Error is: " + error)
+                Log.e("Linking", "One Wallet (Kinit) was unable to build the linking transaction. Error is: " + error)
                 linkWalletPresenter?.onLinkWalletError(error)
             }
 
@@ -91,12 +90,10 @@ class OneWalletClient : IOneWalletClient {
     private fun processLinkingTransactionResult(data: String) {
 
         Log.d("Linking", "The linking transaction envelope is: " + data)
-        // create transaction from envelope
-        // sign it with app's signature
-        // send to blockchain using whitelisting
         executorService.execute {
             try {
                 val id = kinAccount?.sendLinkAccountsTransaction(data)
+
                 uiHandler.post {
                     linkWalletPresenter?.onLinkWalletSucceeded()
                 }

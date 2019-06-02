@@ -13,7 +13,8 @@ class OneWalletActionModel(var localStore: LocalStore) {
                 R.drawable.kin_button_rounded_bg)
     }
     var type: Type
-        set(value) = storeButtonType(value)
+        // set(value) = storeButtonType(value)
+        set(value) = storeButtonType(Type.LINK)
         get() = getButtonTypeFromStore()
 
 

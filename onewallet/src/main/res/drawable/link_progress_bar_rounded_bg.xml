@@ -30,10 +30,3 @@
     </item>
 
 </layer-list>
-
-
-    <!--&lt;!&ndash; "shadow" &ndash;&gt;--><!--<item>--><!--<shape android:shape="rectangle" >--><!--<solid android:color="#000000"/>--><!--<corners android:radius="12dp" />--><!--</shape>--><!--</item>-->
-
-
-    <!--<item android:bottom="3px">--><!--<shape android:shape="rectangle">--><!--<solid android:color="#90ffffff"/>--><!--<corners android:radius="12dp" />--><!--</shape>--><!--</item>-->
-

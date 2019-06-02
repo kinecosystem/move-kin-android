@@ -15,7 +15,7 @@ import org.kinecosystem.onewallet.model.OneWalletActionModel
 class OneWalletActionButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         Button(context, attrs, defStyleAttr) {
 
-    fun setAppearance(model: OneWalletActionModel) {
+    fun update(model: OneWalletActionModel) {
         text = context.getText(model.type.textResId)
         TextViewCompat.setTextAppearance(this, model.type.styleResId)
         background = ContextCompat.getDrawable(context, model.type.backgroundResId)

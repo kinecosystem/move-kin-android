@@ -2,8 +2,8 @@
     <string name="btn_link_wallets">Link wallets</string>
     <string name="btn_top_up">Top up</string>
     <string name="progress_linking_wallets_title">Linking wallets...</string>
-    <string name="progress_linking_wallets_body">Manage and keep track of all your Kin\nin one place</string>
-    <string name="progress_linking_wallets_body_2">Top up your Kin in one app by\ntransferring from another one</string>
+    <string name="progress_linking_wallets_body_g">Manage and keep track of all your Kin\nin one place</string>
+    <string name="progress_linking_wallets_body_p">Top up your Kin in one app by\ntransferring from another one</string>
     <string name="progress_linking_wallets_body_success">You\'ve successfully\nlinked your wallets!</string>
     <string name="progress_linking_wallets_end">See your Kin in Kinit</string>
 </resources>
