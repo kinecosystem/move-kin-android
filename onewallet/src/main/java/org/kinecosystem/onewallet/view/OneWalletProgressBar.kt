@@ -1,4 +1,4 @@
-package org.kinecosystem.onewallet
+package org.kinecosystem.onewallet.view
 
 import android.content.Context
 import android.support.constraint.ConstraintLayout
@@ -6,6 +6,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import org.kinecosystem.onewallet.R
+
 /**
  * OneWallet progress bar
  */
