@@ -11,4 +11,5 @@
     <dimen name="kin_btn_text_size">14sp</dimen>
     <dimen name="kin_alert_text_size">16sp</dimen>
     <dimen name="button_hollow_stroke_size">2dp</dimen>
+    <dimen name="transfer_bar_height">80dp</dimen>
 </resources>
