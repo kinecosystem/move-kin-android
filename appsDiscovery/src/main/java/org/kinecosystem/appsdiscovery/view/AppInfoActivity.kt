@@ -225,6 +225,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         transferBarView?.updateViews(transferInfo)
     }
 
+    override fun updateAmount(amount: Int) {
+        transferBarView?.updateAmount(amount)
+    }
 
     override fun updateTransferStatus(status: TransferBarView.TransferStatus) {
         transferBarView?.updateStatus(status)
