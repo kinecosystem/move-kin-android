@@ -21,10 +21,13 @@ class TransferManager(var activity: Activity?) {
         return IntentBuilder(activity, applicationId, launchActivityFullPath)
     }
 
-    class IntentBuilder constructor(private val activity:Activity?,
-                                     private val applicationId: String,
-                                     private val launchActivityFullPath: String) {
+    class IntentBuilder constructor(private val activity: Activity?,
+                                    private val applicationId: String,
+                                    private val launchActivityFullPath: String) {
         val intent: Intent = Intent()
+        var found: Boolean = false
+        var exported: Boolean = false
+        var exception: Boolean = false
 
         fun addParam(key: String, value: String): IntentBuilder {
             intent.putExtra(key, value)
@@ -32,28 +35,46 @@ class TransferManager(var activity: Activity?) {
         }
 
         fun build(): IntentBuilder {
-            return this
-        }
-
-        fun start(requestCode: Int): Boolean {
             try {
                 activity?.let {
                     val packageManager = it.packageManager
                     intent.component = ComponentName(applicationId, launchActivityFullPath)
                     val resolveInfos = packageManager.queryIntentActivities(intent, 0)
-                    if (!resolveInfos.isEmpty()) {
-                        if (resolveInfos[0].activityInfo.exported) {
+                    found = resolveInfos.isNotEmpty()
+                    if (found) {
+                        exported = resolveInfos[0].activityInfo.exported
+                        if (exported) {
                             val appName = activity.applicationInfo.loadLabel(activity.packageManager).toString()
                             intent.putExtra(TransferIntent.EXTRA_SOURCE_APP_NAME, appName)
-                            activity.startActivityForResult(intent, requestCode)
-                            return true
                         }
                     }
+
                 }
             } catch (e: Exception) {
+                exception = true
                 e.printStackTrace()
             }
-            return false
+            return this
+        }
+
+        fun startForResult(requestCode: Int): Boolean {
+            if (!found || !exported || exception) {
+                return false
+            }
+            activity?.let {
+                it.startActivityForResult(intent, requestCode)
+                return true
+            } ?: return false
+        }
+
+        fun start(): Boolean {
+            if (!found || !exported || exception) {
+                return false
+            }
+            activity?.let {
+                it.startActivity(intent)
+                return true
+            } ?: return false
         }
     }
 
@@ -74,7 +95,7 @@ class TransferManager(var activity: Activity?) {
 
 
     private fun processResultOk(intent: Intent,
-            accountInfoResponseListener: AccountInfoResponseListener) {
+                                accountInfoResponseListener: AccountInfoResponseListener) {
 
         try {
             val uri = intent.data

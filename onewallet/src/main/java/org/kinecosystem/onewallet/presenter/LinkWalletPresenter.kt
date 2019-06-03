@@ -5,6 +5,7 @@ import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.LocalStore
 import org.kinecosystem.onewallet.model.OneWalletActionModel
 import org.kinecosystem.onewallet.view.LinkWalletViewHolder
+import org.kinecosystem.onewallet.view.LinkingBarActionListener
 
 class LinkWalletPresenter(localStore: LocalStore) : BasePresenter<LinkWalletViewHolder>(), ILinkWalletPresenter {
 
@@ -32,18 +33,23 @@ class LinkWalletPresenter(localStore: LocalStore) : BasePresenter<LinkWalletView
     }
 
     override fun onLinkWalletCancelled() {
-        view?.progressBar?.displayError(0)
+        view?.progressBar?.dismiss()
         view?.actionButton?.isEnabled = true
     }
 
     override fun onLinkWalletError(errorMessage: String) {
-        view?.progressBar?.displayError(0)
+        view?.progressBar?.displayError(false)
         view?.actionButton?.isEnabled = true
     }
+
+    override fun onLinkWalletTimeout() {
+        view?.progressBar?.displayError(true)
+        view?.actionButton?.isEnabled = true
+    }
+
 
     override fun onDetach() {
         view?.progressBar?.stopFlipAnimation()
         super.onDetach()
     }
-
 }

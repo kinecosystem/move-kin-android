@@ -137,7 +137,7 @@ class AppInfoPresenterTest {
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
         val intentBuilder = mock(TransferManager.IntentBuilder::class.java)
         `when`(transferManager.intentBuilder(anyString(), anyString())).thenReturn(intentBuilder)
-        `when`(intentBuilder.start(anyInt())).thenReturn(true)
+        `when`(intentBuilder.startForResult(anyInt())).thenReturn(true)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
@@ -158,7 +158,7 @@ class AppInfoPresenterTest {
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
         val intentRequestBuilder = mock(TransferManager.IntentBuilder::class.java)
         `when`(transferManager.intentBuilder(anyString(), anyString())).thenReturn(intentRequestBuilder)
-        `when`(intentRequestBuilder.start(anyInt())).thenReturn(false)
+        `when`(intentRequestBuilder.startForResult(anyInt())).thenReturn(false)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)

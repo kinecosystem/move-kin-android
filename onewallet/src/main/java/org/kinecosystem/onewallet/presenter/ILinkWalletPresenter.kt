@@ -9,5 +9,6 @@ interface ILinkWalletPresenter : IBasePresenter<LinkWalletViewHolder> {
     fun onLinkWalletCancelled()
     fun onLinkWalletSucceeded()
     fun onLinkWalletError(errorMessage: String)
+    fun onLinkWalletTimeout()
 
 }
