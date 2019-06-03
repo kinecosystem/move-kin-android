@@ -22,8 +22,6 @@ import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
 import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
-import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
-import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
@@ -33,6 +31,8 @@ import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.sender.view.TransferBarView
+import org.kinecosystem.transfer.sender.view.TransferInfo
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {

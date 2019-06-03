@@ -14,9 +14,9 @@ import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
-import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.sender.manager.TransferManager
+import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
