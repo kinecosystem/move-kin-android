@@ -53,5 +53,30 @@
         app:layout_constraintTop_toBottomOf="@id/progress_title"
         app:layout_constraintBottom_toBottomOf="parent" />
 
+    <TextView
+        android:id="@+id/progress_completion_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sailec_medium"
+        android:text="@string/progress_linking_wallets_body_success"
+        android:textColor="@color/dark"
+        android:textSize="@dimen/text_small_size"
+        android:visibility="gone"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintStart_toStartOf="@id/progress_vertical_split"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/progress_close_x"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:background="@drawable/kin_x_close_dark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintHorizontal_bias="1"
+        android:visibility="gone"/>
 
 </android.support.constraint.ConstraintLayout>

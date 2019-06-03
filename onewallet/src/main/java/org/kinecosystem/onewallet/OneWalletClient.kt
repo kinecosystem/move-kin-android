@@ -32,7 +32,7 @@ class OneWalletClient : IOneWalletClient {
         uiHandler = Handler(Looper.getMainLooper())
         val localStore = LocalStore(activity.applicationContext, "ONE_WALLET")
 
-        linkWalletPresenter = LinkWalletPresenter(localStore, uiHandler)
+        linkWalletPresenter = LinkWalletPresenter(localStore)
         linkWalletPresenter?.onAttach(LinkWalletViewHolder(
                 activity.findViewById(actionButtonResId),
                 activity.findViewById(progressBarResId)))
@@ -93,7 +93,6 @@ class OneWalletClient : IOneWalletClient {
         executorService.execute {
             try {
                 val id = kinAccount?.sendLinkAccountsTransaction(data)
-
                 uiHandler.post {
                     linkWalletPresenter?.onLinkWalletSucceeded()
                 }

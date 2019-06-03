@@ -3,7 +3,6 @@ package org.kinecosystem.onewallet.view
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
@@ -24,8 +23,10 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
     private var progressImg: ImageView
     private val greenIcon: Drawable?
     private val purpleIcon: Drawable?
-    var flipAnimation: ObjectAnimator? = null
-    var greenPurpleStopped: Boolean = false
+    private var flipAnimation: ObjectAnimator? = null
+    private var greenPurpleStopped: Boolean = false
+    private var startAnimationTime = 0L
+    private val view: View
 
     enum class BodyTextRes(val bodyTextResId: Int, val colorResId: Int) {
         GREEN(R.string.progress_linking_wallets_body_g, R.color.light_green),
@@ -34,7 +35,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.link_progress_bar, this, true) as ConstraintLayout
+        view = inflater.inflate(R.layout.link_progress_bar, this, true) as ConstraintLayout
         bodyTextView = view.findViewById<TextView>(R.id.progress_body) as TextView
         progressImg = view.findViewById<ImageView>(R.id.progress_img) as ImageView
         visibility = View.INVISIBLE
@@ -43,13 +44,9 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
         purpleIcon = ContextCompat.getDrawable(context, R.drawable.wallet_ic_p)
     }
 
-    private fun updateText(bodyTextRes: BodyTextRes) {
-        bodyTextView.text = context.getText(bodyTextRes.bodyTextResId)
-        bodyTextView.setTextColor(ContextCompat.getColor(context, bodyTextRes.colorResId))
-    }
-
-    fun startFlipAnimation(uiHandler: Handler) {
-        val numOfFlips = 40
+    fun startFlipAnimation() {
+        startAnimationTime = System.currentTimeMillis()
+        val numOfFlips = 30
         val duration = 10000L
         flipAnimation = ObjectAnimator.ofFloat(progressImg, "rotationY", 0f, numOfFlips * 180f)
         flipAnimation?.duration = duration
@@ -57,31 +54,54 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
         flipAnimation?.start()
 
         // animate between green / purple icons on every flip
-        var wasGreenIcon = true
         greenPurpleStopped = false
-        animateGreenBlueIcon(wasGreenIcon, duration / numOfFlips, uiHandler)
+        animateGreenBlueIcon(true, duration / numOfFlips)
 
         // update text & text color once in the middle of the duration
-        uiHandler.postDelayed({
-            updateText(BodyTextRes.PURPLE)
+        animateToPurpleText(duration)
+    }
+
+    fun displaySuccess() {
+        stopFlipAnimation()
+        bodyTextView.visibility = View.GONE
+        view.findViewById<TextView>(R.id.progress_title).visibility = View.GONE
+        view.findViewById<TextView>(R.id.progress_completion_text).visibility = View.VISIBLE
+        view.findViewById<ImageView>(R.id.progress_close_x).visibility = View.VISIBLE
+        progressImg.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_linkwallets_success))
+    }
+
+    fun displayError(errorType: Int) {
+        stopFlipAnimation()
+    }
+
+    fun stopFlipAnimation() {
+        flipAnimation?.end()
+        greenPurpleStopped = true
+    }
+
+    private fun animateToPurpleText(duration: Long) {
+        view.postDelayed({
+            if (!greenPurpleStopped) {
+                updateText(BodyTextRes.PURPLE)
+            }
         }, duration / 2)
     }
 
-    private fun animateGreenBlueIcon(wasGreenIcon: Boolean, frequency: Long, uiHandler: Handler) {
-        uiHandler.postDelayed({
+    private fun animateGreenBlueIcon(wasGreenIcon: Boolean, frequency: Long) {
+        view.postDelayed({
             if (!greenPurpleStopped) {
                 if (wasGreenIcon) {
                     progressImg.setImageDrawable(purpleIcon)
                 } else {
                     progressImg.setImageDrawable(greenIcon)
                 }
-                animateGreenBlueIcon(!wasGreenIcon, frequency, uiHandler)
+                animateGreenBlueIcon(!wasGreenIcon, frequency)
             }
         }, frequency)
     }
 
-    fun stopFlipAnimation() {
-        flipAnimation?.end()
-        greenPurpleStopped = true
+    private fun updateText(bodyTextRes: BodyTextRes) {
+        bodyTextView.text = context.getText(bodyTextRes.bodyTextResId)
+        bodyTextView.setTextColor(ContextCompat.getColor(context, bodyTextRes.colorResId))
     }
 }
