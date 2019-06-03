@@ -2,9 +2,9 @@ package org.kinecosystem.appsdiscovery.view
 
 import org.kinecosystem.common.base.IBaseView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
-import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
-import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
 import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.sender.view.TransferBarView
+import org.kinecosystem.transfer.sender.view.TransferInfo
 
 interface IAppInfoView : IBaseView {
     fun initViews(app: EcosystemApp?)

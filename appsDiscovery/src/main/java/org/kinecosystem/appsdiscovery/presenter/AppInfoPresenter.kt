@@ -8,12 +8,12 @@ import android.util.Log
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
-import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
-import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
 import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.sender.view.TransferBarView
+import org.kinecosystem.transfer.sender.view.TransferInfo
 
 class AppInfoPresenter(private val appName: String?, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 

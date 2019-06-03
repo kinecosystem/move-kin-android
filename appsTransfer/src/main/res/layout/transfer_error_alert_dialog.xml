@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/KinAlertText.Title"
+        style="@style/KinAlertText.Subtitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"

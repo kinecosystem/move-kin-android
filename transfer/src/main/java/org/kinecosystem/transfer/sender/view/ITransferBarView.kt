@@ -1,4 +1,4 @@
-package org.kinecosystem.appstransfer.view.customview
+package org.kinecosystem.transfer.sender.view
 
 import org.kinecosystem.common.base.IBaseView
 
