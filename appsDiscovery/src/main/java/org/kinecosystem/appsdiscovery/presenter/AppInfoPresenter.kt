@@ -20,7 +20,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
     val TRANSACTION_TIMEOUT = 10 * 1000L
-    val MEMO_PREFIX = "CrossApps-"
+    val MEMO_PREFIX = "CrossApps_"
     private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
@@ -94,7 +94,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         }
         app?.identifier?.let { receiverPackage ->
             app?.name?.let { senderName ->
-                view?.startSendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, getTransactionMemo(), receiverPackage)
+                view?.sendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, getTransactionMemo(), receiverPackage)
             }
         }
         startTimeOutCounter()

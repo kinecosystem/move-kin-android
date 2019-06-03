@@ -99,7 +99,7 @@ public class SendKinService extends SendKinServiceBase {
     @NonNull
     @Override
     public KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
-        
+
         // perform the transaction
     }
 
