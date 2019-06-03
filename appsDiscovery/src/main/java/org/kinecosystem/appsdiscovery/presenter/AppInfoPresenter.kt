@@ -89,7 +89,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
     private fun sendKin(amountToSend: Int) {
         app?.let {
             it.identifier?.let { pkg ->
-                view?.initTransfersInfo(TransferInfo(repository.getStoredAppIcon(), it.iconUrl, it.name, pkg, amountToSend))
+                view?.updateAmount(amountToSend)
             }
         }
         app?.identifier?.let { receiverPackage ->
@@ -171,5 +171,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Dis
         super.onAttach(view)
         app = repository.getAppByName(appName)
         view.initViews(app)
+        app?.let { application ->
+            application.identifier?.let { receiverPkg ->
+                view.initTransfersInfo(TransferInfo(repository.getStoredAppIcon(), application.iconUrl, application.name, receiverPkg))
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ import org.kinecosystem.appsdiscovery.model.EcosystemApp
 interface IAppInfoView : IBaseView {
     fun initViews(app: EcosystemApp?)
     fun initTransfersInfo(transferInfo: TransferInfo)
+    fun updateAmount(amount: Int)
     fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int)
     fun bindToSendService()
     fun unbindToSendService()

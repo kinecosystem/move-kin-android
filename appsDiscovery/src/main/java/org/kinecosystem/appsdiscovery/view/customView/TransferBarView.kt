@@ -80,8 +80,11 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
             context.launchApp(transferInfo.receiverPackage)
         }
         receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
-        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, transferInfo.amount)
-        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, transferInfo.amount)
+    }
+
+    override fun updateAmount(amount: Int) {
+        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, amount)
+        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, amount)
     }
 
     override fun updateStatus(status: TransferStatus) {
@@ -185,4 +188,4 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
 
 }
 
-data class TransferInfo(val senderIconUrl: String, val receiverIconUrl: String, val receiverAppName: String, val receiverPackage: String, val amount: Int)
+data class TransferInfo(val senderIconUrl: String, val receiverIconUrl: String, val receiverAppName: String, val receiverPackage: String)
