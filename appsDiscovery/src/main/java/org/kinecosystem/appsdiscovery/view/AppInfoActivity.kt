@@ -46,7 +46,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var isBound = false
     private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
-    private var handler = Handler()
+    private lateinit var uiHandler: Handler
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -63,6 +63,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        uiHandler = Handler(Looper.getMainLooper())
         val appName = intent.getStringExtra(PARAM_APP_NAME)
         if (appName.isNullOrBlank()) {
             finish()
@@ -90,14 +91,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
         transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-                handler.post {
+                uiHandler.post {
                     presenter?.onTransferComplete()
                     sendKinOnSuccess(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
                 }
             }
 
             override fun onError(e: SendKinServiceBase.KinTransferException) {
-                handler.post {
+                uiHandler.post {
                     presenter?.onTransferFailed()
                     sendKinOnError(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
                 }
@@ -135,16 +136,18 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         executorService.execute {
             if (isBound) {
                 try {
-                    transferService?.transferKin(receiverAddress, amount, memo)?.let { kinTransferComplete ->
-                        handler.post {
+                    Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
+                    val kinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)
+                    kinTransferComplete?.let {
+                        uiHandler.post {
                             presenter?.onTransferComplete()
-                            sendKinOnSuccess(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
+                            sendKinOnSuccess(it, receiverPackage, senderAppName, receiverAddress, amount)
                         }
                     } ?: run {
                         sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    handler.post {
+                    uiHandler.post {
                         presenter?.onTransferFailed()
                         sendKinOnError(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
                     }

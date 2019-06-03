@@ -85,52 +85,50 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     }
 
     override fun updateStatus(status: TransferStatus) {
-        uiHandler.post {
-            when (status) {
-                TransferStatus.Started -> {
-                    transferCompleteGroup.visibility = View.GONE
+        when (status) {
+            TransferStatus.Started -> {
+                transferCompleteGroup.visibility = View.GONE
+                transferFailedGroup.visibility = View.GONE
+                transferringGroup.visibility = View.VISIBLE
+                show()
+            }
+            TransferStatus.Complete -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
                     transferFailedGroup.visibility = View.GONE
-                    transferringGroup.visibility = View.VISIBLE
-                    show()
+                    transferCompleteGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Complete -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferFailedGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.Failed -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_failed_error)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Failed -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_error)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.Timeout -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_failed_timeout)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.Timeout -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_timeout)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.FailedReceiverError -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = receiverServiceError
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
-                TransferStatus.FailedReceiverError -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = receiverServiceError
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
-                }
-                TransferStatus.FailedConnectionError -> {
-                    hideAndShow {
-                        transferringGroup.visibility = View.GONE
-                        transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_connection_error)
-                        transferFailedGroup.visibility = View.VISIBLE
-                    }
+            }
+            TransferStatus.FailedConnectionError -> {
+                hideAndShow {
+                    transferringGroup.visibility = View.GONE
+                    transferCompleteGroup.visibility = View.GONE
+                    errorTitle.text = context.getString(R.string.transfer_connection_error)
+                    transferFailedGroup.visibility = View.VISIBLE
                 }
             }
         }
