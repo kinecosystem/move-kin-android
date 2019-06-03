@@ -48,7 +48,7 @@
         android:id="@+id/delimiter"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/gray_light"
+        android:background="@color/grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,7 +145,7 @@
         android:id="@+id/send"
         style="@style/KinTextRegular.Dark"
         android:layout_width="0dp"
-        android:layout_height="68dp"
+        android:layout_height="@dimen/send_height"
         android:background="@drawable/kin_button_rectangle_drawable"
         android:gravity="center"
         android:letterSpacing="0.06"
@@ -156,6 +156,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <org.kinecosystem.transfer.sender.view.TransferBarView
+        android:id="@+id/transferBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        />
 
 
 </android.support.constraint.ConstraintLayout>

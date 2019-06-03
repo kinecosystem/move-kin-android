@@ -8,6 +8,8 @@ import org.kinecosystem.transfer.model.getTransactionMemo
 import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.sender.view.TransferBarView
+import org.kinecosystem.transfer.sender.view.TransferInfo
 
 class TransferAmountPresenter(appName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
 
@@ -37,6 +39,7 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
             onAmountModified()
         }
     }
+
 
     override fun onFullDel() {
         amountStr = ZEROE
@@ -93,10 +96,6 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         //TODO
     }
 
-    override fun startSendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
-        //TODO update transfer bar
-    }
-
     override fun onPause() {
         senderServiceBinder.unbind()
     }
@@ -117,12 +116,22 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         app?.let { application ->
             application.identifier?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(receiverPublicAddress, application.name, amount, application.getTransactionMemo(), receiverPackage)
-                application.identifier?.let {
-                    view?.onStartSendingKin(amount, application.name, application.iconUrl, it)
-                }
+                view?.enableSend(false)
+                view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
+                view?.updateTransferBar(TransferBarView.TransferStatus.Started)
             }
         }
         //startTimeOutCounter()
+    }
+
+    override fun onTransferFailed() {
+        view?.enableSend(true)
+        view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+    }
+
+    override fun onTransferComplete() {
+        view?.enableSend(true)
+        view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
     }
 
     override fun onAttach(view: ITransferAmountView) {

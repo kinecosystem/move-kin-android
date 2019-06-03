@@ -23,12 +23,14 @@ class SenderServiceBinder(private val context: Context?) {
         fun onBalanceFailed()
         fun onServiceConnected()
         fun onServiceDisconnected()
+        fun onTransferFailed()
+        fun onTransferComplete()
     }
 
     private var executorService = Executors.newCachedThreadPool()
     @Volatile
     var isBounded = false
-    private set
+        private set
     private var transferService: SendKinServiceBase? = null
     private var listener: BinderListener? = null
     private val connection = object : ServiceConnection {
@@ -50,8 +52,8 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun setListener(balanceListener: BinderListener) {
-        this.listener = balanceListener
+    fun setListener(transferListener: BinderListener) {
+        this.listener = transferListener
     }
 
     fun requestCurrentBalance() {
@@ -83,8 +85,9 @@ class SenderServiceBinder(private val context: Context?) {
             executorService.execute {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
+
                     mainThreadHandler.post {
-                        // listener?.onTransferComplete()
+                        listener?.onTransferComplete()
                     }
 
                     try {
@@ -98,7 +101,7 @@ class SenderServiceBinder(private val context: Context?) {
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     mainThreadHandler.post {
-                        // listener?.onTransferFailed()
+                        listener?.onTransferFailed()
                     }
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                     try {

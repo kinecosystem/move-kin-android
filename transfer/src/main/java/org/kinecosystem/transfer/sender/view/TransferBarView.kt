@@ -1,4 +1,4 @@
-package org.kinecosystem.appsdiscovery.view.customView
+package org.kinecosystem.transfer.sender.view
 
 import android.animation.Animator
 import android.animation.ValueAnimator
@@ -7,16 +7,16 @@ import android.os.Handler
 import android.os.Looper
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.Group
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
 import android.widget.ImageView
 import android.widget.TextView
-import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.common.utils.launchApp
 import org.kinecosystem.common.utils.load
-
+import org.kinecosystem.transfer.R
 
 class TransferBarView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ConstraintLayout(context, attrs, defStyleAttr), ITransferBarView {
 
@@ -33,12 +33,14 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     private var showY = 0f
     private val HIDE_ANIMATION_DURATION = 300L
     private val SHOW_ANIMATION_DURATION = 450L
+    val MAX_ANIM_DURATION = SHOW_ANIMATION_DURATION
     private val transferringGroup: Group
     private val transferCompleteGroup: Group
     private val transferFailedGroup: Group
     private val errorTitle: TextView
     private var receiverServiceError = ""
     private val uiHandler = Handler(Looper.getMainLooper())
+    private var barView: View? = null
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -47,7 +49,8 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         transferringGroup = findViewById(R.id.transferring_group)
         transferFailedGroup = findViewById(R.id.transfer_failed_group)
         errorTitle = findViewById(R.id.errorTitle)
-        viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+        barView = findViewById(R.id.bar)
+        viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 viewTreeObserver.removeOnGlobalLayoutListener(this)
                 hideY = y + height * 2
@@ -79,6 +82,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         findViewById<TextView>(R.id.gotoApp).setOnClickListener {
             context.launchApp(transferInfo.receiverPackage)
         }
+
         receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
         findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, transferInfo.amount)
         findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, transferInfo.amount)
@@ -91,10 +95,12 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                     transferCompleteGroup.visibility = View.GONE
                     transferFailedGroup.visibility = View.GONE
                     transferringGroup.visibility = View.VISIBLE
+                    barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                     show()
                 }
                 TransferStatus.Complete -> {
                     hideAndShow {
+                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.purple))
                         transferringGroup.visibility = View.GONE
                         transferFailedGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.VISIBLE
@@ -102,6 +108,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.Failed -> {
                     hideAndShow {
+                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_failed_error)
@@ -110,6 +117,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.Timeout -> {
                     hideAndShow {
+                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_failed_timeout)
@@ -118,6 +126,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.FailedReceiverError -> {
                     hideAndShow {
+                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = receiverServiceError
@@ -126,6 +135,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.FailedConnectionError -> {
                     hideAndShow {
+                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_connection_error)

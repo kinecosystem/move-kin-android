@@ -225,7 +225,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_editor_absoluteX="0dp" />
 
-    <org.kinecosystem.appsdiscovery.view.customView.TransferBarView
+    <org.kinecosystem.transfer.sender.view.TransferBarView
         android:id="@+id/transferBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

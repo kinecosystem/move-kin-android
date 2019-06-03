@@ -8,7 +8,6 @@ interface ITransferAmountPresenter : IBasePresenter<ITransferAmountView> {
     fun onCloseClicked()
     fun onResume()
     fun onPause()
-    fun startSendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String)
     fun onDigitClicked(number: String)
     fun onZerosClicked()
     fun onDellClicked()

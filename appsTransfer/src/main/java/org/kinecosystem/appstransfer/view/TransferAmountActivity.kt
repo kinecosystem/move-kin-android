@@ -17,12 +17,15 @@ import org.kinecosystem.common.utils.load
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.sender.view.TransferBarView
+import org.kinecosystem.transfer.sender.view.TransferInfo
 
 class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
 
     private var presenter: TransferAmountPresenter? = null
     private var amount:TextView? = null
     private var send:TextView? = null
+    private var transferBarView: TransferBarView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,7 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
 
         presenter = TransferAmountPresenter(appName, receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
         presenter?.onAttach(this)
+        transferBarView = findViewById(R.id.transferBar)
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
             presenter?.onCloseClicked()
         }
@@ -52,12 +56,24 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         amount = findViewById(R.id.amount)
     }
 
-    override fun onStartSendingKin(amount: Int, appName: String, appIconUrl: String, appPackage: String) {
-        //TODO update transfer bar
+    override fun updateTransferBar(status: TransferBarView.TransferStatus) {
+       transferBarView?.updateStatus(status)
+    }
+
+    override fun initTransferBar(transferInfo: TransferInfo) {
+        transferBarView?.updateViews(transferInfo)
+    }
+
+    override fun enableSend(enable:Boolean) {
+
+        send?.isEnabled = enable
     }
 
     override fun setSendEnable(isEnabled: Boolean) {
-        send?.isEnabled = isEnabled
+        send?.postDelayed({
+            send?.isEnabled = isEnabled
+            //TODO
+        },450)
     }
 
     override fun updateAmount(amount: String) {
