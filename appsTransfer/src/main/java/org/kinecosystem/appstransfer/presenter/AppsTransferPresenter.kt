@@ -10,6 +10,7 @@ import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferPresenter(private val transferManager: TransferManager) : BasePresenter<IAppsTransferView>(), IAppsTransferPresenter, AppsTransferListPresenter.LoadingListener, AppsTransferList.AppClickListener {
 
+    private val TAG = AppsTransferPresenter::class.java.simpleName
     private val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     private var app: EcosystemApp? = null
 
@@ -27,10 +28,10 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
             app.launchActivity?.let { activityFullPath ->
                 val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE, pkg, activityFullPath)
                 if (!started) {
-                    view?.onTransferError()
+                    view?.onCantFindReceiverInfo(app.name)
                 }
-            } ?: kotlin.run { view?.onTransferError() }
-        } ?: kotlin.run { view?.onTransferError() }
+            } ?: kotlin.run { view?.onTransferError(app.name) }
+        } ?: kotlin.run { view?.onTransferError(app.name) }
     }
 
     override fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?) {
@@ -62,18 +63,19 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
     private fun parsePublicAddressData(resultCode: Int, intent: Intent?) {
         transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
-                Log.d("AppInfoPresenter", "Operation cancelled, no public address received")
+                Log.d(TAG, "Operation cancelled, no public address received")
             }
 
             override fun onError(error: String) {
-                //TODO error cant parse address
-                view?.onTransferError()
+                app?.let {
+                    view?.onTransferError(it.name)
+                }
             }
 
             override fun onResult(address: String) {
-                Log.d("AppInfoPresenter", "got address onResult $address")
+                Log.d(TAG, "got address onResult $address")
                 app?.let {
-                    view?.startAmountChooserActivity(it, address)
+                    view?.startTransferAmountActivity(it, address)
                 }
             }
         })
