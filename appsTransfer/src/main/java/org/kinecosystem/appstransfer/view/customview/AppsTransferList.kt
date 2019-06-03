@@ -131,7 +131,6 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
                     if (app.canTransferKin) {
                         actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
                         actionText.text = context.getString(R.string.transfer_kin)
-                        TextViewCompat.setTextAppearance(actionText, R.style.kinTextButtonRounded)
                         actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_btn_text))
                         actionText.visibility = View.VISIBLE
                         status.visibility = View.GONE
@@ -144,7 +143,6 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
                     }
                 } else {
                     appName.gravity = Gravity.TOP
-                    TextViewCompat.setTextAppearance(actionText, R.style.kinTextButtonRounded_Hollow)
                     actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_hollow_drawable)
                     actionText.text = context.getString(R.string.learn_more)
                     status.text = context.getString(R.string.not_installed)
