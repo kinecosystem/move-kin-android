@@ -1,8 +1,10 @@
 package org.kinecosystem.appstransfer.presenter
 
+import android.os.Handler
 import org.kinecosystem.appstransfer.view.ITransferAmountView
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
+import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.getTransactionMemo
 import org.kinecosystem.transfer.model.iconUrl
@@ -12,7 +14,6 @@ import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 
 class TransferAmountPresenter(appName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
-
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
 
@@ -21,6 +22,10 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
     private var balance = 0
     private var app: EcosystemApp? = null
     private var requestBalance = false
+    private val handler = Handler()
+    private var afterTimeout = false
+    @Volatile
+    private var gotTransferResponse = false
 
     init {
         app = repository.getAppByName(appName)
@@ -116,22 +121,28 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         app?.let { application ->
             application.identifier?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(receiverPublicAddress, application.name, amount, application.getTransactionMemo(), receiverPackage)
+                startTimeOutCounter()
                 view?.enableSend(false)
                 view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
             }
         }
-        //startTimeOutCounter()
     }
 
     override fun onTransferFailed() {
-        view?.enableSend(true)
-        view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+        if (!afterTimeout) {
+            gotTransferResponse = false
+            view?.enableSend(true)
+            view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+        }
     }
 
     override fun onTransferComplete() {
-        view?.enableSend(true)
-        view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+        if (!afterTimeout) {
+            gotTransferResponse = false
+            view?.enableSend(true)
+            view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+        }
     }
 
     override fun onAttach(view: ITransferAmountView) {
@@ -155,5 +166,16 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
             requestBalance = true
             senderServiceBinder.bind()
         }
+    }
+
+    private fun startTimeOutCounter() {
+        afterTimeout = false
+        gotTransferResponse = false
+        handler.postDelayed({
+            if (!gotTransferResponse) {
+                afterTimeout = true
+                view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
+            }
+        }, TRANSACTION_TIMEOUT)
     }
 }
