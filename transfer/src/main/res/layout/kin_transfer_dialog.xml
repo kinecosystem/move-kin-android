@@ -27,10 +27,10 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="@dimen/padding_normal"
         android:layout_marginRight="@dimen/padding_normal"
-        android:text="@string/alert_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image" />
+        app:layout_constraintTop_toBottomOf="@+id/image"
+        tools:text="some title" />
 
     <TextView
         android:id="@+id/subtitle"
@@ -43,7 +43,7 @@
         android:layout_marginEnd="@dimen/padding_normal"
         android:layout_marginRight="@dimen/padding_normal"
         android:lineSpacingExtra="8sp"
-        android:text="@string/alert_subtitle"
+        android:text="some subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -58,11 +58,11 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="@dimen/padding_normal"
         android:layout_marginRight="@dimen/padding_normal"
-        android:text="@string/explore"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
+        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+        tools:text="ok" />
 
     <TextView
         android:id="@+id/negativeBtn"
@@ -75,11 +75,11 @@
         android:layout_marginEnd="@dimen/padding_normal"
         android:layout_marginRight="@dimen/padding_normal"
         android:layout_marginBottom="@dimen/padding_normal"
-        android:text="@string/not_now"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/positiveBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/positiveBtn"
+        tools:text="cancel" />
 
 </android.support.constraint.ConstraintLayout>

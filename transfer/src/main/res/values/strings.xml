@@ -16,4 +16,7 @@
     <string name="transfer_receiver_service_error">This version is not supported. Update %s and try again.</string>
     <string name="transfer_connection_error">We couldn\'t establish a connection. Check back later.</string>
     <string name="send_kin_to">Send Kin to</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+
 </resources>
