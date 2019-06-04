@@ -8,6 +8,7 @@ import android.util.Log
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
+import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
@@ -19,8 +20,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
 
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
-    val TRANSACTION_TIMEOUT = 10 * 1000L
-    val MEMO_PREFIX = "CrossApps_"
+    val MEMO_PREFIX = "CrossApps-"
     private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
