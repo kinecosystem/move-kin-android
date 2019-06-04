@@ -28,8 +28,8 @@ public class LinkMainActivity extends SampleBaseActivity {
         KinAccount account = sampleWallet.getAccount();
         if (account != null && !TextUtils.isEmpty(account.getPublicAddress())) {
             oneWalletClient = new OneWalletClient();
-            oneWalletClient.onActivityCreated(this, account, ONE_WALLET_REQUEST_CODE,
-                    R.id.oneWalletActionButton, R.id.oneWalletProgressBar);
+            oneWalletClient.onActivityCreated(this, account, ONE_WALLET_REQUEST_CODE);
+            oneWalletClient.bindViews(findViewById(R.id.oneWalletActionButton), findViewById(R.id.oneWalletProgressBar));
         }
     }
 
@@ -42,14 +42,14 @@ public class LinkMainActivity extends SampleBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (oneWalletClient != null && requestCode == ONE_WALLET_REQUEST_CODE) {
-            oneWalletClient.onActivityResult(
-                    this, resultCode, data);
+            oneWalletClient.onActivityResult(this, resultCode, data);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        oneWalletClient.unbindViews();
         oneWalletClient.onActivityDestroyed();
         oneWalletClient = null;
     }

@@ -1,5 +1,6 @@
 package org.kinecosystem.onewallet.presenter
 
+import android.util.Log
 import android.view.View
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.LocalStore
@@ -7,9 +8,9 @@ import org.kinecosystem.onewallet.model.OneWalletActionModel
 import org.kinecosystem.onewallet.view.LinkWalletViewHolder
 import org.kinecosystem.onewallet.view.LinkingBarActionListener
 
-class LinkWalletPresenter(localStore: LocalStore) : BasePresenter<LinkWalletViewHolder>(), ILinkWalletPresenter {
+class LinkWalletPresenter(model: OneWalletActionModel) : BasePresenter<LinkWalletViewHolder>(), ILinkWalletPresenter {
 
-    var oneWalletActionModel: OneWalletActionModel = OneWalletActionModel(localStore)
+    var oneWalletActionModel: OneWalletActionModel = model
         private set
 
     override fun onAttach(view: LinkWalletViewHolder) {
@@ -25,10 +26,9 @@ class LinkWalletPresenter(localStore: LocalStore) : BasePresenter<LinkWalletView
         view?.progressBar?.visibility = View.VISIBLE
     }
 
-    override fun onLinkWalletSucceeded() {
+    override fun onLinkWalletSucceeded(oneWalletActionModel: OneWalletActionModel) {
         view?.progressBar?.displaySuccess()
         view?.actionButton?.isEnabled = true
-        oneWalletActionModel.type = OneWalletActionModel.Type.TOP_UP
         view?.actionButton?.update(oneWalletActionModel)
     }
 
@@ -38,6 +38,7 @@ class LinkWalletPresenter(localStore: LocalStore) : BasePresenter<LinkWalletView
     }
 
     override fun onLinkWalletError(errorMessage: String) {
+        Log.e("LinkingModule", "The following message received " + errorMessage)
         view?.progressBar?.displayError(false)
         view?.actionButton?.isEnabled = true
     }
