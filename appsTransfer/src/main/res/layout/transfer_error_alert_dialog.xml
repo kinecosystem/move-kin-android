@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/okBtn"
-        style="@style/kinTextButtonRounded.White"
+        style="@style/KinTextButtonRounded.White"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"

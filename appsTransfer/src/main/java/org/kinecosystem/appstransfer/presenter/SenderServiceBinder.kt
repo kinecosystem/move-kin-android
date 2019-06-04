@@ -11,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.transfer.repositories.KinTransferCallback
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import java.util.concurrent.Executors
 
@@ -102,35 +103,45 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
+    fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+        if (isBounded) {
+            executorService.execute {
+                transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
+            }
+        }
+    }
+
     @Throws(ServiceConfigurationException::class)
     fun bind() {
-        if (isBounded) {
+        if (!isBounded) {
+            val intent = Intent()
+            val senderPackageName = context?.packageName
+            val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+            intent.component = ComponentName(senderPackageName, serviceFullPath)
+            intent.`package` = senderPackageName
+            context?.packageManager?.let {
+                val resolveInfos: MutableList<ResolveInfo> = it.queryIntentServices(intent, 0)
+                if (!resolveInfos.any()) {
+                    throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
+                }
+                if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
+                    throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
+                }
+            } ?: kotlin.run {
+                throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
+            }
+            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        } else {
             mainThreadHandler.post {
                 listener?.onServiceConnected()
             }
-            return
         }
-        val intent = Intent()
-        val senderPackageName = context?.packageName
-        val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
-        intent.component = ComponentName(senderPackageName, serviceFullPath)
-        intent.`package` = senderPackageName
-        context?.packageManager?.let {
-            val resolveInfos: MutableList<ResolveInfo> = it.queryIntentServices(intent, 0)
-            if (!resolveInfos.any()) {
-                throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
-            }
-            if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
-                throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
-            }
-        } ?: kotlin.run {
-            throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
-        }
-        context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     fun unbind() {
-        context?.unbindService(connection)
-        isBounded = false
+        if (isBounded) {
+            context?.unbindService(connection)
+            isBounded = false
+        }
     }
 }

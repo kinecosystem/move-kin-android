@@ -115,7 +115,7 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     }
 
     override fun onBalanceFailed() {
-        balance =  Consts.NO_BALANCE
+        balance = Consts.NO_BALANCE
     }
 
     override fun onSendKinClicked() {
@@ -125,7 +125,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
                 startTimeOutCounter()
                 view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
-                //reset amount
                 resetAmount()
             }
         }
@@ -146,14 +145,12 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
 
     override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
         if (!afterTimeout) {
-            if (!afterTimeout) {
-                transferResponseReceived = true
-                view?.enableSend(true)
-                view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
-                app?.let { application ->
-                    application.identifier?.let { receiverPackage ->
-                        view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                    }
+            transferResponseReceived = true
+            view?.enableSend(true)
+            view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+            app?.let { application ->
+                application.identifier?.let { receiverPackage ->
+                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
                 }
             }
         }
