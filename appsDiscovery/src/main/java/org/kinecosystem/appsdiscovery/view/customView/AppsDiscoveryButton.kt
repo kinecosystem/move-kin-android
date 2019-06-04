@@ -15,6 +15,10 @@ class AppsDiscoveryButton @JvmOverloads constructor(context: Context, attrs: Att
         context.startActivity(AppsDiscoveryActivity.getIntent(context))
     }
 
+    override fun sendAccessibilityEvent(eventType: Int) {
+        super.sendAccessibilityEvent(eventType)
+    }
+
     init {
         text = resources.getString(R.string.explore_kin)
         TextViewCompat.setTextAppearance(this, R.style.kinTextButtonRounded_Purple)
