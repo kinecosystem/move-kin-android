@@ -1,27 +1,29 @@
 package org.kinecosystem.appsdiscovery.view.customView
 
 import android.content.Context
-import android.support.v7.app.AlertDialog
-import android.view.View
-import android.widget.TextView
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.view.AppsDiscoveryActivity
+import org.kinecosystem.transfer.sender.view.KinTransferDialogBase
 
-class AppsDiscoveryAlertDialog(context: Context) : AlertDialog(context) {
+class AppsDiscoveryAlertDialog(context: Context) : KinTransferDialogBase(context) {
 
-    init {
-        val dialogView = View.inflate(context, R.layout.apps_discovery_dialog, null)
-        setView(dialogView)
-        dialogView.findViewById<TextView>(R.id.positiveBtn).setOnClickListener {
-            startAppsDiscoveryActivity()
-            dismiss()
-        }
-        dialogView.findViewById<TextView>(R.id.negativeBtn).setOnClickListener {
-            dismiss()
-        }
+    override fun getTitle(): String {
+        return context.resources.getString(R.string.alert_title)
     }
 
-    private fun startAppsDiscoveryActivity() {
+    override fun getSubtitle(): String {
+        return context.resources.getString(R.string.alert_subtitle)
+    }
+
+    override fun onActionClicked() {
         context.startActivity(AppsDiscoveryActivity.getIntent(context))
+    }
+
+    override fun getPositiveButtonText():String{
+        return context.resources.getString(R.string.explore)
+    }
+
+    override fun getNegativeButtonText():String{
+        return context.resources.getString(R.string.not_now)
     }
 }

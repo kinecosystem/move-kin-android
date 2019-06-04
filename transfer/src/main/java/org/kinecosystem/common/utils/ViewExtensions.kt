@@ -33,3 +33,8 @@ fun ImageView.load(url: String) {
         Picasso.get().load(url).into(this)
     }
 }
+
+fun Context.getApplicationName(): String {
+    val stringId = applicationInfo.labelRes
+    return if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else getString(stringId)
+}
