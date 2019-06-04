@@ -11,5 +11,5 @@ interface ITransferAmountPresenter : IBasePresenter<ITransferAmountView> {
     fun onDigitClicked(number: String)
     fun onZerosClicked()
     fun onDellClicked()
-    fun onFullDel()
+    fun resetAmount()
 }
