@@ -1,17 +1,20 @@
 package org.kinecosystem.appstransfer.presenter
 
+import android.os.Handler
 import org.kinecosystem.appstransfer.view.ITransferAmountView
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
+import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.getTransactionMemo
 import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 
-class TransferAmountPresenter(appName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
+class TransferAmountPresenter(receiverAppName: String, private val senderAppName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
 
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
@@ -20,10 +23,13 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
     private var amountStr: String = ZEROE
     private var balance = 0
     private var app: EcosystemApp? = null
-    private var requestBalance = false
+    private var balanceRequested = false
+    private val handler = Handler()
+    private var afterTimeout = false
+    private var transferResponseReceived = false
 
     init {
-        app = repository.getAppByName(appName)
+        app = repository.getAppByName(receiverAppName)
     }
 
     override fun onZerosClicked() {
@@ -41,7 +47,7 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
     }
 
 
-    override fun onFullDel() {
+    override fun resetAmount() {
         amountStr = ZEROE
         amount = 0
         onAmountModified()
@@ -86,14 +92,14 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
 
 
     override fun onServiceConnected() {
-        if (requestBalance) {
+        if (balanceRequested) {
             senderServiceBinder.requestCurrentBalance()
-            requestBalance = false
+            balanceRequested = false
         }
     }
 
     override fun onServiceDisconnected() {
-        //TODO
+        //TODO?
     }
 
     override fun onPause() {
@@ -115,23 +121,39 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
     override fun onSendKinClicked() {
         app?.let { application ->
             application.identifier?.let { receiverPackage ->
-                senderServiceBinder.startSendKin(receiverPublicAddress, application.name, amount, application.getTransactionMemo(), receiverPackage)
+                senderServiceBinder.startSendKin(receiverPublicAddress, amount, application.getTransactionMemo())
+                startTimeOutCounter()
                 view?.enableSend(false)
                 view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
             }
         }
-        //startTimeOutCounter()
     }
 
-    override fun onTransferFailed() {
-        view?.enableSend(true)
-        view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+    override fun onTransferFailed(errorMessge: String, senderAddress: String) {
+        if (!afterTimeout) {
+            transferResponseReceived = true
+            view?.enableSend(true)
+            view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+            app?.identifier?.let {
+                view?.notifyReceiverTransactionFailed(it, errorMessge, senderAddress, senderAppName, receiverPublicAddress, amount, app?.memo!!)
+            }
+        }
     }
 
-    override fun onTransferComplete() {
-        view?.enableSend(true)
-        view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+    override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+        if (!afterTimeout) {
+            transferResponseReceived = true
+            view?.enableSend(true)
+            view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+            app?.let { application ->
+                application.identifier?.let { receiverPackage ->
+                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+                }
+            }
+        }
+        resetAmount()
+        requestBalance()
     }
 
     override fun onAttach(view: ITransferAmountView) {
@@ -152,8 +174,23 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         if (senderServiceBinder.isBounded) {
             senderServiceBinder.requestCurrentBalance()
         } else {
-            requestBalance = true
-            senderServiceBinder.bind()
+            requestBalance()
         }
+    }
+
+    private fun requestBalance() {
+        balanceRequested = true
+        senderServiceBinder.bind()
+    }
+
+    private fun startTimeOutCounter() {
+        afterTimeout = false
+        transferResponseReceived = false
+        handler.postDelayed({
+            if (!transferResponseReceived) {
+                afterTimeout = true
+                view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
+            }
+        }, TRANSACTION_TIMEOUT)
     }
 }
