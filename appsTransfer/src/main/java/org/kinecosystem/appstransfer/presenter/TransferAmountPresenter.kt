@@ -121,12 +121,12 @@ class TransferAmountPresenter(appName: String, private val receiverPublicAddress
         app?.let { application ->
             application.identifier?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(receiverPublicAddress, application.name, amount, application.getTransactionMemo(), receiverPackage)
+                startTimeOutCounter()
                 view?.enableSend(false)
                 view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
             }
         }
-        startTimeOutCounter()
     }
 
     override fun onTransferFailed() {
