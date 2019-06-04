@@ -28,6 +28,11 @@ fun Context.launchApp(packageName: String) {
     }
 }
 
+fun Context.getApplicationName(): String {
+    val stringId = applicationInfo.labelRes
+    return if (stringId == 0) applicationInfo.nonLocalizedLabel.toString() else getString(stringId)
+}
+
 fun ImageView.load(url: String) {
     if (url.isNotEmpty()) {
         Picasso.get().load(url).into(this)
