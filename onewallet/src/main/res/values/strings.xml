@@ -1,3 +1,14 @@
 <resources>
-
+    <string name="btn_link_wallets">Link wallets</string>
+    <string name="btn_top_up">Top up</string>
+    <string name="progress_linking_wallets_title">Linking wallets...</string>
+    <string name="progress_linking_wallets_body_g">Manage and keep track of all your Kin\nin one place</string>
+    <string name="progress_linking_wallets_body_p">Top up your Kin in one app by\ntransferring from another one</string>
+    <string name="progress_linking_wallets_body_success">You\'ve successfully\nlinked your wallets!</string>
+    <string name="progress_linking_wallets_end">See your Kin in Kinit</string>
+    <string name="linking_error_something_went_wrong">Something went wrong.\nPlease try again later.</string>
+    <string name="linking_error_could_not_link">We couldn\'t link your wallets.\nPlease try again.</string>
+    <string name="linking_error_timeout">A timeout occurred.\nPlease try again. </string>
+    <string name="linking_error_internet">Please check your internet\nconnection and try again.</string>
+    <string name="linking_try_again"><u>Try again</u></string>
 </resources>
