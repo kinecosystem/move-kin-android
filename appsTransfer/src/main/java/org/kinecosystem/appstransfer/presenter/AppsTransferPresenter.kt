@@ -14,9 +14,9 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
     private val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     private var app: EcosystemApp? = null
 
-    override fun onAppClicked(app: EcosystemApp) {
+    override fun onAppClicked(app: EcosystemApp, isInstalled:Boolean) {
         this.app = app
-        if (app.canTransferKin) {
+        if (isInstalled && app.canTransferKin) {
             requestReceiverPublicAddress(app)
         } else {
             view?.navigateToAppStore(app.downloadUrl)
