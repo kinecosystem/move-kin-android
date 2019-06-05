@@ -23,8 +23,8 @@ import org.kinecosystem.transfer.sender.view.TransferInfo
 class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
 
     private var presenter: TransferAmountPresenter? = null
-    private var amount:TextView? = null
-    private var send:TextView? = null
+    private var amount: TextView? = null
+    private var send: TextView? = null
     private var transferBarView: TransferBarView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,23 +57,20 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
     }
 
     override fun updateTransferBar(status: TransferBarView.TransferStatus) {
-       transferBarView?.updateStatus(status)
+        transferBarView?.updateStatus(status)
     }
 
     override fun initTransferBar(transferInfo: TransferInfo) {
         transferBarView?.updateViews(transferInfo)
     }
 
-    override fun enableSend(enable:Boolean) {
+    override fun enableSend(enable: Boolean) {
 
         send?.isEnabled = enable
     }
 
     override fun setSendEnable(isEnabled: Boolean) {
-        send?.postDelayed({
-            send?.isEnabled = isEnabled
-            //TODO
-        },450)
+        send?.isEnabled = isEnabled
     }
 
     override fun updateAmount(amount: String) {
