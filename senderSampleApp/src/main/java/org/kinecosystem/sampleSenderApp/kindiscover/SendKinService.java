@@ -36,7 +36,7 @@ public class SendKinService extends SendKinServiceBase {
             // here you may add some code to add the transaction details to
             // your app's transaction history metadata
 
-            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo());
+            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo().toString());
 
         } catch (Exception e) {
 
