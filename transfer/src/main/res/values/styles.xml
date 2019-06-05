@@ -1,24 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="kinTextButtonRounded" parent="TextAppearance.AppCompat">
+    <style name="KinTextButtonRounded" parent="TextAppearance.AppCompat">
         <item name="android:textSize">@dimen/kin_btn_text_size</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:fontFamily">@font/sailec_medium</item>
     </style>
 
-    <style name="kinTextButtonRounded.Purple">
+    <style name="KinTextButtonRounded.Purple">
         <item name="android:textColor">@drawable/kin_button_text_colors</item>
         <item name="android:background">@drawable/kin_button_rounded_drawable</item>
     </style>
 
-    <style name="kinTextButtonRounded.Hollow">
+    <style name="KinTextButtonRounded.Hollow">
         <item name="android:textColor">@drawable/kin_button_hollow_text_colors</item>
         <item name="android:background">@drawable/kin_button_rounded_hollow_drawable</item>
     </style>
 
 
-    <style name="kinTextButtonRounded.White">
+    <style name="KinTextButtonRounded.White">
         <item name="android:textColor">@drawable/kin_white_button_text_colors</item>
         <item name="android:background">@drawable/kin_white_button_rounded_drawable</item>
     </style>

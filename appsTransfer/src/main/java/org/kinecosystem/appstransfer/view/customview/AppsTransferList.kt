@@ -89,14 +89,17 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
 
 
     fun updateData(apps: List<EcosystemApp>) {
-        this.apps = apps.sortedByDescending { context.isAppInstalled(it.identifier!!) }
-        notifyDataSetChanged()
+        this.apps = apps
+        invalidateData()
     }
 
     fun invalidateData() {
-        //TODO check sort
-        apps = apps.sortedByDescending { context.isAppInstalled(it.identifier!!) }
+        sort()
         notifyDataSetChanged()
+    }
+
+    fun sort(){
+        apps = apps.sortedWith(compareBy({ context.isAppInstalled(it.identifier!!) }, { it.canTransferKin }, {it.name} )).asReversed()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {

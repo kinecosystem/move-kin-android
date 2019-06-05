@@ -2,10 +2,11 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bar"
+    android:id="@+id/mainBarView"
     android:layout_width="match_parent"
     android:layout_height="@dimen/transfer_bar_height"
-    android:background="@color/dark"
+    android:alpha="0.0"
+    android:background="@color/grey_dark"
     android:clickable="true">
 
     <TextView
@@ -14,14 +15,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"
+        android:layout_marginLeft="@dimen/padding_normal"
         android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/senderAppIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="sending some Kin"
-        android:layout_marginLeft="@dimen/padding_normal"
-        android:layout_marginRight="8dp" />
+        tools:text="sending some Kin" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -80,28 +81,17 @@
         style="@style/KinTextRegular.Light.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:lineSpacingExtra="4sp"
-        tools:text="@string/transfer_failed_error"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/errorClose"
+        app:layout_constraintEnd_toStartOf="@+id/x_close_light"
         app:layout_constraintStart_toEndOf="@+id/errorIcon"
         app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/transfer_failed_error"
         tools:visibility="gone" />
-
-    <TextView
-        android:id="@+id/errorClose"
-        style="@style/KinTextRegular.Light.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="@dimen/padding_normal"
-        android:text="@string/close"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <TextView
         android:id="@+id/completeMessage"
@@ -110,54 +100,44 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/padding_normal"
         android:layout_marginLeft="@dimen/padding_normal"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/completeClose"
-        app:layout_constraintEnd_toStartOf="@+id/gotoApp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/gotoApp"
+        app:layout_constraintEnd_toStartOf="@+id/x_close_light"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/x_close_light"
         app:layout_constraintVertical_chainStyle="spread"
         tools:text="complete sending Kin"
         tools:visibility="gone" />
 
 
-    <ImageView
-        android:id="@+id/completeAppIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/gotoApp"
-        app:layout_constraintEnd_toEndOf="@+id/gotoApp"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/gotoApp"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
-    <TextView
-        android:id="@+id/completeClose"
-        style="@style/KinTextRegular.Light.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_normal"
-        android:layout_marginLeft="@dimen/padding_normal"
-        android:text="@string/close"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/completeMessage"
-        tools:visibility="gone" />
-
     <TextView
         android:id="@+id/gotoApp"
         style="@style/KinTextRegular.Light.Small"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/x_close_light"
+        app:layout_constraintEnd_toStartOf="@+id/x_close_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/completeMessage"
+        tools:text="go to app"
+        tools:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/x_close_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_normal"
-        android:layout_marginRight="@dimen/padding_normal"
-        android:text="@string/go_to_app"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/completeAppIcon"
-        tools:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/kin_x_close_light" />
 
     <android.support.constraint.Group
         android:id="@+id/transferring_group"
@@ -172,13 +152,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="completeMessage,completeAppIcon,completeClose,gotoApp" />
+        app:constraint_referenced_ids="completeMessage,gotoApp" />
 
     <android.support.constraint.Group
         android:id="@+id/transfer_failed_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="errorIcon,errorTitle,errorClose" />
+        app:constraint_referenced_ids="errorIcon,errorTitle" />
+
 
 </android.support.constraint.ConstraintLayout>
