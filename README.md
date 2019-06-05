@@ -30,7 +30,7 @@ For the latest appsDiscovery release, go to [https://github.com/kinecosystem/mov
 
 
 ## Exploring the Ecosystem
-To allow users to explore the ecosystem, the module displays other ecosystem applications on a single screen. From that screen, users can get more information about each application, install the application if they don't have it yet, and send Kin from their account in the hosting app, to their account on another ecosystem app. 
+To allow users to explore the ecosystem, the module displays other ecosystem applications on a single screen. From that screen, users can get more information about each application, install the application if they don't have it yet, and send Kin from their account in the app, to their account on another ecosystem app. 
 
 We provide the following two ways of opening the screen that displays the applications: 
 - Adding a button (*AppsDiscoveryButton*) that opens the screen (*AppsDiscoveryActivity*)  
