@@ -53,16 +53,14 @@ class OneWalletClient : IOneWalletClient {
                 actionButton, progressBar))
 
         kinAccount?.publicAddress?.let { publicAddress ->
-            hostActivity?.let { hostActivity ->
-                setupActionListener(hostActivity, publicAddress, oneWalletRequestCode)
-            }
+            setupActionListeners(publicAddress, oneWalletRequestCode)
         }
     }
 
-    override fun onActivityResult(activity: Activity, resultCode: Int, intent: Intent) {
+    override fun onActivityResult(resultCode: Int, intent: Intent) {
 
         linkWalletPresenter?.onLinkWalletStarted()
-        val transferManager = TransferManager(activity)
+        val transferManager = TransferManager(hostActivity)
         transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
             override fun onCancel() {
                 linkWalletPresenter?.onLinkWalletCancelled()
@@ -88,32 +86,31 @@ class OneWalletClient : IOneWalletClient {
         hostActivity = null
     }
 
-
-
-    private fun setupActionListener(activity: Activity, publicAddress: String, requestCode: Int) {
+    private fun setupActionListeners(publicAddress: String, requestCode: Int) {
         linkWalletPresenter?.view?.actionButton?.setOnClickListener {
-            startOneWalletAction(activity, publicAddress, requestCode)
+            startOneWalletAction(publicAddress, requestCode)
         }
+
         linkWalletPresenter?.view?.progressBar?.setBarActionListener(object : LinkingBarActionListener {
             override fun onLinkingRetryClicked() {
-                startOneWalletAction(activity, publicAddress, requestCode)
+                // retry
+                startOneWalletAction(publicAddress, requestCode)
             }
 
             override fun onOpenKinitClicked() {
-                TransferManager(activity)
+                TransferManager(hostActivity)
                         .intentBuilder(ONE_WALLET_APP_ID, ONE_WALLET_MAIN_ACTIVITY)
                         .build()
                         .start()
-
             }
         })
     }
 
-    private fun startOneWalletAction(activity: Activity, publicAddress: String, requestCode: Int) {
+    private fun startOneWalletAction(publicAddress: String, requestCode: Int) {
         val model = linkWalletPresenter?.oneWalletActionModel
         model?.let {
             if (it.isLinkingButton()) {
-                val transferManager = TransferManager(activity)
+                val transferManager = TransferManager(hostActivity)
                 val started = transferManager.intentBuilder(ONE_WALLET_APP_ID, ONE_WALLET_LINK_ACTIVITY)
                         .addParam(EXTRA_APP_ACCOUNT_PUBLIC_ADDRESS, publicAddress)
                         .addParam(EXTRA_APP_PACKAGE_ID, BuildConfig.APPLICATION_ID)
@@ -121,18 +118,19 @@ class OneWalletClient : IOneWalletClient {
                         .build()
                         .startForResult(requestCode)
                 if (!started) {
-                    Toast.makeText(activity, "Make sure you have the latest version of Kinit installed on your device", Toast.LENGTH_LONG).show()
+                    Toast.makeText(hostActivity, "Make sure you have the latest version of Kinit installed on your device", Toast.LENGTH_LONG).show()
                 }
 
             } else {
-                Toast.makeText(activity, "Topup not yet implemented", Toast.LENGTH_LONG).show()
+                Toast.makeText(hostActivity, "Topup not yet implemented", Toast.LENGTH_LONG).show()
             }
         }
     }
 
     private fun sendLinkingTransaction(transactionEnvelope: String) {
-        val startTime = System.currentTimeMillis()
+        var reachedTimeout = false
         val timeoutRunnable = Runnable {
+            reachedTimeout = true
             linkWalletPresenter?.onLinkWalletTimeout()
         }
 
@@ -140,40 +138,33 @@ class OneWalletClient : IOneWalletClient {
 
         executorService.execute {
             try {
-               // val id = kinAccount?.sendLinkAccountsTransaction(transactionEnvelope)
                 val externalTransaction = Transaction.decodeTransaction(transactionEnvelope)
-                // Sign with the master and sending the linking transaction from the master account
                 externalTransaction.addSignature(kinAccount)
-                val id = kinAccount?.sendTransactionSync(externalTransaction)
+                val transactionId = kinAccount?.sendTransactionSync(externalTransaction)
                 uiHandler.removeCallbacks(timeoutRunnable)
-                id?.let {
+                transactionId?.let {
                     uiHandler.post {
                         oneWalletActionModel.type = OneWalletActionModel.Type.TOP_UP
-                        if (!reachedTimeout(startTime)) {
+                        if (reachedTimeout) {
                             linkWalletPresenter?.onLinkWalletSucceeded(oneWalletActionModel)
                         }
                     }
-                } ?: postLinkWalletError(startTime, "Linking error. Null transaction id")
+                } ?: postLinkWalletError(reachedTimeout, "Linking error. Null transaction id")
 
             } catch (e: Exception) {
                 e.printStackTrace()
                 uiHandler.removeCallbacks(timeoutRunnable)
-                postLinkWalletError(startTime, "Exception while linking $e ${e.message}")
+                postLinkWalletError(reachedTimeout, "Exception while linking $e ${e.message}")
             }
         }
     }
 
-    private fun postLinkWalletError(startTime: Long, errorMessage: String) {
-        if (!reachedTimeout(startTime)) {
+    private fun postLinkWalletError(reachedTimeout: Boolean, errorMessage: String) {
+        if (!reachedTimeout) {
             uiHandler.post {
                 linkWalletPresenter?.onLinkWalletError(errorMessage)
             }
         }
     }
-
-    private fun reachedTimeout(startTime: Long): Boolean {
-        return (System.currentTimeMillis() - startTime) >= TIMEOUT_IN_MILLIS
-    }
-
 }
 

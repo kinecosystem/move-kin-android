@@ -29,7 +29,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
     private val greenIcon: Drawable?
     private val purpleIcon: Drawable?
     private var flipAnimation: ObjectAnimator? = null
-    private var greenPurpleStopped: Boolean = false
+    private var animationStopped: Boolean = false
     private var startAnimationTime = 0L
     private val view: View
     private var barActionListener: LinkingBarActionListener? = null
@@ -48,7 +48,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
         bodyTextView = view.findViewById<TextView>(R.id.progress_body) as TextView
         completionTextView = view.findViewById<TextView>(R.id.progress_completion_text) as TextView
         progressImg = view.findViewById<ImageView>(R.id.progress_img) as ImageView
-        visibility = View.INVISIBLE
+        visibility = View.GONE
         greenIcon = ContextCompat.getDrawable(context, R.drawable.wallet_ic_g)
         purpleIcon = ContextCompat.getDrawable(context, R.drawable.wallet_ic_p)
     }
@@ -68,7 +68,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
         flipAnimation?.start()
 
         // animate between green / purple icons on every flip
-        greenPurpleStopped = false
+        animationStopped = false
         animateGreenPurpleIcon(true, duration / numOfFlips)
 
         // update text & text color once in the middle of the duration
@@ -130,7 +130,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun stopFlipAnimation() {
-        greenPurpleStopped = true
+        animationStopped = true
         flipAnimation?.end()
     }
 
@@ -140,7 +140,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun animateToPurpleText(duration: Long) {
         view.postDelayed({
-            if (!greenPurpleStopped) {
+            if (!animationStopped) {
                 updateText(BodyTextRes.LINKING_PURPLE)
             }
         }, duration / 2)
@@ -148,7 +148,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun animateGreenPurpleIcon(wasGreenIcon: Boolean, frequency: Long) {
         view.postDelayed({
-            if (!greenPurpleStopped) {
+            if (!animationStopped) {
                 if (wasGreenIcon) {
                     progressImg.setImageDrawable(purpleIcon)
                 } else {

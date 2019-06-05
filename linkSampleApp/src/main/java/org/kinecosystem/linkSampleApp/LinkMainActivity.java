@@ -42,7 +42,7 @@ public class LinkMainActivity extends SampleBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (oneWalletClient != null && requestCode == ONE_WALLET_REQUEST_CODE) {
-            oneWalletClient.onActivityResult(this, resultCode, data);
+            oneWalletClient.onActivityResult(resultCode, data);
         }
     }
 
