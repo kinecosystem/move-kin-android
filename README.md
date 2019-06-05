@@ -1,7 +1,7 @@
 ![Kin Token](kin_android.png)
 # Ecosystem Apps Discovery Module
-This repository contains the Ecosystem Apps Discovery module. This module displays some of the ecosystem's applications and enables users to send/receive Kin between your application and other applications in the ecosystem.
-This enables users to get familiar with other applications available in the ecosystem.
+This repository contains the Ecosystem Apps Discovery module. The module displays some of the ecosystem's applications and enables users to send/receive Kin between your application and other applications in the ecosystem.
+This enables users to become familiar with other applications available in the ecosystem.
 
 
 ## Installation
@@ -29,9 +29,8 @@ dependencies {
 For the latest appsDiscovery release, go to [https://github.com/kinecosystem/move-kin-android/releases](https://github.com/kinecosystem/move-kin-android/releases).
 
 
-
 ## Exploring the Ecosystem
-To allow users to explore the ecosystem, the module display some applications of the ecosystem on a single screen. From that screen, users can get more information about each application and perform Kin transactions to them. 
+To allow users to explore the ecosystem, the module displays other ecosystem applications on a single screen. From that screen, users can get more information about each application, install the application if they don't have it yet, and send Kin from their account in the hosting app, to their account on another ecosystem app. 
 
 We provide the following two ways of opening the screen that displays the applications: 
 - Adding a button (*AppsDiscoveryButton*) that opens the screen (*AppsDiscoveryActivity*)  
@@ -54,7 +53,7 @@ You can embed the button in any of your layout xml files.
 ```
 
 ### Showing *AppsDiscoveryAlertDialog* Pop-up Dialog  
-Showing the *AppsDiscoveryAlertDialog* pop-up dialog can be triggered by some action performed by a user. The user then can choose to click the button in the dialog to open the screen (*AppsDiscoveryActivity*) and to start exploring the ecosystem.
+Showing the *AppsDiscoveryAlertDialog* pop-up dialog can be triggered by some action performed by the user. The user can then choose to click the button in the dialog to open the screen (*AppsDiscoveryActivity*) and to start exploring the ecosystem.
 
 ```java
     AppsDiscoveryAlertDialog dialog = new AppsDiscoveryAlertDialog(context);
@@ -62,7 +61,7 @@ Showing the *AppsDiscoveryAlertDialog* pop-up dialog can be triggered by some ac
 ```
 
 ### Opening *AppsDiscoveryActivity* activity 
-You can open the *AppsDiscoveryActivity* directly with any of your buttons in your application
+You can open the *AppsDiscoveryActivity* directly with a button of your choice in your application
 
 ```java
 yourButton.setOnClickListener(v -> {
@@ -75,7 +74,7 @@ yourButton.setOnClickListener(v -> {
 ## Enabling Kin Transactions Between Applications
 
 ### Send Kin
-In enable your app to send Kin to other application, do the following:
+To enable your app to send Kin to another application, do the following:
 
 1. In your root project, add a new package named *kindiscover*.
 2. In the *kindiscover* directory, create a service class named *SendKinService* and declare it in your *manifest.xml*.
@@ -114,13 +113,12 @@ public class SendKinService extends SendKinServiceBase {
     }
 }
 ```
-In the *transferKin* method, you should preform the transaction and if the transaction complete successfully return *KinTransferComplete*.
-If the transaction fails throw *KinTransferException*.
+In the *transferKin* method, you should use the KinSDK to create a `Transaction` object and send it to the blockchain. If the transaction completes successfully return *KinTransferComplete*. If the transaction fails throw *KinTransferException*.
 
-in the *getCurrentBalance* method, you should access the user wallet and returns its current balance. 
-If it fails to get balance, throw *BalanceException*
+In the *getCurrentBalance* method, you should access the user's wallet and return its current balance. 
+If retrieving the balance fails, throw *BalanceException*
     
-These methods are asynchronous and can perform long operations.
+The *transferKin* and *getCurrentBalance* methods are called on a background thread so you need to use the KinSDK `sendTransactionSync` and `sendBalanceSync` to send the transaction and retrieve the balance.
 
 
 ### Receive Kin
@@ -154,13 +152,13 @@ public class AccountInfoActivity extends AccountInfoActivityBase {
 }
 ```
 This method returns the public address of the user's wallet. 
-It is asynchronous and can perform long operations.
+It is called on a background thread and can perform long operations.
 
 
 ## Receive Transfer Notifications from Other Apps  
 To get notifications from other apps when they send Kin to your app, do the following:
 
-1. In your root project, add new package named *kindiscover*.
+1. In your root project, add a new package named *kindiscover*.
 2. In the kindiscover directory, create a service class named *ReceiveKinService* and declare it in your *manifest.xml*.
 3. **Important!** Configure the service as exported - true.
 
@@ -197,14 +195,13 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
     
 }
 ```
-
-These methods are called when some application on the ecosystem transfer Kin to your application.
-if the transaction completed the *onTransactionCompleted* is being called,
-if the transaction failed the *onTransactionFailed* is being called
+These methods are called when another application on the ecosystem transfers Kin to your application.
+If the transaction completed successfully, the *onTransactionCompleted* will be called.
+If the transaction failed the *onTransactionFailed* will be called.
 When an app gets a notification of a completed transfer, it is recommended to call the app local server to verify this transaction info on the blockchain. After the transaction is verified on the blockchain, the app server can add an entry of this transaction info to its transactions history database.
 
 These methods are called on the UI thread.
-If you wish to perform network or long-running operations you need to start your own background thread. The service will keep itself alive for 10 seconds after the method is called.
+If you wish to perform network or long-running operations you need to start your own background thread. The service will keep itself alive for 10 seconds after the method is called. 
 
 
 ## Design and UX
