@@ -6,9 +6,10 @@ import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.onewallet.model.OneWalletActionModel
 import org.kinecosystem.onewallet.view.LinkWalletViewHolder
 
-// Important Note: The "view" that this presenter presents,
-// is not really a view, but a LinkWalletViewHolder:
-// A simple object that holds the actionButton and progressBar views together
+// This Presenter presents 2 views (an actionButton & a progresBar) held together
+// by a simple object: the LinkWalletViewHolder.
+// Important Note: The "view" that the presenter gets attached to, is not a view but
+// a LinkWalletViewHolder which is an object that holds 2 views)
 class LinkWalletPresenter(model: OneWalletActionModel) : BasePresenter<LinkWalletViewHolder>(), ILinkWalletPresenter {
 
     var oneWalletActionModel: OneWalletActionModel = model

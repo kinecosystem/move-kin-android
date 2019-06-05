@@ -145,7 +145,7 @@ class OneWalletClient : IOneWalletClient {
                 transactionId?.let {
                     uiHandler.post {
                         oneWalletActionModel.type = OneWalletActionModel.Type.TOP_UP
-                        if (reachedTimeout) {
+                        if (!reachedTimeout) {
                             linkWalletPresenter?.onLinkWalletSucceeded(oneWalletActionModel)
                         }
                     }
