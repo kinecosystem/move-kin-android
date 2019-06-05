@@ -57,6 +57,7 @@ public abstract class SampleBaseActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Exception e) {
                     if (activityCreated) {
+                        e.printStackTrace();
                         addressView.setText(R.string.create_wallet_error);
                     }
                 }
