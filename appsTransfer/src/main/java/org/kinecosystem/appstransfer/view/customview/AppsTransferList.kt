@@ -32,7 +32,7 @@ class AppsTransferList @JvmOverloads constructor(context: Context, attrs: Attrib
         RecyclerView(context, attrs, defStyleAttr), IAppsTransferListView {
 
     interface AppClickListener {
-        fun onAppClicked(app: EcosystemApp)
+        fun onAppClicked(app: EcosystemApp, isInstalled:Boolean)
     }
 
     private var presenter: IAppsTransferListPresenter? = null
@@ -113,7 +113,7 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
         val app: EcosystemApp = apps[position]
         holder?.bind(app)
         holder?.actionText?.setOnClickListener {
-            clickListener?.onAppClicked(app)
+            clickListener?.onAppClicked(app, context.isAppInstalled(app.identifier!!))
         }
     }
 
