@@ -17,7 +17,7 @@ class AppsDiscoveryButton @JvmOverloads constructor(context: Context, attrs: Att
 
     init {
         text = resources.getString(R.string.explore_kin)
-        TextViewCompat.setTextAppearance(this, R.style.kinTextButtonRounded_Purple)
+        TextViewCompat.setTextAppearance(this, R.style.KinTextButtonRounded_Purple)
         background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
         setOnClickListener {
             startAppsDiscoveryActivity()

@@ -11,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.transfer.repositories.KinTransferCallback
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import java.util.concurrent.Executors
 
@@ -23,8 +24,8 @@ class SenderServiceBinder(private val context: Context?) {
         fun onBalanceFailed()
         fun onServiceConnected()
         fun onServiceDisconnected()
-        fun onTransferFailed()
-        fun onTransferComplete()
+        fun onTransferFailed(errorMessage: String, senderAddress: String)
+        fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
     }
 
     private var executorService = Executors.newCachedThreadPool()
@@ -80,39 +81,21 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+    fun startSendKin(receiverAddress: String, amount: Int, memo: String) {
         if (isBounded) {
             executorService.execute {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
-
-                    mainThreadHandler.post {
-                        listener?.onTransferComplete()
-                    }
-
-                    try {
-//                        ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
-//                                kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
-//                                kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                        Log.d(TAG, "Receiver was notified of transaction complete")
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
-                        e.printStackTrace()
+                    kinTransferComplete?.let {
+                        mainThreadHandler.post {
+                            listener?.onTransferComplete(it)
+                        }
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     mainThreadHandler.post {
-                        listener?.onTransferFailed()
+                        listener?.onTransferFailed(e.message.orEmpty(), e.senderAddress)
                     }
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
-                    try {
-//                        ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
-//                                e.toString(), e.senderAddress, senderAppName, receiverAddress, amount, memo)
-                        Log.d(TAG, "Receiver was notified of transaction failed")
-
-                    } catch (e: ServiceConfigurationException) {
-                        Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
-                        e.printStackTrace()
-                    }
                 }
             }
         } else {
@@ -120,35 +103,45 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
+    fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+        if (isBounded) {
+            executorService.execute {
+                transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
+            }
+        }
+    }
+
     @Throws(ServiceConfigurationException::class)
     fun bind() {
-        if (isBounded) {
+        if (!isBounded) {
+            val intent = Intent()
+            val senderPackageName = context?.packageName
+            val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+            intent.component = ComponentName(senderPackageName, serviceFullPath)
+            intent.`package` = senderPackageName
+            context?.packageManager?.let {
+                val resolveInfos: MutableList<ResolveInfo> = it.queryIntentServices(intent, 0)
+                if (!resolveInfos.any()) {
+                    throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
+                }
+                if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
+                    throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
+                }
+            } ?: kotlin.run {
+                throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
+            }
+            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        } else {
             mainThreadHandler.post {
                 listener?.onServiceConnected()
             }
-            return
         }
-        val intent = Intent()
-        val senderPackageName = context?.packageName
-        val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
-        intent.component = ComponentName(senderPackageName, serviceFullPath)
-        intent.`package` = senderPackageName
-        context?.packageManager?.let {
-            val resolveInfos: MutableList<ResolveInfo> = it.queryIntentServices(intent, 0)
-            if (!resolveInfos.any()) {
-                throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
-            }
-            if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
-                throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
-            }
-        } ?: kotlin.run {
-            throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
-        }
-        context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
     }
 
     fun unbind() {
-        context?.unbindService(connection)
-        isBounded = false
+        if (isBounded) {
+            context?.unbindService(connection)
+            isBounded = false
+        }
     }
 }
