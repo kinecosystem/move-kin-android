@@ -19,4 +19,6 @@
     <string name="how_it_works">How it works</string>
     <string name="send_kin">Send Kin</string>
     <string name="total_kin_available">Total Kin available</string>
+    <string name="transfer_sending_message">Sending %dKIN</string>
+    <string name="transfer_complete_message">You’ve successfully sent %dKIN</string>
 </resources>

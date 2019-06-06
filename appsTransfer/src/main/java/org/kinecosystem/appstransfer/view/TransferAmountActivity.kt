@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,7 +14,10 @@ import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
 import org.kinecosystem.common.base.Consts
+import org.kinecosystem.common.utils.getApplicationName
 import org.kinecosystem.common.utils.load
+import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
+import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
@@ -22,6 +26,7 @@ import org.kinecosystem.transfer.sender.view.TransferInfo
 
 class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
 
+    private val TAG = TransferAmountActivity::class.java.simpleName
     private var presenter: TransferAmountPresenter? = null
     private var amount: TextView? = null
     private var send: TextView? = null
@@ -36,8 +41,7 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
             finish()
         }
         setContentView(R.layout.transfer_amount_activity)
-
-        presenter = TransferAmountPresenter(appName, receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
+        presenter = TransferAmountPresenter(appName, baseContext.getApplicationName(), receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
         presenter?.onAttach(this)
         transferBarView = findViewById(R.id.transferBar)
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
@@ -45,7 +49,7 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         }
 
         findViewById<View>(R.id.del).setOnLongClickListener {
-            presenter?.onFullDel()
+            presenter?.resetAmount()
             return@setOnLongClickListener true
         }
 
@@ -65,12 +69,28 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
     }
 
     override fun enableSend(enable: Boolean) {
-
         send?.isEnabled = enable
     }
 
-    override fun setSendEnable(isEnabled: Boolean) {
-        send?.isEnabled = isEnabled
+    override fun notifyReceiverTransactionFailed(receiverPackageName: String, errorMessage: String, senderAddress: String, senderAppName: String, receiverAddress: String, amount: Int, transactionMemo: String) {
+        try {
+            ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackageName, errorMessage, senderAddress, senderAppName, receiverAddress, amount, transactionMemo)
+            Log.d(TAG, "Receiver was notified of transaction failed")
+
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction failed ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    override fun notifyReceiverTransactionSuccess(receiverPackageName: String, senderAddress: String, senderAppName: String, receiverAddress: String, amount: Int, transactionId: String, transactionMemo: String) {
+        try {
+            ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackageName, senderAddress, senderAppName, receiverAddress, amount, transactionId, transactionMemo)
+            Log.d(TAG, "Receiver was notified of transaction complete")
+        } catch (e: ServiceConfigurationException) {
+            Log.d(TAG, "Error notifying the receiver of transaction complete ${e.message}")
+            e.printStackTrace()
+        }
     }
 
     override fun updateAmount(amount: String) {

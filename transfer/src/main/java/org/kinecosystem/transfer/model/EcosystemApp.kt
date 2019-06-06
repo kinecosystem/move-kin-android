@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import org.kinecosystem.common.utils.ImageUtils
 import org.kinecosystem.common.utils.TextUtils.Companion.FONT_SAILEC
 
-const val MEMO_PREFIX = "CrossApps-"
+private const val MEMO_PREFIX = "CrossApps_"
 data class EcosystemApp(
         @SerializedName("category_name")
         val category: String?,

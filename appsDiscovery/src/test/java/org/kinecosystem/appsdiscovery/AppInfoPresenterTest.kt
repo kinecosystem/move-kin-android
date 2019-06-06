@@ -185,7 +185,7 @@ class AppInfoPresenterTest {
         appInfoPresenter.processResponse(appInfoPresenter.AMOUNT_CHOOSER_REQUEST_CODE, Activity.RESULT_OK, returnIntent)
 
         verify(view).updateTransferStatus(TransferBarView.TransferStatus.Started)
-        verify(view).startSendKin(anyString(),anyString(),anyInt(),anyString(),anyString())
+        verify(view).sendKin(anyString(),anyString(),anyInt(),anyString(),anyString())
         verify(view, times(0)).updateTransferStatus(TransferBarView.TransferStatus.Timeout)
     }
 
