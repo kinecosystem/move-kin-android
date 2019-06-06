@@ -41,21 +41,19 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
     private val errorTitle: TextView
     private var receiverServiceError = ""
     private val uiHandler = Handler(Looper.getMainLooper())
-    private var barView: View? = null
-    private var closeX:ImageView? = null
+    private var closeX: ImageView
 
     init {
         val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        inflater.inflate(R.layout.transfer_bar_view, this, true)
+        inflater.inflate(R.layout.transfer_bar_view_layout, this, true)
         transferCompleteGroup = findViewById(R.id.transfer_complete_group)
         transferringGroup = findViewById(R.id.transferring_group)
         transferFailedGroup = findViewById(R.id.transfer_failed_group)
         errorTitle = findViewById(R.id.errorTitle)
-        barView = findViewById(R.id.bar)
-        mainView = findViewById(R.id.bar)
+        mainView = findViewById(R.id.mainBarView)
         mainView.alpha = 0f
         closeX = findViewById(R.id.x_close_light)
-        closeX?.setOnClickListener {
+        closeX.setOnClickListener {
             hide()
         }
         viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -93,57 +91,57 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                     transferCompleteGroup.visibility = View.GONE
                     transferFailedGroup.visibility = View.GONE
                     transferringGroup.visibility = View.VISIBLE
-                    closeX?.visibility = View.GONE
-                    barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                    closeX.visibility = View.GONE
+                    mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                     show()
                 }
                 TransferStatus.Complete -> {
                     hideAndShow {
-                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.purple))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.purple))
                         transferringGroup.visibility = View.GONE
                         transferFailedGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.VISIBLE
-                        closeX?.visibility = View.VISIBLE
+                        closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.Failed -> {
                     hideAndShow {
-                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_failed_error)
                         transferFailedGroup.visibility = View.VISIBLE
-                        closeX?.visibility = View.VISIBLE
+                        closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.Timeout -> {
                     hideAndShow {
-                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_failed_timeout)
                         transferFailedGroup.visibility = View.VISIBLE
-                        closeX?.visibility = View.VISIBLE
+                        closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.FailedReceiverError -> {
                     hideAndShow {
-                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = receiverServiceError
                         transferFailedGroup.visibility = View.VISIBLE
-                        closeX?.visibility = View.VISIBLE
+                        closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.FailedConnectionError -> {
                     hideAndShow {
-                        barView?.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = context.getString(R.string.transfer_connection_error)
                         transferFailedGroup.visibility = View.VISIBLE
-                        closeX?.visibility = View.VISIBLE
+                        closeX.visibility = View.VISIBLE
                     }
                 }
             }
