@@ -3,4 +3,19 @@
     <string name="receiver_activity_title">Kin Ecosystem</string>
     <string name="receiver_activity_agree">I agree</string>
     <string name="receiver_activity_message">In order to send Kin, %1$s would like to receive your Kin account information (i.e. your public address) from %2$s.</string>
+    <string name="error_title_no_data">Oh… Something isn\’t working</string>
+    <string name="error_subtitle_no_data">An unknown error occurred. Please close the page and try again later.</string>
+    <string name="total_kin_available">Total Kin available</string>
+    <string name="send_kin">Send Kin</string>
+    <string name="close">close</string>
+    <string name="go_to_app">go to %s</string>
+    <string name="transfer_sending_message">Transferring %1$dKIN to %2$s</string>
+    <string name="transfer_complete_message">You’ve successfully sent %dKIN</string>
+    <string name="transfer_failed_error">Transfer failed, try again later</string>
+    <string name="transfer_failed_timeout">No confirmation for transfer yet, check your balance later.</string>
+    <string name="transfer_receiver_service_error">This version is not supported. Update %s and try again.</string>
+    <string name="transfer_connection_error">We couldn\'t establish a connection. Check back later.</string>
+    <string name="send_kin_to">Send Kin to</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

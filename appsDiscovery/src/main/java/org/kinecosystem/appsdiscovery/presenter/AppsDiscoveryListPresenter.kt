@@ -1,12 +1,12 @@
 package org.kinecosystem.appsdiscovery.presenter
 
 import org.kinecosystem.appsdiscovery.view.customView.IAppsDiscoveryListView
-import org.kinecosystem.appsdiscovery.model.EcosystemApp
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
-import org.kinecosystem.appsdiscovery.repositories.OperationResultCallback
 import org.kinecosystem.common.base.BasePresenter
+import org.kinecosystem.transfer.model.EcosystemApp
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.repositories.OperationResultCallback
 
-class AppsDiscoveryListPresenter(private val discoveryAppsRepository: DiscoveryAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
+class AppsDiscoveryListPresenter(private val discoveryAppsRepository: EcosystemAppsRepository) : BasePresenter<IAppsDiscoveryListView>(), IAppsDiscoveryListPresenter {
 
     private var loadingListener: LoadingListener? = null
 

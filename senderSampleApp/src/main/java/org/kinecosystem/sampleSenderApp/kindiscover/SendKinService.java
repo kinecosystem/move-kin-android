@@ -2,9 +2,9 @@ package org.kinecosystem.sampleSenderApp.kindiscover;
 
 import android.support.annotation.NonNull;
 
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 import org.kinecosystem.sampleSenderApp.SenderApplication;
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase;
 
 import java.math.BigDecimal;
 

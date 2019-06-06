@@ -16,12 +16,12 @@ import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.presenter.IAppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.view.AppInfoActivity
-import org.kinecosystem.appsdiscovery.model.*
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsLocal
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRemote
-import org.kinecosystem.appsdiscovery.repositories.DiscoveryAppsRepository
 import org.kinecosystem.common.utils.TextUtils
 import org.kinecosystem.common.utils.load
+import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 
 
 const val COLUMNS_COUNT = 2
@@ -32,7 +32,7 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         layoutManager = GridLayoutManager(context, COLUMNS_COUNT)
-        val discoveryAppsRepository = DiscoveryAppsRepository.getInstance(context.packageName, DiscoveryAppsLocal(context), DiscoveryAppsRemote(), Handler(Looper.getMainLooper()))
+        val discoveryAppsRepository = EcosystemAppsRepository.getInstance(context.packageName, EcosystemAppsLocalRepo(context), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
         presenter = AppsDiscoveryListPresenter(discoveryAppsRepository)
         presenter?.let {
             adapter = AppsDiscoveryAdapter(it)
