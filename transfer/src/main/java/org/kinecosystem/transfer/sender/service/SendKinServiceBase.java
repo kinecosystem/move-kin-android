@@ -6,7 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
-import org.kinecosystem.appsdiscovery.repositories.KinTransferCallback;
+import org.kinecosystem.transfer.repositories.KinTransferCallback;
 
 import java.math.BigDecimal;
 

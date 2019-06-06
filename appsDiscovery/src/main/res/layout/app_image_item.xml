@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/no_connection_illus" />
+        app:srcCompat="@drawable/error_illus" />
 
 
 </android.support.constraint.ConstraintLayout>
