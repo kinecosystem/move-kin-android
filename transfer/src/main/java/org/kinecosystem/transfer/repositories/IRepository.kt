@@ -1,6 +1,6 @@
 package org.kinecosystem.transfer.repositories
 
-import org.kinecosystem.appsdiscovery.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 
 interface OperationCompletionCallback {
     fun onSuccess()
