@@ -14,7 +14,7 @@ project.ext {
     junitVersion = '4.12'
     testRunnerVersion = '1.0.2'
     testEspressoCoreVersion = '3.0.2'
-    kinSdkVersion='3f60ff790250632dbd2ced8350a4290f8a7a3113'
+    kinSdkVersion='8baa5dafb7f285df5cec3eeecd992539c6c980c1'
 }
 buildscript {
     ext.kotlin_version = '1.2.71'

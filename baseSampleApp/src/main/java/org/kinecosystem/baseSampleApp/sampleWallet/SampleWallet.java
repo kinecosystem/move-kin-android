@@ -10,7 +10,7 @@ import kin.sdk.KinClient;
 import kin.sdk.exception.CreateAccountException;
 
 public class SampleWallet {
-    private static final String SDK_TEST_NETWORK_URL = "https://horizon-testnet.kininfrastructure.com/";
+    private static final String SDK_TEST_NETWORK_URL = "http://horizon-testnet-one-wallet.kininfrastructure.com/";
     private static final String SDK_TEST_NETWORK_ID = "Kin Testnet ; December 2018";
 
     private KinAccount account;
