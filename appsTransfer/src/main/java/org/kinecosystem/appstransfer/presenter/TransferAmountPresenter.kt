@@ -133,7 +133,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     override fun onTransferFailed(errorMessge: String, senderAddress: String) {
         if (!afterTimeout) {
             transferResponseReceived = true
-            view?.enableSend(true)
             view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
             app?.let { application ->
                 application.identifier?.let { receiverPackage ->
@@ -146,7 +145,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
         if (!afterTimeout) {
             transferResponseReceived = true
-            view?.enableSend(true)
             view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
             app?.let { application ->
                 application.identifier?.let { receiverPackage ->
