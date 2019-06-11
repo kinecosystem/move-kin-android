@@ -9,7 +9,9 @@ import org.kinecosystem.sampleSenderApp.SenderApplication;
 
 import java.math.BigDecimal;
 
-import kin.sdk.Transaction;
+import kin.base.MemoText;
+import kin.sdk.PaymentTransaction;
+import kin.sdk.RawTransaction;
 import kin.sdk.TransactionId;
 
 public class SendKinService extends SendKinServiceBase {
@@ -29,14 +31,14 @@ public class SendKinService extends SendKinServiceBase {
             sourceAddress = sampleWallet.getAccount().getPublicAddress();
 
             int fee = 100; // no whitelisting for sample app, so using a fee
-            Transaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
+            PaymentTransaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
                     new BigDecimal(amount), fee, memo);
             TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
 
             // here you may add some code to add the transaction details to
             // your app's transaction history metadata
 
-            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.getMemo().toString());
+            return new KinTransferComplete(sourceAddress, transactionId.id(), transaction.memo());
 
         } catch (Exception e) {
 

@@ -7,7 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import kin.sdk.KinAccount
-import kin.sdk.Transaction
+import kin.sdk.RawTransaction
 import org.kinecosystem.common.base.LocalStore
 import org.kinecosystem.onewallet.model.OneWalletActionModel
 import org.kinecosystem.onewallet.presenter.LinkWalletPresenter
@@ -136,7 +136,7 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
 
         executorService.execute {
             try {
-                val externalTransaction = Transaction.decodeTransaction(transactionEnvelope)
+                val externalTransaction = RawTransaction.decodeTransaction(transactionEnvelope)
                 externalTransaction.addSignature(kinAccount)
                 val transactionId = kinAccount?.sendTransactionSync(externalTransaction)
                 uiHandler.removeCallbacks(timeoutRunnable)
