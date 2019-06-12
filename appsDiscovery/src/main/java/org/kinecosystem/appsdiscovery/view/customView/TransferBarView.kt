@@ -76,13 +76,13 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
         findViewById<TextView>(R.id.gotoApp).setOnClickListener {
             context.launchApp(transferInfo.receiverPackage)
         }
-        findViewById<TextView>(R.id.gotoApp).text = context.getString(R.string.go_to_app, transferInfo.receiverAppName)
-        receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
+        findViewById<TextView>(R.id.gotoApp).text = context.getString(R.string.kin_transfer_go_to_app, transferInfo.receiverAppName)
+        receiverServiceError = context.resources.getString(R.string.kin_transfer_receiver_service_error, transferInfo.receiverAppName)
     }
 
     override fun updateAmount(amount: Int) {
-        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, amount)
-        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, amount)
+        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.apps_discovery_transfer_sending_message, amount)
+        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.kin_transfer_complete_message, amount)
     }
 
     override fun updateStatus(status: TransferStatus) {
@@ -104,7 +104,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 hideAndShow {
                     transferringGroup.visibility = View.GONE
                     transferCompleteGroup.visibility = View.GONE
-                    errorTitle.text = context.getString(R.string.transfer_failed_error)
+                    errorTitle.text = context.getString(R.string.kin_transfer_failed_error)
                     transferFailedGroup.visibility = View.VISIBLE
                 }
             }
@@ -112,7 +112,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 hideAndShow {
                     transferringGroup.visibility = View.GONE
                     transferCompleteGroup.visibility = View.GONE
-                    errorTitle.text = context.getString(R.string.transfer_failed_timeout)
+                    errorTitle.text = context.getString(R.string.kin_transfer_failed_timeout)
                     transferFailedGroup.visibility = View.VISIBLE
                 }
             }
@@ -128,7 +128,7 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 hideAndShow {
                     transferringGroup.visibility = View.GONE
                     transferCompleteGroup.visibility = View.GONE
-                    errorTitle.text = context.getString(R.string.transfer_connection_error)
+                    errorTitle.text = context.getString(R.string.kin_transfer_connection_error)
                     transferFailedGroup.visibility = View.VISIBLE
                 }
             }

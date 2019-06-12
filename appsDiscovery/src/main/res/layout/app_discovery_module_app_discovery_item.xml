@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@color/grey_dark" />
+        tools:background="@color/kin_transfer_grey_dark" />
 
 
     <TextView
@@ -27,8 +27,8 @@
         android:layout_marginEnd="12dp"
         android:gravity="center"
         style="@style/KinTextRegular.Light"
-        android:textSize="@dimen/text_smallest_size"
-        android:textColor="@color/white"
+        android:textSize="@dimen/kin_transfer_text_smallest_size"
+        android:textColor="@color/kin_transfer_white"
         app:layout_constraintEnd_toEndOf="@+id/colorBg"
         app:layout_constraintStart_toStartOf="@+id/colorBg"
         app:layout_constraintTop_toTopOf="@+id/colorBg"
@@ -44,7 +44,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:textColor="@color/white"
+        android:textColor="@color/kin_transfer_white"
         tools:textSize="29sp"
         app:layout_constraintBottom_toTopOf="@+id/learnMore"
         app:layout_constraintEnd_toEndOf="@+id/colorBg"
@@ -61,10 +61,10 @@
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
         android:gravity="center"
-        android:text="@string/learn_more"
+        android:text="@string/apps_discovery_learn_more"
         style="@style/KinTextRegular.Light"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_small_size"
+        android:textColor="@color/kin_transfer_white"
+        android:textSize="@dimen/kin_transfer_text_small_size"
         app:layout_constraintBottom_toBottomOf="@+id/colorBg"
         app:layout_constraintEnd_toEndOf="@+id/colorBg"
         app:layout_constraintStart_toStartOf="@+id/colorBg" />
@@ -102,7 +102,7 @@
         style="@style/KinTextRegular.Dark"
         android:lines="1"
         android:ellipsize="end"
-        android:textSize="@dimen/text_regular_size"
+        android:textSize="@dimen/kin_transfer_text_regular_size"
         app:layout_constraintBottom_toBottomOf="@+id/appIcon"
         app:layout_constraintEnd_toEndOf="@+id/colorBg"
         app:layout_constraintStart_toEndOf="@+id/appIcon"

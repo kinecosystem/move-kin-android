@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke android:color="@color/kin_btn" android:width="@dimen/button_hollow_stroke_size"/>
-    <solid android:color="@color/white"/>
+    <stroke android:color="@color/kin_transfer_btn" android:width="@dimen/kin_transfer_btn_hollow_stroke_size"/>
+    <solid android:color="@color/kin_transfer_white"/>
     <corners
-        android:bottomLeftRadius="@dimen/kin_btn_corner"
-        android:bottomRightRadius="@dimen/kin_btn_corner"
-        android:topLeftRadius="@dimen/kin_btn_corner"
-        android:topRightRadius="@dimen/kin_btn_corner"/>
+        android:bottomLeftRadius="@dimen/kin_transfer_btn_corner"
+        android:bottomRightRadius="@dimen/kin_transfer_btn_corner"
+        android:topLeftRadius="@dimen/kin_transfer_btn_corner"
+        android:topRightRadius="@dimen/kin_transfer_btn_corner"/>
     <padding
-        android:bottom="@dimen/kin_btn_text_padding"
-        android:top="@dimen/kin_btn_text_padding"
-        android:left="@dimen/kin_btn_text_padding"
-        android:right="@dimen/kin_btn_text_padding"
+        android:bottom="@dimen/kin_transfer_btn_text_padding"
+        android:top="@dimen/kin_transfer_btn_text_padding"
+        android:left="@dimen/kin_transfer_btn_text_padding"
+        android:right="@dimen/kin_transfer_btn_text_padding"
         />
 </shape>

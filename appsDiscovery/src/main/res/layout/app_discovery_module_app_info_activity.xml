@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"    >
+    android:background="@color/kin_transfer_white"    >
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -42,7 +42,7 @@
                 android:gravity="center_horizontal"
                 android:letterSpacing="0.03"
                 android:lineSpacingExtra="-3sp"
-                android:textColor="@color/white"
+                android:textColor="@color/kin_transfer_white"
                 app:layout_constraintBottom_toBottomOf="@+id/headerView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="24dp"
-                android:textSize="@dimen/text_smallest_size"
+                android:textSize="@dimen/kin_transfer_text_smallest_size"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/headerView" />
 
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:textSize="@dimen/text_smallest_size"
+                android:textSize="@dimen/kin_transfer_text_smallest_size"
                 app:layout_constraintBottom_toBottomOf="@+id/icon"
                 app:layout_constraintStart_toEndOf="@+id/icon"
                 app:layout_constraintTop_toTopOf="@+id/icon"
@@ -104,13 +104,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="24dp"
-                android:text="@string/about_experience"
+                android:text="@string/apps_discovery_about_experience"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/byApp" />
 
             <TextView
                 android:id="@+id/experienceInfo"
-                style="@style/AppTextInfoBody"
+                style="@style/AppDiscoveryTextInfoBody"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
@@ -127,13 +127,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
                 android:layout_marginTop="30dp"
-                android:text="@string/how_it_works"
+                android:text="@string/apps_discovery_how_it_works"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/experienceInfo" />
 
             <TextView
                 android:id="@+id/howInfo"
-                style="@style/AppTextInfoBody"
+                style="@style/AppDiscoveryTextInfoBody"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"
@@ -201,7 +201,7 @@
 
             <TextView
                 android:id="@+id/aboutAppInfo"
-                style="@style/AppTextInfoBody"
+                style="@style/AppDiscoveryTextInfoBody"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="18dp"

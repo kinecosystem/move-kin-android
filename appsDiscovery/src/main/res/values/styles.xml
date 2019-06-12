@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="AppTextInfoBody" parent="KinTextRegular.Dark.Body">
+    <style name="AppDiscoveryTextInfoBody" parent="KinTextRegular.Dark.Body">
         <item name="android:lineSpacingExtra">6sp</item>
     </style>
 

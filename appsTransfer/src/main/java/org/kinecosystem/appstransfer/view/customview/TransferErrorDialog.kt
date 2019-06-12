@@ -24,8 +24,8 @@ class TransferErrorDialog(context: Context, errorType:ErrorType, private val rec
 
     private fun toErrorTitle(errorType:ErrorType):String{
         return when(errorType){
-            ErrorType.ConnectionFailed -> context.resources.getString(R.string.connection_failed, receiverAppName)
-            ErrorType.ConnectionError ->  context.resources.getString(R.string.connection_error, receiverAppName)
+            ErrorType.ConnectionFailed -> context.resources.getString(R.string.apps_transfer_connection_failed, receiverAppName)
+            ErrorType.ConnectionError ->  context.resources.getString(R.string.apps_transfer_connection_error, receiverAppName)
         }
     }
 }

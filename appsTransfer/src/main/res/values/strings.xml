@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">appsTransfer</string>
-    <string name="transfer_kin">Transfer Kin</string>
-    <string name="transfer_kin_to">Transfer Kin to</string>
-    <string name="coming_soon">Coming soon!</string>
-    <string name="learn_more">Lean More</string>
-    <string name="not_installed">Not installed</string>
-    <string name="ok">Ok</string>
-    <string name="connection_error">We couldn\'t connect to %s. Please try again later.</string>
-    <string name="connection_failed">%s isn\'t up to date. Update to the latest version and try again. </string>
-    <string name="use_kin_across">Use your Kin across apps</string>
-    <string name="transfer_alert_subtitle"><![CDATA[Transfer your Kin from %s to other Kin Ecosystem apps on your device]]></string>
-    <string name="try_it">Try it now</string>
-    <string name="later">Later</string>
+    <string name="apps_transfer_kin">Transfer Kin</string>
+    <string name="apps_transfer_kin_to">Transfer Kin to</string>
+    <string name="apps_transfer_coming_soon">Coming soon!</string>
+    <string name="apps_transfer_learn_more">Lean More</string>
+    <string name="apps_transfer_not_installed">Not installed</string>
+    <string name="apps_transfer_ok">Ok</string>
+    <string name="apps_transfer_connection_error">We couldn\'t connect to %s. Please try again later.</string>
+    <string name="apps_transfer_connection_failed">%s isn\'t up to date. Update to the latest version and try again. </string>
+    <string name="apps_transfer_use_kin_across">Use your Kin across apps</string>
+    <string name="apps_transfer_alert_subtitle"><![CDATA[Transfer your Kin from %s to other Kin Ecosystem apps on your device]]></string>
+    <string name="apps_transfer_try_it">Try it now</string>
+    <string name="apps_transfer_later">Later</string>
 </resources>
