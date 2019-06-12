@@ -43,18 +43,18 @@ class AppStateView  @JvmOverloads constructor(context: Context, attrs: Attribute
     fun update(state: State){
         when(state){
             State.NotInstalled ->{
-                title.text = resources.getString(R.string.app_not_installed)
-                actionBtn.text = resources.getString(R.string.app_action_install)
+                title.text = resources.getString(R.string.apps_discovery_not_installed)
+                actionBtn.text = resources.getString(R.string.apps_discovery_app_action_install)
                 actionBtn.isEnabled = true
             }
             State.ReceiveKinNotSupported ->{
-                title.text = resources.getString(R.string.app_kin_receive_not_supported)
-                actionBtn.text = resources.getString(R.string.app_action_send_kin)
+                title.text = resources.getString(R.string.apps_discovery_kin_receive_not_supported)
+                actionBtn.text = resources.getString(R.string.apps_discovery_app_action_send_kin)
                 actionBtn.isEnabled = false
             }
             State.ReceiveKinSupported ->{
-                title.text = resources.getString(R.string.app_receive_kin)
-                actionBtn.text = resources.getString(R.string.app_action_send_kin)
+                title.text = resources.getString(R.string.apps_discovery_app_receive_kin)
+                actionBtn.text = resources.getString(R.string.apps_discovery_app_action_send_kin)
                 actionBtn.isEnabled = true
             }
         }

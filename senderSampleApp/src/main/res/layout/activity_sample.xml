@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray_light"
+    android:background="@color/kin_transfer_gray_light"
     tools:context=".SenderMainActivity">
 
     <org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryButton

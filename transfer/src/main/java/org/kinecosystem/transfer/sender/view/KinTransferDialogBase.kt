@@ -13,11 +13,11 @@ abstract class KinTransferDialogBase(context: Context) : AlertDialog(context) {
     abstract fun getSubtitle():String
 
     open fun getPositiveButtonText():String{
-        return context.resources.getString(R.string.ok)
+        return context.resources.getString(R.string.kin_transfer_ok)
     }
 
     open fun getNegativeButtonText():String{
-        return context.resources.getString(R.string.cancel)
+        return context.resources.getString(R.string.kin_transfer_cancel)
     }
 
     init {

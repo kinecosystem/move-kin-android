@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.ContextCompat
-import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
@@ -133,23 +132,23 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
                 if (context.isAppInstalled(it)) {
                     if (app.canTransferKin) {
                         actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
-                        actionText.text = context.getString(R.string.transfer_kin)
-                        actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_btn_text))
+                        actionText.text = context.getString(R.string.apps_transfer_kin)
+                        actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_btn_text))
                         actionText.visibility = View.VISIBLE
                         status.visibility = View.GONE
                         appName.gravity = Gravity.CENTER_VERTICAL
                     } else {
                         appName.gravity = Gravity.TOP
                         status.visibility = View.VISIBLE
-                        status.text = context.getString(R.string.coming_soon)
+                        status.text = context.getString(R.string.apps_transfer_coming_soon)
                         actionText.visibility = View.GONE
                     }
                 } else {
                     appName.gravity = Gravity.TOP
                     actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_hollow_drawable)
-                    actionText.text = context.getString(R.string.learn_more)
-                    status.text = context.getString(R.string.not_installed)
-                    actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_btn_hollow_text))
+                    actionText.text = context.getString(R.string.apps_transfer_learn_more)
+                    status.text = context.getString(R.string.apps_transfer_not_installed)
+                    actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_btn_hollow_text))
                     status.visibility = View.VISIBLE
                     actionText.visibility = View.VISIBLE
                 }

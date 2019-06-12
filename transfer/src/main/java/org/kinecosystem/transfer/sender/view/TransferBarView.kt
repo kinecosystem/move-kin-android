@@ -75,11 +75,11 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
             context.launchApp(transferInfo.receiverPackage)
         }
 
-        receiverServiceError = context.resources.getString(R.string.transfer_receiver_service_error, transferInfo.receiverAppName)
-        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.transfer_sending_message, transferInfo.amount, transferInfo.receiverAppName)
-        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.transfer_complete_message, transferInfo.amount)
+        receiverServiceError = context.resources.getString(R.string.kin_transfer_receiver_service_error, transferInfo.receiverAppName)
+        findViewById<TextView>(R.id.message).text = context.resources.getString(R.string.kin_transfer_sending_message, transferInfo.amount, transferInfo.receiverAppName)
+        findViewById<TextView>(R.id.completeMessage).text = context.resources.getString(R.string.kin_transfer_complete_message, transferInfo.amount)
         with(findViewById<TextView>(R.id.gotoApp)) {
-            text = context.resources.getString(R.string.go_to_app, transferInfo.receiverAppName)
+            text = context.resources.getString(R.string.kin_transfer_go_to_app, transferInfo.receiverAppName)
             paintFlags = Paint.UNDERLINE_TEXT_FLAG
         }
     }
@@ -92,12 +92,12 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                     transferFailedGroup.visibility = View.GONE
                     transferringGroup.visibility = View.VISIBLE
                     closeX.visibility = View.GONE
-                    mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                    mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
                     show()
                 }
                 TransferStatus.Complete -> {
                     hideAndShow {
-                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.purple))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_purple))
                         transferringGroup.visibility = View.GONE
                         transferFailedGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.VISIBLE
@@ -106,27 +106,27 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.Failed -> {
                     hideAndShow {
-                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_error)
+                        errorTitle.text = context.getString(R.string.kin_transfer_failed_error)
                         transferFailedGroup.visibility = View.VISIBLE
                         closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.Timeout -> {
                     hideAndShow {
-                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_failed_timeout)
+                        errorTitle.text = context.getString(R.string.kin_transfer_failed_timeout)
                         transferFailedGroup.visibility = View.VISIBLE
                         closeX.visibility = View.VISIBLE
                     }
                 }
                 TransferStatus.FailedReceiverError -> {
                     hideAndShow {
-                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
                         errorTitle.text = receiverServiceError
@@ -136,10 +136,10 @@ class TransferBarView @JvmOverloads constructor(context: Context, attrs: Attribu
                 }
                 TransferStatus.FailedConnectionError -> {
                     hideAndShow {
-                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.dark))
+                        mainView.setBackgroundColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
                         transferringGroup.visibility = View.GONE
                         transferCompleteGroup.visibility = View.GONE
-                        errorTitle.text = context.getString(R.string.transfer_connection_error)
+                        errorTitle.text = context.getString(R.string.kin_transfer_connection_error)
                         transferFailedGroup.visibility = View.VISIBLE
                         closeX.visibility = View.VISIBLE
                     }

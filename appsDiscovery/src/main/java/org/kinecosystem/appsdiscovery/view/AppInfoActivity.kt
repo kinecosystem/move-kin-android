@@ -193,8 +193,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             findViewById<TextView>(R.id.experienceName).text = this?.name ?: ""
             findViewById<TextView>(R.id.experienceInfo).text = this?.about ?: ""
         }
-        findViewById<TextView>(R.id.byApp).text = resources.getString(R.string.by_app, app?.name)
-        findViewById<TextView>(R.id.aboutAppTitle).text = resources.getString(R.string.about_app, app?.name)
+        findViewById<TextView>(R.id.byApp).text = resources.getString(R.string.apps_discovery_by_app, app?.name)
+        findViewById<TextView>(R.id.aboutAppTitle).text = resources.getString(R.string.apps_discovery_about_app, app?.name)
         findViewById<TextView>(R.id.aboutAppInfo).text = app?.metaData?.about
 
         findViewById<View>(R.id.headerView).setBackgroundColor(app?.cardColor!!)
