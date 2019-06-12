@@ -122,7 +122,7 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
             application.identifier?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(receiverPublicAddress, amount, application.getTransactionMemo())
                 startTimeOutCounter()
-                view?.initTransferBar(TransferInfo(application.iconUrl, application.iconUrl, application.name, receiverPackage, amount))
+                view?.initTransferBar(TransferInfo(repository.getStoredAppIcon(), application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
                 resetAmount()
             }
