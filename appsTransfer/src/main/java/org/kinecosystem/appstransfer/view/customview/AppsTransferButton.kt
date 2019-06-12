@@ -8,6 +8,7 @@ import android.widget.TextView
 import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.view.AppsTransferActivity
 
+//public use
 class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {
 

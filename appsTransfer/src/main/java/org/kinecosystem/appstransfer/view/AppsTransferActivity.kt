@@ -97,6 +97,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         presenter?.onResume()
     }
 
+    //public method
     companion object {
         fun getIntent(context: Context) = Intent(context, AppsTransferActivity::class.java)
     }
