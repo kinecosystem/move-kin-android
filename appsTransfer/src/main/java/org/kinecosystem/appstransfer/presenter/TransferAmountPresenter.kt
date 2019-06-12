@@ -99,7 +99,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     }
 
     override fun onServiceDisconnected() {
-        //TODO??
     }
 
     override fun onPause() {
