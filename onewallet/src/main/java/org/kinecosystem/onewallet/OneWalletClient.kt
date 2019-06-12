@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import kin.base.Transaction
 import kin.sdk.KinAccount
 import kin.sdk.RawTransaction
 import org.kinecosystem.common.base.LocalStore
@@ -58,23 +59,24 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     }
 
     override fun onActivityResult(resultCode: Int, intent: Intent) {
+        if (oneWalletActionModel.isLinkingButton()) {
+            linkWalletPresenter?.onLinkWalletStarted()
+            val transferManager = TransferManager(hostActivity)
+            transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
+                override fun onCancel() {
+                    linkWalletPresenter?.onLinkWalletCancelled()
+                }
 
-        linkWalletPresenter?.onLinkWalletStarted()
-        val transferManager = TransferManager(hostActivity)
-        transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
-            override fun onCancel() {
-                linkWalletPresenter?.onLinkWalletCancelled()
-            }
+                override fun onError(error: String) {
+                    Log.e("Linking", "One Wallet (Kinit) was unable to build the linking transaction. Error is: " + error)
+                    linkWalletPresenter?.onLinkWalletError(error)
+                }
 
-            override fun onError(error: String) {
-                Log.e("Linking", "One Wallet (Kinit) was unable to build the linking transaction. Error is: " + error)
-                linkWalletPresenter?.onLinkWalletError(error)
-            }
-
-            override fun onResult(data: String) {
-                sendLinkingTransaction(data)
-            }
-        })
+                override fun onResult(data: String) {
+                    sendLinkingTransaction(data)
+                }
+            })
+        }
     }
 
     override fun unbindViews() {

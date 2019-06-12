@@ -36,7 +36,6 @@ dependencies {
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.ext.testEspressoCoreVersion"
 
     implementation "com.github.kinecosystem:kin-sdk-android:$rootProject.ext.kinSdkVersion"
-    implementation project(':appsDiscovery')
     implementation project(':baseSampleApp')
     compile project(path: ':onewallet')
 }
