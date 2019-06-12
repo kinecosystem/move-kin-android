@@ -90,6 +90,16 @@ class SenderServiceBinder(private val context: Context?) {
                         mainThreadHandler.post {
                             listener?.onTransferComplete(it)
                         }
+                    } ?: kotlin.run {
+                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback{
+                            override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+                                listener?.onTransferComplete(kinTransferComplete)
+                            }
+
+                            override fun onError(e: SendKinServiceBase.KinTransferException) {
+                                listener?.onTransferFailed(e.message.orEmpty(), e.senderAddress)
+                            }
+                        })
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     mainThreadHandler.post {
