@@ -41,7 +41,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
             appState = if (!context.isAppInstalled(it)) {
                 AppStateView.State.NotInstalled
             } else {
-                if (app?.canTransferKin!!) {
+                if (app?.canSendKin!!) {
                     AppStateView.State.ReceiveKinSupported
                 } else {
                     AppStateView.State.ReceiveKinNotSupported
