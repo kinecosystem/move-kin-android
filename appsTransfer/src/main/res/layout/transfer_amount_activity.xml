@@ -13,7 +13,7 @@
         android:scaleType="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/kin_x_close_dark" />
+        app:srcCompat="@drawable/kin_back_btn_dark" />
 
     <TextView
         android:id="@+id/to"
