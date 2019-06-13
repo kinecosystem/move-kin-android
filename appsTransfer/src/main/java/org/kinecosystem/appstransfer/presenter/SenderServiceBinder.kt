@@ -17,7 +17,6 @@ import java.util.concurrent.Executors
 
 class SenderServiceBinder(private val context: Context?) {
     private val TAG = SenderServiceBinder::class.java.simpleName
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
 
     interface BinderListener {
         fun onBalanceReceived(balance: Int)
@@ -28,6 +27,7 @@ class SenderServiceBinder(private val context: Context?) {
         fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
     }
 
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
     private var executorService = Executors.newCachedThreadPool()
     @Volatile
     var isBounded = false
@@ -40,16 +40,12 @@ class SenderServiceBinder(private val context: Context?) {
             val binder = service as SendKinServiceBase.KinTransferServiceBinder
             transferService = binder.service
             isBounded = true
-            mainThreadHandler.post {
-                listener?.onServiceConnected()
-            }
+            updateServiceConnection(true)
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             isBounded = false
-            mainThreadHandler.post {
-                listener?.onServiceDisconnected()
-            }
+            updateServiceConnection(false)
         }
     }
 
@@ -62,18 +58,10 @@ class SenderServiceBinder(private val context: Context?) {
             executorService.execute {
                 try {
                     transferService?.let {
-                        //long operation
-                        val balance = it.currentBalance.toInt()
-                        mainThreadHandler.post {
-                            listener?.onBalanceReceived(balance)
-                        }
+                        updateBalance(true, it.currentBalance.toInt())
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
-                    mainThreadHandler.post {
-                        listener?.onBalanceFailed()
-                        //ignore if we dont get balance - user can send amount with no limit but will fail if it exceeds his balance
-                        //Log.d(TAG, "balanceException ${balanceException.message}")
-                    }
+                    updateBalance(false)
                 }
             }
         } else {
@@ -87,24 +75,20 @@ class SenderServiceBinder(private val context: Context?) {
                 try {
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
                     kinTransferComplete?.let {
-                        mainThreadHandler.post {
-                            listener?.onTransferComplete(it)
-                        }
+                        updateTransferCompleted(it)
                     } ?: kotlin.run {
-                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback{
+                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback {
                             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-                                listener?.onTransferComplete(kinTransferComplete)
+                                updateTransferCompleted(kinTransferComplete)
                             }
 
                             override fun onError(e: SendKinServiceBase.KinTransferException) {
-                                listener?.onTransferFailed(e.message.orEmpty(), e.senderAddress)
+                                updateTransferFailed(e)
                             }
                         })
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    mainThreadHandler.post {
-                        listener?.onTransferFailed(e.message.orEmpty(), e.senderAddress)
-                    }
+                    updateTransferFailed(e)
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                 }
             }
@@ -142,9 +126,7 @@ class SenderServiceBinder(private val context: Context?) {
             }
             context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
         } else {
-            mainThreadHandler.post {
-                listener?.onServiceConnected()
-            }
+            updateServiceConnection(true)
         }
     }
 
@@ -152,6 +134,39 @@ class SenderServiceBinder(private val context: Context?) {
         if (isBounded) {
             context?.unbindService(connection)
             isBounded = false
+        }
+    }
+
+    private fun updateBalance(recieved: Boolean, balance: Int = 0) {
+        mainThreadHandler.post {
+            if (recieved) {
+                listener?.onBalanceReceived(balance)
+            } else {
+                listener?.onBalanceFailed()
+            }
+        }
+    }
+
+    private fun updateTransferCompleted(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+        mainThreadHandler.post {
+            listener?.onTransferComplete(kinTransferComplete)
+        }
+    }
+
+    private fun updateTransferFailed(e: SendKinServiceBase.KinTransferException) {
+        mainThreadHandler.post {
+            val msg = e.message ?: ""
+            listener?.onTransferFailed(msg, e.senderAddress)
+        }
+    }
+
+    private fun updateServiceConnection(isConnected: Boolean) {
+        mainThreadHandler.post {
+            if (isConnected) {
+                listener?.onServiceConnected()
+            } else {
+                listener?.onServiceDisconnected()
+            }
         }
     }
 }
