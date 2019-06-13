@@ -26,7 +26,9 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
     private fun requestReceiverPublicAddress(app: EcosystemApp) {
         app.identifier?.let { pkg ->
             app.launchActivity?.let { activityFullPath ->
-                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE, pkg, activityFullPath)
+                val started = transferManager.intentBuilder(pkg, activityFullPath)
+                                .build()
+                                .startForResult(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE)
                 if (!started) {
                     view?.onCantFindReceiverInfo(app.name)
                 }

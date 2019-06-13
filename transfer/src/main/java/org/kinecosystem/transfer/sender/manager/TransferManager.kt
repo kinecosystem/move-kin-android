@@ -17,12 +17,12 @@ class TransferManager(var activity: Activity?) {
         fun onResult(data: String)
     }
 
-    fun intentBuilder(applicationId: String, launchActivityFullPath: String): IntentBuilder {
-        return IntentBuilder(activity, applicationId, launchActivityFullPath)
+    fun intentBuilder(appPackageId: String, launchActivityFullPath: String): IntentBuilder {
+        return IntentBuilder(activity, appPackageId, launchActivityFullPath)
     }
 
     class IntentBuilder constructor(private val activity: Activity?,
-                                    private val applicationId: String,
+                                    private val appPackageId: String,
                                     private val launchActivityFullPath: String) {
         val intent: Intent = Intent()
         var found: Boolean = false
@@ -38,7 +38,7 @@ class TransferManager(var activity: Activity?) {
             try {
                 activity?.let {
                     val packageManager = it.packageManager
-                    intent.component = ComponentName(applicationId, launchActivityFullPath)
+                    intent.component = ComponentName(appPackageId, launchActivityFullPath)
                     val resolveInfos = packageManager.queryIntentActivities(intent, 0)
                     found = resolveInfos.isNotEmpty()
                     if (found) {

@@ -36,7 +36,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
 
     enum class BodyTextRes(val bodyTextResId: Int, val colorResId: Int) {
         LINKING_GREEN(R.string.progress_linking_wallets_body_g, R.color.light_green),
-        LINKING_PURPLE(R.string.progress_linking_wallets_body_p, R.color.purple)
+        LINKING_PURPLE(R.string.progress_linking_wallets_body_p, R.color.kin_transfer_purple)
     }
 
     init {
@@ -111,7 +111,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
     private fun prepareCompletionLayout() {
         progressTitle.visibility = View.GONE
         bodyTextView.visibility = View.GONE
-        completionTextView.setTextColor(ContextCompat.getColor(context, R.color.dark))
+        completionTextView.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_dark))
         completionTextView.visibility = View.VISIBLE
     }
 
@@ -161,7 +161,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
 
     private fun displayFinalScreen() {
         completionTextView.text = context.getText(R.string.progress_linking_wallets_end)
-        completionTextView.setTextColor(ContextCompat.getColor(context, R.color.purple))
+        completionTextView.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_purple))
         completionTextView.setOnClickListener({
             barActionListener?.onOpenKinitClicked()
         })

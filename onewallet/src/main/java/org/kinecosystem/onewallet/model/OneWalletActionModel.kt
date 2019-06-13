@@ -8,9 +8,9 @@ class OneWalletActionModel(private var localStore: LocalStore) {
     private var errorCount = 0
 
     enum class Type(val textResId: Int, val styleResId: Int, val backgroundResId: Int) {
-        LINK(R.string.btn_link_wallets, R.style.kinTextButtonRounded_Hollow,
+        LINK(R.string.btn_link_wallets, R.style.KinTextButtonRounded_Hollow,
                 R.drawable.kin_button_rounded_hollow_bg),
-        TOP_UP(R.string.btn_top_up, R.style.kinTextButtonRounded_Purple,
+        TOP_UP(R.string.btn_top_up, R.style.KinTextButtonRounded_Purple,
                 R.drawable.kin_button_rounded_bg),
         UNDEFINED(-1, -1, -1)
     }
