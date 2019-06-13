@@ -1,10 +1,8 @@
 package org.kinecosystem.appstransfer.presenter
 
-import android.os.Handler
 import org.kinecosystem.appstransfer.view.ITransferAmountView
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
-import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.getTransactionMemo
 import org.kinecosystem.transfer.model.iconUrl
@@ -23,10 +21,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     private var balance = Consts.NO_BALANCE
     private var app: EcosystemApp? = null
     private var balanceRequested = false
-    private val handler = Handler()
-    private var afterTimeout = false
-    @Volatile
-    private var transferResponseReceived = false
 
     init {
         app = repository.getAppByName(receiverAppName)
@@ -121,7 +115,6 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
         app?.let { application ->
             application.identifier?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(receiverPublicAddress, amount, application.getTransactionMemo())
-                startTimeOutCounter()
                 view?.initTransferBar(TransferInfo(repository.getStoredAppIcon(), application.iconUrl, application.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
                 resetAmount()
@@ -130,25 +123,23 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     }
 
     override fun onTransferFailed(errorMessge: String, senderAddress: String) {
-        if (!afterTimeout) {
-            transferResponseReceived = true
-            view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
-            app?.let { application ->
-                application.identifier?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress, senderAppName, receiverPublicAddress, amount, application.memo)
-                }
+        view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
+        app?.let { application ->
+            application.identifier?.let { receiverPackage ->
+                view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress, senderAppName, receiverPublicAddress, amount, application.memo)
             }
         }
     }
 
+    override fun onTransferTimeout() {
+        view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
+    }
+
     override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-        if (!afterTimeout) {
-            transferResponseReceived = true
-            view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
-            app?.let { application ->
-                application.identifier?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
-                }
+        view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
+        app?.let { application ->
+            application.identifier?.let { receiverPackage ->
+                view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
             }
         }
         resetAmount()
@@ -180,17 +171,5 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     private fun requestBalance() {
         balanceRequested = true
         senderServiceBinder.bind()
-    }
-
-
-    private fun startTimeOutCounter() {
-        afterTimeout = false
-        transferResponseReceived = false
-        handler.postDelayed({
-            if (!transferResponseReceived) {
-                afterTimeout = true
-                view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
-            }
-        }, TRANSACTION_TIMEOUT)
     }
 }

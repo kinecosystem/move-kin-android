@@ -25,6 +25,7 @@ class SenderServiceBinder(private val context: Context?) {
         fun onServiceDisconnected()
         fun onTransferFailed(errorMessage: String, senderAddress: String)
         fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
+        fun onTransferTimeout()
     }
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
@@ -34,6 +35,13 @@ class SenderServiceBinder(private val context: Context?) {
         private set
     private var transferService: SendKinServiceBase? = null
     private var listener: BinderListener? = null
+    private val handler = Handler()
+    private var afterTimeout = false
+    @Volatile
+    private var transferResponseReceived = false
+    private val onTimeout = Runnable {
+        updateTransferTimeout()
+    }
     private val connection = object : ServiceConnection {
 
         override fun onServiceConnected(className: ComponentName, service: IBinder) {
@@ -73,6 +81,8 @@ class SenderServiceBinder(private val context: Context?) {
         if (isBounded) {
             executorService.execute {
                 try {
+                    cancelTimeoutCounter()
+                    startTimeoutCounter()
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
@@ -100,6 +110,8 @@ class SenderServiceBinder(private val context: Context?) {
     fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
         if (isBounded) {
             executorService.execute {
+                cancelTimeoutCounter()
+                startTimeoutCounter()
                 transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
             }
         }
@@ -147,16 +159,42 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
+    private fun cancelTimeoutCounter() {
+        handler.removeCallbacks { onTimeout }
+    }
+
+
+    private fun startTimeoutCounter() {
+        afterTimeout = false
+        transferResponseReceived = false
+        handler.postDelayed({
+            onTimeout
+        }, Consts.TRANSACTION_TIMEOUT)
+    }
+
+    private fun updateTransferTimeout() {
+        afterTimeout = true
+        if (!transferResponseReceived) {
+            listener?.onTransferTimeout()
+        }
+    }
+
     private fun updateTransferCompleted(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
-        mainThreadHandler.post {
-            listener?.onTransferComplete(kinTransferComplete)
+        transferResponseReceived = true
+        if (!afterTimeout) {
+            mainThreadHandler.post {
+                listener?.onTransferComplete(kinTransferComplete)
+            }
         }
     }
 
     private fun updateTransferFailed(e: SendKinServiceBase.KinTransferException) {
-        mainThreadHandler.post {
-            val msg = e.message ?: ""
-            listener?.onTransferFailed(msg, e.senderAddress)
+        transferResponseReceived = true
+        if (!afterTimeout) {
+            mainThreadHandler.post {
+                val msg = e.message ?: ""
+                listener?.onTransferFailed(msg, e.senderAddress)
+            }
         }
     }
 
