@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import kin.base.Transaction
 import kin.sdk.KinAccount
@@ -25,7 +27,6 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
         val ONE_WALLET_LINK_ACTIVITY = "org.kinecosystem.kinit.view.onewallet.LinkAccountActivity"
         val ONE_WALLET_TOPUP_ACTIVITY = "org.kinecosystem.kinit.view.onewallet.TopupAccountActivity"
         val ONE_WALLET_MAIN_ACTIVITY = "org.kinecosystem.kinit.view.SplashActivity"
-        val EXTRA_ACTION_TYPE = "EXTRA_ACTION_TYPE"
         val EXTRA_APP_ID = "EXTRA_APP_ID"
         val EXTRA_PUBLIC_ADDRESS = "EXTRA_PUBLIC_ADDRESS"
         val TIMEOUT_IN_MILLIS = 10005L
@@ -118,7 +119,6 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
             val started = transferManager.intentBuilder(ONE_WALLET_APP_ID, activityToLaunch)
                     .addParam(EXTRA_PUBLIC_ADDRESS, publicAddress)
                     .addParam(EXTRA_APP_ID, appId)
-                    .addParam(EXTRA_ACTION_TYPE, it.type.toString())
                     .build()
                     .startForResult(requestCode)
             if (!started) {

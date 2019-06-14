@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:gravity="bottom">
+        <shape>
+            <size android:height="1dp" />
+            <solid android:color="@color/kin_transfer_grey" />
+        </shape>
+    </item>
+    <item android:gravity="left">
+        <shape>
+            <size android:width="12dp"/>
+            <solid android:color="@color/kin_transfer_white" />
+        </shape>
+    </item>
+    <item android:gravity="right">
+        <shape>
+            <size android:width="12dp"/>
+            <solid android:color="@color/kin_transfer_white" />
+        </shape>
+    </item>
+</layer-list>
