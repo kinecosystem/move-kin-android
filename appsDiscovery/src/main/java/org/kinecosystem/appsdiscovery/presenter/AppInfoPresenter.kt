@@ -15,8 +15,33 @@ import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
 import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.sender.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.SenderServiceBinder
 
-class AppInfoPresenter(private val appName: String?, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
+class AppInfoPresenter(private val appName: String?, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager,val senderServiceBinder: SenderServiceBinder) : BasePresenter<IAppInfoView>(), IAppInfoPresenter , SenderServiceBinder.BinderListener{
+    override fun onBalanceReceived(balance: Int) {
+        repository.storeCurrentBalance(balance)
+    }
+
+    override fun onBalanceFailed() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onServiceConnected() {
+        senderServiceBinder.requestCurrentBalance()
+    }
+
+    override fun onServiceDisconnected() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTransferFailed(errorMessage: String, senderAddress: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
@@ -79,7 +104,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
             intent?.let {
                 view?.updateTransferStatus(TransferBarView.TransferStatus.Started)
                 val amountToSend = it.getIntExtra(AmountChooserPresenter.PARAM_AMOUNT, 0)
-                sendKin(amountToSend)
+                view?.updateAmount(amountToSend)
+                //TODO
+                senderServiceBinder.startSendKin(repository.getReceiverAppPublicAddress(), amountToSend, getTransactionMemo())
+                //sendKin(amountToSend)
             } ?: kotlin.run {
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedConnectionError)
             }
@@ -87,9 +115,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
     }
 
     private fun sendKin(amountToSend: Int) {
+        view?.updateAmount(amountToSend)
         app?.let {
             it.identifier?.let { pkg ->
-                view?.updateAmount(amountToSend)
+
             }
         }
         app?.identifier?.let { receiverPackage ->
@@ -146,7 +175,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
             gotTransferResponse = true
             view?.updateTransferStatus(TransferBarView.TransferStatus.Complete)
         }
-        view?.requestCurrentBalance()
+        senderServiceBinder.requestCurrentBalance()
     }
 
     override fun onRequestReceiverPublicAddress() {
@@ -170,6 +199,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
     override fun onAttach(view: IAppInfoView) {
         super.onAttach(view)
         app = repository.getAppByName(appName)
+        senderServiceBinder.setListener(this)
         view.initViews(app)
         app?.let { application ->
             application.identifier?.let { receiverPkg ->

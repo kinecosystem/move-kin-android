@@ -34,6 +34,7 @@ import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.repositories.KinTransferCallback
+import org.kinecosystem.transfer.sender.service.SenderServiceBinder
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -42,24 +43,24 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private var appStateView: AppStateView? = null
     private var transferBarView: TransferBarView? = null
     private var list: RecyclerView? = null
-    @Volatile
-    private var isBound = false
-    private var transferService: SendKinServiceBase? = null
+//    @Volatile
+//    private var isBound = false
+    //private var transferService: SendKinServiceBase? = null
     private var executorService = Executors.newCachedThreadPool()
     private lateinit var uiHandler: Handler
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, service: IBinder) {
-            val binder = service as SendKinServiceBase.KinTransferServiceBinder
-            transferService = binder.service
-            isBound = true
-            requestCurrentBalance()
-        }
-
-        override fun onServiceDisconnected(arg0: ComponentName) {
-            isBound = false
-        }
-    }
+//    private val connection = object : ServiceConnection {
+//
+//        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+//            val binder = service as SendKinServiceBase.KinTransferServiceBinder
+//            transferService = binder.service
+//            isBound = true
+//            requestCurrentBalance()
+//        }
+//
+//        override fun onServiceDisconnected(arg0: ComponentName) {
+//            isBound = false
+//        }
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +78,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
         val repository = EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
         transferBarView = findViewById(R.id.transferBar)
-        presenter = AppInfoPresenter(appName, repository, TransferManager(this))
+        presenter = AppInfoPresenter(appName, repository, TransferManager(this), SenderServiceBinder(this))
         presenter?.onAttach(this)
         presenter?.onStart()
 
@@ -233,21 +234,21 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         transferBarView?.updateStatus(status)
     }
 
-    override fun requestCurrentBalance() {
-        if (isBound) {
-            executorService.execute {
-                try {
-                    transferService?.let {
-                        val currentBalance = it.currentBalance.toInt()
-                        presenter?.updateBalance(currentBalance)
-                    }
-                } catch (balanceException: SendKinServiceBase.BalanceException) {
-                    //ignore if we dont get balance - user can send amount with no limit but will fail if it exceeds his balance
-                    Log.d(TAG, "balanceException ${balanceException.message}")
-                }
-            }
-        }
-    }
+//    override fun requestCurrentBalance() {
+//        if (isBound) {
+//            executorService.execute {
+//                try {
+//                    transferService?.let {
+//                        val currentBalance = it.currentBalance.toInt()
+//                        presenter?.updateBalance(currentBalance)
+//                    }
+//                } catch (balanceException: SendKinServiceBase.BalanceException) {
+//                    //ignore if we dont get balance - user can send amount with no limit but will fail if it exceeds his balance
+//                    Log.d(TAG, "balanceException ${balanceException.message}")
+//                }
+//            }
+//        }
+//    }
 
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"

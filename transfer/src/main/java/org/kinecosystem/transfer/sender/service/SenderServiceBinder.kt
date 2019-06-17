@@ -1,4 +1,4 @@
-package org.kinecosystem.appstransfer.presenter
+package org.kinecosystem.transfer.sender.service
 
 import android.content.ComponentName
 import android.content.Context
@@ -12,7 +12,6 @@ import android.util.Log
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.transfer.repositories.KinTransferCallback
-import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import java.util.concurrent.Executors
 
 class SenderServiceBinder(private val context: Context?) {

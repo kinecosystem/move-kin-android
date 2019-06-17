@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import org.kinecosystem.appstransfer.R
-import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
+import org.kinecosystem.transfer.sender.service.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.getApplicationName

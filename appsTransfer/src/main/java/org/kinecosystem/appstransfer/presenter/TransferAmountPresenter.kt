@@ -11,6 +11,7 @@ import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.SenderServiceBinder
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 

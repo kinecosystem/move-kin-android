@@ -10,7 +10,7 @@ interface IAppInfoPresenter : IBasePresenter<IAppInfoView> {
     fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?)
     fun onStart()
     fun onDestroy()
-    fun updateBalance(currentBalance: Int)
+   // fun updateBalance(currentBalance: Int)
     fun onResume(context: Context)
     fun onActionButtonClicked()
     fun onTransferComplete()

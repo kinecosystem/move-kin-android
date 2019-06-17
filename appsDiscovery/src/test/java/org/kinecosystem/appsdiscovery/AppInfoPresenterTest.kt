@@ -53,7 +53,7 @@ class AppInfoPresenterTest {
     @Before
     fun setup(){
         MockitoAnnotations.initMocks(this)
-        appInfoPresenter = AppInfoPresenter(appName,repository, transferManager)
+        appInfoPresenter = AppInfoPresenter(appName, repository, transferManager, SenderServiceBinder(this))
     }
 
     @After
