@@ -14,7 +14,7 @@ abstract class TransferAmountActivityBase : AppCompatActivity(), ITransferAmount
     private val TAG = TransferAmountActivityBase::class.java.simpleName
     private var presenter: TransferAmountPresenter? = null
     private var amount: TextView? = null
-    private var send: TextView? = null
+    private var sendButton: TextView? = null
 
     abstract fun onTransferKinButtonClicked(amount: Int)
     abstract fun titleStringRes(): Int
@@ -24,11 +24,19 @@ abstract class TransferAmountActivityBase : AppCompatActivity(), ITransferAmount
         return R.layout.transfer_amount_layout
     }
 
+    protected fun updateButtonText(resId:Int){
+        sendButton?.setText(resId)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layoutId())
         presenter = TransferAmountPresenter(null)
         presenter?.onAttach(this)
+
+        findViewById<View>(R.id.close_x).setOnClickListener {
+            presenter?.onCloseClicked()
+        }
 
         findViewById<View>(R.id.del).setOnLongClickListener {
             presenter?.resetAmount()
@@ -38,9 +46,9 @@ abstract class TransferAmountActivityBase : AppCompatActivity(), ITransferAmount
         findViewById<TextView>(R.id.to).setText(titleStringRes())
 
         amount = findViewById(R.id.amount)
-        send = findViewById<TextView>(R.id.send)
-        send?.setText(buttonStringRes())
-        send?.setOnClickListener {
+        sendButton = findViewById<TextView>(R.id.sendButton)
+        sendButton?.setText(buttonStringRes())
+        sendButton?.setOnClickListener {
             presenter?.let {
                 onTransferKinButtonClicked(it.getKinAmount())
             }
@@ -48,7 +56,7 @@ abstract class TransferAmountActivityBase : AppCompatActivity(), ITransferAmount
     }
 
     override fun enableSend(enable: Boolean) {
-        send?.isEnabled = enable
+        sendButton?.isEnabled = enable
     }
 
     override fun updateAmount(amount: String) {
