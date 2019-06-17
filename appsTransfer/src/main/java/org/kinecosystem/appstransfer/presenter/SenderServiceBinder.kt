@@ -81,13 +81,12 @@ class SenderServiceBinder(private val context: Context?) {
         if (isBounded) {
             executorService.execute {
                 try {
-                    cancelTimeoutCounter()
                     startTimeoutCounter()
                     val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
-                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback {
+                        startSendKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
                             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                                 updateTransferCompleted(kinTransferComplete)
                             }
@@ -107,11 +106,9 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+    private fun startSendKinAsync(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
         if (isBounded) {
             executorService.execute {
-                cancelTimeoutCounter()
-                startTimeoutCounter()
                 transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
             }
         }
@@ -159,16 +156,11 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    private fun cancelTimeoutCounter() {
-        handler.removeCallbacks { onTimeout }
-    }
-
-
     private fun startTimeoutCounter() {
         afterTimeout = false
         transferResponseReceived = false
         handler.postDelayed({
-            onTimeout
+            updateTransferTimeout()
         }, Consts.TRANSACTION_TIMEOUT)
     }
 
