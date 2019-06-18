@@ -29,7 +29,8 @@ public class LinkMainActivity extends SampleBaseActivity {
         if (account != null && !TextUtils.isEmpty(account.getPublicAddress())) {
             oneWalletClient = new OneWalletClient(app.getAppId());
             oneWalletClient.onActivityCreated(this, account, ONE_WALLET_REQUEST_CODE);
-            oneWalletClient.bindViews(findViewById(R.id.oneWalletActionButton), findViewById(R.id.oneWalletProgressBar));
+            oneWalletClient.bindLinkAndTopupViews(findViewById(R.id.oneWalletActionButton), findViewById(R.id.oneWalletProgressBar));
+            oneWalletClient.bindUnifiedBalanceBar(findViewById(R.id.unifiedBalanceBar));
         }
     }
 
