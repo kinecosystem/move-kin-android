@@ -6,6 +6,7 @@ import org.kinecosystem.common.utils.ImageUtils
 import org.kinecosystem.common.utils.TextUtils.Companion.FONT_SAILEC
 
 private const val MEMO_PREFIX = "CrossApps_"
+
 data class EcosystemApp(
         @SerializedName("category_name")
         val category: String?,
@@ -29,7 +30,9 @@ data class EcosystemApp(
 
 data class TransferData(
         @SerializedName("launch_activity")
-        val launchActivityFullPath: String?
+        val launchActivityFullPath: String?,
+        @SerializedName("send_enabled")
+        val canSendKin: Boolean = false
 )
 
 data class MetaData(
@@ -117,10 +120,22 @@ val EcosystemApp.cardColor: Int
 val EcosystemApp.launchActivity: String?
     get() = transferData?.launchActivityFullPath
 
-val EcosystemApp.canTransferKin: Boolean
+val EcosystemApp.canSendKin: Boolean
+    get() {
+        transferData?.let {
+            return it.canSendKin
+        } ?: return false
+    }
+
+val EcosystemApp.canReceiveKin: Boolean
     get() {
         transferData?.launchActivityFullPath?.let {
             return it.isNotEmpty()
         } ?: return false
     }
-fun  EcosystemApp.getTransactionMemo() = "$MEMO_PREFIX$memo"
+
+fun EcosystemApp.canSendAndReceiveKin(): Boolean {
+    return canReceiveKin && canSendKin
+}
+
+fun EcosystemApp.getTransactionMemo() = "$MEMO_PREFIX$memo"

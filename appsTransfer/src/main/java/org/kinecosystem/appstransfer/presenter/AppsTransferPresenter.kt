@@ -16,7 +16,7 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
 
     override fun onAppClicked(app: EcosystemApp, isInstalled:Boolean) {
         this.app = app
-        if (isInstalled && app.canTransferKin) {
+        if (isInstalled && app.canReceiveKin) {
             requestReceiverPublicAddress(app)
         } else {
             view?.navigateToAppStore(app.downloadUrl)

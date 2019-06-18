@@ -18,10 +18,7 @@ import org.kinecosystem.appstransfer.presenter.AppsTransferListPresenter
 import org.kinecosystem.appstransfer.presenter.IAppsTransferListPresenter
 import org.kinecosystem.common.utils.isAppInstalled
 import org.kinecosystem.common.utils.load
-import org.kinecosystem.transfer.model.EcosystemApp
-import org.kinecosystem.transfer.model.canTransferKin
-import org.kinecosystem.transfer.model.iconUrl
-import org.kinecosystem.transfer.model.name
+import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
@@ -31,7 +28,7 @@ class AppsTransferList @JvmOverloads constructor(context: Context, attrs: Attrib
         RecyclerView(context, attrs, defStyleAttr), IAppsTransferListView {
 
     interface AppClickListener {
-        fun onAppClicked(app: EcosystemApp, isInstalled:Boolean)
+        fun onAppClicked(app: EcosystemApp, isInstalled: Boolean)
     }
 
     private var presenter: IAppsTransferListPresenter? = null
@@ -97,8 +94,8 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
         notifyDataSetChanged()
     }
 
-    fun sort(){
-        apps = apps.sortedWith(compareBy({ context.isAppInstalled(it.identifier!!) }, { it.canTransferKin }, {it.name} )).asReversed()
+    fun sort() {
+        apps = apps.sortedWith(compareBy({ !it.canSendAndReceiveKin() }, { !context.isAppInstalled(it.identifier!!) }, { it.name }))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -129,20 +126,18 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
             appName.text = app.name
             icon.load(app.iconUrl)
             app.identifier?.let {
-                if (context.isAppInstalled(it)) {
-                    if (app.canTransferKin) {
-                        actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
-                        actionText.text = context.getString(R.string.apps_transfer_kin)
-                        actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_btn_text))
-                        actionText.visibility = View.VISIBLE
-                        status.visibility = View.GONE
-                        appName.gravity = Gravity.CENTER_VERTICAL
-                    } else {
-                        appName.gravity = Gravity.TOP
-                        status.visibility = View.VISIBLE
-                        status.text = context.getString(R.string.apps_transfer_coming_soon)
-                        actionText.visibility = View.GONE
-                    }
+                if (!app.canSendAndReceiveKin()) {
+                    appName.gravity = Gravity.TOP
+                    status.visibility = View.VISIBLE
+                    status.text = context.getString(R.string.apps_transfer_coming_soon)
+                    actionText.visibility = View.GONE
+                } else if (context.isAppInstalled(it)) {
+                    actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
+                    actionText.text = context.getString(R.string.apps_transfer_kin)
+                    actionText.setTextColor(ContextCompat.getColor(context, R.color.kin_transfer_btn_text))
+                    actionText.visibility = View.VISIBLE
+                    status.visibility = View.GONE
+                    appName.gravity = Gravity.CENTER_VERTICAL
                 } else {
                     appName.gravity = Gravity.TOP
                     actionText.background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_hollow_drawable)
