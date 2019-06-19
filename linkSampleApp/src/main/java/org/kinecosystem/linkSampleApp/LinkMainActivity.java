@@ -23,13 +23,15 @@ public class LinkMainActivity extends SampleBaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        SampleBaseApplication app =(SampleBaseApplication) getApplication();
+        SampleBaseApplication app = (SampleBaseApplication) getApplication();
         SampleWallet sampleWallet = app.getSampleWallet();
         KinAccount account = sampleWallet.getAccount();
         if (account != null && !TextUtils.isEmpty(account.getPublicAddress())) {
             oneWalletClient = new OneWalletClient(app.getAppId());
             oneWalletClient.onActivityCreated(this, account, ONE_WALLET_REQUEST_CODE);
-            oneWalletClient.bindViews(findViewById(R.id.oneWalletActionButton), findViewById(R.id.oneWalletProgressBar));
+            oneWalletClient.bindViews(findViewById(R.id.oneWalletActionButton),
+                    findViewById(R.id.oneWalletProgressBar),
+                    findViewById(R.id.unifiedBalanceBar));
         }
     }
 

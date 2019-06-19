@@ -16,6 +16,8 @@ class LocalStore(context: Context, name:String){
 
     fun getString(key:String, defaultValue:String): String = sharedPreferences.getString(key, defaultValue)
 
+    fun hasString(key:String): Boolean = sharedPreferences.contains(key)
+
     fun updateInt(key:String, value:Int){
         sharedPreferences.edit().apply{
             putInt(key, value)

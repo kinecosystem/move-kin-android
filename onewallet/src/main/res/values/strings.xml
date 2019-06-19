@@ -11,4 +11,6 @@
     <string name="linking_error_timeout">A timeout occurred.\nPlease try again. </string>
     <string name="linking_error_internet">Please check your internet\nconnection and try again.</string>
     <string name="linking_try_again"><u>Try again</u></string>
+    <string name="unified_balance_total">Total Kin</string>
+    <string name="unified_balance_manage_wallets">Manage wallets</string>
 </resources>
