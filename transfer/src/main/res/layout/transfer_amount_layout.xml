@@ -98,7 +98,6 @@
         app:layout_constraintTop_toTopOf="@+id/currency"
         tools:text="15000" />
 
-
     <TextView
         android:id="@+id/amount"
         style="@style/KinTextMedium.Dark"
@@ -131,7 +130,6 @@
         app:layout_constraintTop_toTopOf="@+id/amount"
         app:srcCompat="@drawable/kin_currency_purple" />
 
-
     <include
         android:id="@+id/calc"
         layout="@layout/transfer_numbers_input"
@@ -155,6 +153,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
-
 
 </android.support.constraint.ConstraintLayout>

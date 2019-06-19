@@ -16,7 +16,7 @@ interface IOneWalletClient {
 
     fun unbindViews()
 
-    fun onActivityResult(resultCode: Int, intent: Intent)
+    fun onActivityResult(resultCode: Int, intent: Intent?)
 
     fun onActivityDestroyed()
 }

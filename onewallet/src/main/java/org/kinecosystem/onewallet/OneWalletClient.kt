@@ -76,7 +76,7 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     }
 
 
-    override fun onActivityResult(resultCode: Int, intent: Intent) {
+    override fun onActivityResult(resultCode: Int, intent: Intent?) {
         if (!oneWalletDataModel.isWalletLinked()) {
             linkWalletPresenter?.onLinkWalletStarted()
             val transferManager = TransferManager(hostActivity)

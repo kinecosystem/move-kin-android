@@ -20,11 +20,11 @@ abstract class TransferAmountActivityBase : AppCompatActivity(), ITransferAmount
     abstract fun titleStringRes(): Int
     abstract fun buttonStringRes(): Int
 
-    protected fun layoutId(): Int {
+    protected open fun layoutId(): Int {
         return R.layout.transfer_amount_layout
     }
 
-    protected fun updateButtonText(resId:Int){
+    protected open fun updateButtonText(resId:Int){
         sendButton?.setText(resId)
     }
 
