@@ -11,9 +11,8 @@ interface IOneWalletClient {
 
     fun onActivityCreated(activity: Activity, kinAccount: KinAccount, requestCode: Int)
 
-    fun bindLinkAndTopupViews(actionButtonView: OneWalletActionButton, progressBarView: LinkingProgressBar)
-
-    fun bindUnifiedBalanceBar(unifiedBalanceBar: UnifiedBalanceBar)
+    fun bindViews(actionButtonView: OneWalletActionButton, progressBarView: LinkingProgressBar,
+                  unifiedBalanceBar: UnifiedBalanceBar)
 
     fun unbindViews()
 

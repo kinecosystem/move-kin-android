@@ -5,4 +5,6 @@ interface LinkingBarActionListener {
     fun onLinkingRetryClicked()
 
     fun onOpenKinitClicked()
+
+    fun onClosed()
 }

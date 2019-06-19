@@ -50,6 +50,7 @@
         android:textSize="@dimen/kin_transfer_text_big_size"
         android:textColor="@color/kin_transfer_purple"
         android:fontFamily="@font/sailec_medium"
+        android:text="0"
         tools:text="1,115"
         app:layout_constraintVertical_bias="0.9"
         app:layout_constraintStart_toEndOf="@id/unified_kin_coin"

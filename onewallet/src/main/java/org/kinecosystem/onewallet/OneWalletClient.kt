@@ -6,10 +6,11 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import com.google.gson.Gson
 import kin.sdk.KinAccount
 import kin.sdk.RawTransaction
 import org.kinecosystem.common.base.LocalStore
-import org.kinecosystem.onewallet.model.OneWalletActionModel
+import org.kinecosystem.onewallet.model.OneWalletDataModel
 import org.kinecosystem.onewallet.presenter.BalanceBarPresenter
 import org.kinecosystem.onewallet.presenter.LinkWalletPresenter
 import org.kinecosystem.onewallet.view.*
@@ -32,7 +33,7 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     private lateinit var uiHandler: Handler
     private var linkWalletPresenter: LinkWalletPresenter? = null
     private var kinAccount: KinAccount? = null
-    private lateinit var oneWalletActionModel: OneWalletActionModel
+    private lateinit var oneWalletDataModel: OneWalletDataModel
     private var hostActivity: Activity? = null
     private var oneWalletRequestCode = 99
     private var balanceBarPresenter: BalanceBarPresenter? = null
@@ -40,14 +41,20 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     override fun onActivityCreated(activity: Activity, account: KinAccount, requestCode: Int) {
         uiHandler = Handler(Looper.getMainLooper())
         val localStore = LocalStore(activity.applicationContext, "ONE_WALLET")
-        oneWalletActionModel = OneWalletActionModel(localStore)
+        oneWalletDataModel = OneWalletDataModel(localStore)
         kinAccount = account
         hostActivity = activity
         oneWalletRequestCode = requestCode
     }
 
-    override fun bindLinkAndTopupViews(actionButton: OneWalletActionButton, progressBar: LinkingProgressBar) {
-        linkWalletPresenter = LinkWalletPresenter(oneWalletActionModel)
+    override fun bindViews(actionButton: OneWalletActionButton, progressBar: LinkingProgressBar,
+                           unifiedBalanceBar: UnifiedBalanceBar) {
+        bindLinkAndTopupViews(actionButton, progressBar)
+        bindUnifiedBalanceBar(unifiedBalanceBar)
+    }
+
+    private fun bindLinkAndTopupViews(actionButton: OneWalletActionButton, progressBar: LinkingProgressBar) {
+        linkWalletPresenter = LinkWalletPresenter(oneWalletDataModel)
         linkWalletPresenter?.onAttach(LinkWalletViewHolder(
                 actionButton, progressBar))
 
@@ -56,20 +63,21 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
         }
     }
 
-    override fun bindUnifiedBalanceBar(unifiedBalanceBar: UnifiedBalanceBar) {
+    private fun bindUnifiedBalanceBar(unifiedBalanceBar: UnifiedBalanceBar) {
         balanceBarPresenter = BalanceBarPresenter()
         balanceBarPresenter?.onAttach(unifiedBalanceBar)
         balanceBarPresenter?.view?.setManageWalletsListener {
             startKinit()
         }
-        if (oneWalletActionModel.isTopupButton()) {
-            displayUnifiedBalanceBar()
+        if (oneWalletDataModel.isWalletLinked()) {
+            fetchUnifiedBalance()
+            balanceBarPresenter?.show()
         }
     }
 
 
     override fun onActivityResult(resultCode: Int, intent: Intent) {
-        if (oneWalletActionModel.isLinkingButton()) {
+        if (!oneWalletDataModel.isWalletLinked()) {
             linkWalletPresenter?.onLinkWalletStarted()
             val transferManager = TransferManager(hostActivity)
             transferManager.processResponse(resultCode, intent, object : TransferManager.AccountInfoResponseListener {
@@ -114,6 +122,12 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
             override fun onOpenKinitClicked() {
                 startKinit()
             }
+
+            override fun onClosed() {
+                if (oneWalletDataModel.isWalletLinked()) {
+                    balanceBarPresenter?.show()
+                }
+            }
         })
     }
 
@@ -125,12 +139,13 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     }
 
     private fun startOneWalletAction(publicAddress: String, requestCode: Int) {
-        val model = linkWalletPresenter?.oneWalletActionModel
+        val model = linkWalletPresenter?.oneWalletDataModel
         model?.let {
             val transferManager = TransferManager(hostActivity)
-            val activityToLaunch = if (it.isLinkingButton())
-                ONE_WALLET_LINK_ACTIVITY else
-                ONE_WALLET_TOPUP_ACTIVITY
+            val activityToLaunch = if (it.isWalletLinked())
+                ONE_WALLET_TOPUP_ACTIVITY else
+                ONE_WALLET_LINK_ACTIVITY
+
             val started = transferManager.intentBuilder(ONE_WALLET_APP_ID, activityToLaunch)
                     .addParam(EXTRA_PUBLIC_ADDRESS, publicAddress)
                     .addParam(EXTRA_APP_ID, appId)
@@ -142,7 +157,9 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
         }
     }
 
-    private fun sendLinkingTransaction(transactionEnvelope: String) {
+    data class LinkingResult(val masterPublicAddress: String, val transactionEnvelope: String)
+
+    private fun sendLinkingTransaction(linkTransactionResult: String) {
         var reachedTimeout = false
         val timeoutRunnable = Runnable {
             reachedTimeout = true
@@ -153,16 +170,17 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
 
         executorService.execute {
             try {
-                val externalTransaction = RawTransaction.decodeTransaction(transactionEnvelope)
+                val linkingResult: LinkingResult = Gson().fromJson(linkTransactionResult, LinkingResult::class.java)
+                val externalTransaction = RawTransaction.decodeTransaction(linkingResult.transactionEnvelope)
                 externalTransaction.addSignature(kinAccount)
                 val transactionId = kinAccount?.sendTransactionSync(externalTransaction)
                 uiHandler.removeCallbacks(timeoutRunnable)
                 transactionId?.let {
                     uiHandler.post {
-                        displayUnifiedBalanceBar()
-                        oneWalletActionModel.type = OneWalletActionModel.Type.TOP_UP
+                        oneWalletDataModel.masterPublicAddress = linkingResult.masterPublicAddress
+                        fetchUnifiedBalance()
                         if (!reachedTimeout) {
-                            linkWalletPresenter?.onLinkWalletSucceeded(oneWalletActionModel)
+                            linkWalletPresenter?.onLinkWalletSucceeded(oneWalletDataModel)
                         }
                     }
                 } ?: postLinkWalletError(reachedTimeout, "Linking error. Null transaction id")
@@ -184,11 +202,11 @@ class OneWalletClient(private val appId: String) : IOneWalletClient {
     }
 
 
-    private fun displayUnifiedBalanceBar() {
-        balanceBarPresenter?.show()
+    private fun fetchUnifiedBalance() {
         executorService.execute {
             try {
-                 kinAccount?.balanceSync?.value()?.toInt()?.let {
+                kinAccount?.getAggregatedBalanceSync(oneWalletDataModel.masterPublicAddress)
+                        ?.value()?.toInt()?.let {
                     uiHandler.post {
                         balanceBarPresenter?.onBalanceReceived(it)
                     }

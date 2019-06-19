@@ -119,6 +119,7 @@ class LinkingProgressBar @JvmOverloads constructor(context: Context, attrs: Attr
         dismissButton.visibility = View.VISIBLE
         dismissButton.setOnClickListener({
             visibility = View.GONE
+            barActionListener?.onClosed()
         })
     }
 

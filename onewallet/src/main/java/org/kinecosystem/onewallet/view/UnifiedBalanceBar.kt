@@ -8,9 +8,6 @@ import android.widget.TextView
 import org.kinecosystem.common.base.IBaseView
 import org.kinecosystem.onewallet.R
 
-/**
- * OneWallet progress bar
- */
 class UnifiedBalanceBar @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         ConstraintLayout(context, attrs, defStyleAttr), IBaseView {
 

@@ -27,7 +27,7 @@ public class SendKinService extends SendKinServiceBase {
         try {
             sourceAddress = sampleWallet.getAccount().getPublicAddress();
             int fee = 100; // no whitelisting for sample app, so using a fee
-            PaymentTransaction transaction = sampleWallet.getAccount().buildTransactionSync(toAddress,
+            PaymentTransaction transaction = sampleWallet.getAccount().buildPaymentTransactionSync(toAddress,
                     new BigDecimal(amount), fee, memo);
             TransactionId transactionId = sampleWallet.getAccount().sendTransactionSync(transaction);
 
