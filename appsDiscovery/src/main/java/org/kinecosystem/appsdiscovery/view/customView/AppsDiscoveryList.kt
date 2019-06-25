@@ -60,7 +60,7 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     override fun navigateToApp(app: EcosystemApp) {
-        context.startActivity(AppInfoActivity.getIntent(context, app.name))
+        context.startActivity(AppInfoActivity.getIntent(context, app.name, app.identifier))
     }
 
     override fun onAttachedToWindow() {

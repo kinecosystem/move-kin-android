@@ -14,7 +14,7 @@ import kin.sdk.TransactionId;
 public class SendKinService extends SendKinServiceBase {
 
     @Override
-    public KinTransferComplete transferKin(@NonNull String toAddress, int amount, @NonNull String memo) throws KinTransferException {
+    public KinTransferComplete transferKin(@NonNull String toAddress, final String receiverAppName, final String receiverAppId, int amount, @NonNull String memo) throws KinTransferException {
         SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
         String sourceAddress = "None";
 

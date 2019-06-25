@@ -16,7 +16,7 @@ import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
 import org.kinecosystem.transfer.model.*
 
-class AppInfoPresenter(private val appName: String?, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
+class AppInfoPresenter(private val appName: String, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
@@ -94,7 +94,10 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
         }
         app?.identifier?.let { receiverPackage ->
             app?.name?.let { senderName ->
-                view?.sendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, getTransactionMemo(), receiverPackage)
+                app?.memo?.let { appMemoId ->
+                    view?.sendKin(repository.getReceiverAppPublicAddress(), appName, appMemoId, senderName, amountToSend, getTransactionMemo(), receiverPackage)
+
+                }
             }
         }
         startTimeOutCounter()

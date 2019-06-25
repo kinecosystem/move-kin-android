@@ -68,6 +68,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         if (appName.isNullOrBlank()) {
             finish()
         }
+        val appId = intent.getStringExtra(PARAM_APP_ID)
+
         setContentView(R.layout.app_discovery_module_app_info_activity)
         list = findViewById(R.id.listImages)
         list?.isFocusable = false
@@ -88,8 +90,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
-    private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
-        transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
+    private fun sendKinAsync(receiverAddress: String, receiverAppName: String, receiverAppMemoId: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(receiverAddress, receiverAppName, receiverAppMemoId, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                 uiHandler.post {
                     presenter?.onTransferComplete()
@@ -132,19 +134,19 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+    override fun sendKin(receiverAddress: String, receiverAppName: String, receiverAppMemoId: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
             if (isBound) {
                 try {
                     Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
-                    val kinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)
+                    val kinTransferComplete = transferService?.transferKin(receiverAddress,  amount, memo)
                     kinTransferComplete?.let {
                         uiHandler.post {
                             presenter?.onTransferComplete()
                             notifyTransactionCompleted(it, receiverPackage, senderAppName, receiverAddress, amount)
                         }
                     } ?: run {
-                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
+                        sendKinAsync(receiverAddress, receiverAppName, receiverAppMemoId, senderAppName, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     uiHandler.post {
@@ -251,10 +253,12 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"
+        private const val PARAM_APP_ID = "PARAM_APP_ID"
 
-        fun getIntent(context: Context, appName: String): Intent {
+        fun getIntent(context: Context, appName: String, appId: String): Intent {
             val intent = Intent(context, AppInfoActivity::class.java)
             intent.putExtra(PARAM_APP_NAME, appName)
+            intent.putExtra(PARAM_APP_ID, appId)
             return intent
         }
     }
