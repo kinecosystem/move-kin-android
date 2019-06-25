@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import org.kinecosystem.common.base.BasePresenter;
+import org.kinecosystem.transfer.TransferIntent;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfoResponder;
 import org.kinecosystem.transfer.receiver.view.IAccountInfoView;
@@ -15,7 +16,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implements IAccountInfoPresenter {
-    private static final String EXTRA_SOURCE_APP_NAME = "EXTRA_SOURCE_APP_NAME";
     private static final int TASK_STATE_UNDEFINED = 0;
     private static final int TASK_STATE_SUCCESS = 10;
     private static final int TASK_STATE_FAILURE = 20;
@@ -54,14 +54,22 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     }
 
     private boolean processIntent(Intent intent) {
-        if (intent != null && intent.hasExtra(EXTRA_SOURCE_APP_NAME) && getView() != null) {
-            String sourceApp = intent.getStringExtra(EXTRA_SOURCE_APP_NAME);
-            if (!sourceApp.isEmpty()) {
-                getView().updateSourceApp(sourceApp);
+        if (intent != null && intent.hasExtra(TransferIntent.EXTRA_SENDER_APP_NAME)
+                && intent.hasExtra(TransferIntent.EXTRA_MEMO)
+                && intent.hasExtra(TransferIntent.EXTRA_SENDER_APP_NAME)
+                && intent.hasExtra(TransferIntent.EXTRA_RECEIVER_APP_ID)
+                && getView() != null) {
+            String senderAppName = intent.getStringExtra(TransferIntent.EXTRA_SENDER_APP_NAME);
+            String memo = intent.getStringExtra(TransferIntent.EXTRA_MEMO);
+            String senderAppId = intent.getStringExtra(TransferIntent.EXTRA_SENDER_APP_ID);
+            String receiverAppId = intent.getStringExtra(TransferIntent.EXTRA_RECEIVER_APP_ID);
+
+            if (!senderAppName.isEmpty() && !memo.isEmpty() && !senderAppId.isEmpty() && !receiverAppId.isEmpty()) {
+                getView().onTransactionInfoReceived(senderAppName, memo, senderAppId, receiverAppId);
                 return true;
             }
         }
-        onError("Unable to initialize confirmation activity. Incoming intent was null or EXTRA_SOURCE_APP_NAME missing or activity killed");
+        onError("Unable to initialize confirmation activity. Incoming intent was null or EXTRA_SENDER_APP_NAME/EXTRA_MEMO/EXTRA_SENDER_APP_NAME/EXTRA_RECEIVER_APP_ID missing or activity killed");
         return false;
     }
 

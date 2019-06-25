@@ -95,7 +95,7 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
     }
 
     fun sort() {
-        apps = apps.sortedWith(compareBy({ !it.canSendAndReceiveKin() }, { !context.isAppInstalled(it.identifier!!) }, { it.name }))
+        apps = apps.sortedWith(compareBy({ !it.canSendAndReceiveKin() }, { !context.isAppInstalled(it.appPackage!!) }, { it.name }))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -112,7 +112,7 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
         val app: EcosystemApp = apps[position]
         holder?.bind(app)
         holder?.actionText?.setOnClickListener {
-            clickListener?.onAppClicked(app, context.isAppInstalled(app.identifier!!))
+            clickListener?.onAppClicked(app, context.isAppInstalled(app.appPackage!!))
         }
     }
 
@@ -125,7 +125,7 @@ private class AppsTransferAdapter(private val context: Context) : RecyclerView.A
         fun bind(app: EcosystemApp) {
             appName.text = app.name
             icon.load(app.iconUrl)
-            app.identifier?.let {
+            app.appPackage?.let {
                 if (!app.canSendAndReceiveKin()) {
                     appName.gravity = Gravity.TOP
                     status.visibility = View.VISIBLE

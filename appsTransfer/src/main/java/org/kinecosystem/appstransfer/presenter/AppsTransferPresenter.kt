@@ -6,9 +6,10 @@ import org.kinecosystem.appstransfer.view.IAppsTransferView
 import org.kinecosystem.appstransfer.view.customview.AppsTransferList
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
-class AppsTransferPresenter(private val transferManager: TransferManager) : BasePresenter<IAppsTransferView>(), IAppsTransferPresenter, AppsTransferListPresenter.LoadingListener, AppsTransferList.AppClickListener {
+class AppsTransferPresenter(private val transferManager: TransferManager, val repo: EcosystemAppsLocalRepo) : BasePresenter<IAppsTransferView>(), IAppsTransferPresenter, AppsTransferListPresenter.LoadingListener, AppsTransferList.AppClickListener {
 
     private val TAG = AppsTransferPresenter::class.java.simpleName
     private val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
@@ -24,9 +25,10 @@ class AppsTransferPresenter(private val transferManager: TransferManager) : Base
     }
 
     private fun requestReceiverPublicAddress(app: EcosystemApp) {
-        app.identifier?.let { pkg ->
+        app.appPackage?.let { pkg ->
             app.launchActivity?.let { activityFullPath ->
-                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE, pkg, activityFullPath)
+                repo.memoWithRandom = app.createTransactionMemoWithRandom()
+                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE, pkg, activityFullPath, repo.appName, repo.memoWithRandom, repo.appId, app.appId)
                 if (!started) {
                     view?.onCantFindReceiverInfo(app.name)
                 }

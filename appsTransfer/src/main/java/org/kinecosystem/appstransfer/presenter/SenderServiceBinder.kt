@@ -23,7 +23,7 @@ class SenderServiceBinder(private val context: Context?) {
         fun onBalanceFailed()
         fun onServiceConnected()
         fun onServiceDisconnected()
-        fun onTransferFailed(errorMessage: String, senderAddress: String)
+        fun onTransferFailed(errorMessage: String, senderAddress: String, transactionMemo:String)
         fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
     }
 
@@ -69,11 +69,11 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKin(receiverAddress: String, amount: Int, memo: String) {
+    fun startSendKin(senderAppName:String, senderAppId:String, receiverAddress: String, amount: Int, memo: String) {
         if (isBounded) {
             executorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAddress, amount, memo)
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
@@ -83,12 +83,12 @@ class SenderServiceBinder(private val context: Context?) {
                             }
 
                             override fun onError(e: SendKinServiceBase.KinTransferException) {
-                                updateTransferFailed(e)
+                                updateTransferFailed(e, memo)
                             }
                         })
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
-                    updateTransferFailed(e)
+                    updateTransferFailed(e, memo)
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                 }
             }
@@ -124,7 +124,7 @@ class SenderServiceBinder(private val context: Context?) {
             } ?: kotlin.run {
                 throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
             }
-            context.bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            context?.bindService(intent, connection, Context.BIND_AUTO_CREATE)
         } else {
             updateServiceConnection(true)
         }
@@ -153,10 +153,10 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    private fun updateTransferFailed(e: SendKinServiceBase.KinTransferException) {
+    private fun updateTransferFailed(e: SendKinServiceBase.KinTransferException, transactionMemo: String) {
         mainThreadHandler.post {
             val msg = e.message ?: ""
-            listener?.onTransferFailed(msg, e.senderAddress)
+            listener?.onTransferFailed(msg, e.senderAddress, transactionMemo)
         }
     }
 

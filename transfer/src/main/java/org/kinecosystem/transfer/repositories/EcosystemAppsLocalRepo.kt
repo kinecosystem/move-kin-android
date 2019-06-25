@@ -21,7 +21,9 @@ class EcosystemAppsLocalRepo(context: Context) {
         private const val APPS_DISCOVERY_KEY = "APPS_DISCOVERY_KEY"
 
         private const val APP_ICON_URL = "APP_ICON_URL"
-        private const val MEMO = "APP_MEMO"
+        private const val APP_ID = "APP_ID"
+        private const val APP_NAME = "APPNAME"
+        private const val MEMO = "MEMO"
         private const val RECEIVER_APP_ADDRESS = "RECEIVER_APP_ADDRESS"
         private const val CURRENT_BALANCE = "CURRENT_BALANCE"
     }
@@ -34,8 +36,16 @@ class EcosystemAppsLocalRepo(context: Context) {
         set(iconUrl) = localStore.updateString(APP_ICON_URL, iconUrl)
         get() = localStore.getString(APP_ICON_URL, "")
 
-    var memo: String
-        set(iconUrl) = localStore.updateString(MEMO, iconUrl)
+    var appId: String
+        set(id) = localStore.updateString(APP_ID, id)
+        get() = localStore.getString(APP_ID, "")
+
+    var appName: String
+        set(appName) = localStore.updateString(APP_NAME, appName)
+        get() = localStore.getString(APP_NAME, "")
+
+    var memoWithRandom: String
+        set(memo) = localStore.updateString(MEMO, memo)
         get() = localStore.getString(MEMO, "")
 
     var receiverAppPublicAddress: String

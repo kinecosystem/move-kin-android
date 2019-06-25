@@ -5,22 +5,21 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.util.Log
-import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
+import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
-import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
-import org.kinecosystem.transfer.sender.manager.TransferManager
 import org.kinecosystem.common.utils.isAppInstalled
 import org.kinecosystem.transfer.model.*
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
+import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppInfoPresenter(private val appName: String?, private val repository: EcosystemAppsRepository, private val transferManager: TransferManager) : BasePresenter<IAppInfoView>(), IAppInfoPresenter {
 
     val REMOTE_PUBLIC_ADDRESS_REQUEST_CODE = 200
     val AMOUNT_CHOOSER_REQUEST_CODE = 100
-    val MEMO_PREFIX = "CrossApps_"
     private var appState: AppStateView.State = AppStateView.State.ReceiveKinNotSupported
 
     private var app: EcosystemApp? = null
@@ -37,7 +36,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
     }
 
     override fun onResume(context: Context) {
-        app?.identifier?.let {
+        app?.appPackage?.let {
             appState = if (!context.isAppInstalled(it)) {
                 AppStateView.State.NotInstalled
             } else {
@@ -88,19 +87,13 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
 
     private fun sendKin(amountToSend: Int) {
         app?.let {
-            it.identifier?.let { pkg ->
+            it.appPackage?.let { receiverPkg ->
                 view?.updateAmount(amountToSend)
-            }
-        }
-        app?.identifier?.let { receiverPackage ->
-            app?.name?.let { senderName ->
-                view?.sendKin(repository.getReceiverAppPublicAddress(), senderName, amountToSend, getTransactionMemo(), receiverPackage)
+                view?.sendKin(repository.getReceiverAppPublicAddress(), repository.getSenderAppName(), repository.getSenderAppId(), amountToSend, repository.getCurrentMemo(), receiverPkg)
             }
         }
         startTimeOutCounter()
     }
-
-    private fun getTransactionMemo() = "$MEMO_PREFIX${app?.memo}"
 
     private fun startTimeOutCounter() {
         afterTimeout = false
@@ -151,19 +144,21 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
 
     override fun onRequestReceiverPublicAddress() {
         repository.clearReceiverAppPublicAddress()
-        app?.launchActivity?.let { activityPath ->
-            app?.identifier?.let { receiverPkg ->
-                val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE,
-                        receiverPkg, activityPath)
-                if (!started) {
+        app?.let { it ->
+            app?.launchActivity?.let { activityPath ->
+                app?.appPackage?.let { receiverPkg ->
+                    repository.storeCurrentMemo(it.createTransactionMemoWithRandom())
+                    val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE,
+                            receiverPkg, activityPath, repository.getSenderAppName(), repository.getCurrentMemo(), repository.getSenderAppId(), it.appId)
+                    if (!started) {
+                        view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
+                    }
+                } ?: kotlin.run {
                     view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                 }
             } ?: kotlin.run {
                 view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
             }
-        } ?: kotlin.run {
-            view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
-
         }
     }
 
@@ -171,9 +166,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
         super.onAttach(view)
         app = repository.getAppByName(appName)
         view.initViews(app)
-        app?.let { application ->
-            application.identifier?.let { receiverPkg ->
-                view.initTransfersInfo(TransferInfo(repository.getStoredAppIcon(), application.iconUrl, application.name, receiverPkg))
+        app?.let {
+            it.appPackage?.let { receiverPkg ->
+                view.initTransfersInfo(TransferInfo(repository.getSenderAppIcon(), it.iconUrl, it.name, receiverPkg))
             }
         }
     }

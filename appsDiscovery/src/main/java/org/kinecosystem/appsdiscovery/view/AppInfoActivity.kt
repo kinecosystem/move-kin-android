@@ -132,12 +132,12 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    override fun sendKin(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
+    override fun sendKin(receiverAddress: String, senderAppName: String, senderAppId: String, amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
             if (isBound) {
                 try {
                     Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
-                    val kinTransferComplete = transferService?.transferKin(receiverAddress, amount, memo)
+                    val kinTransferComplete = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         uiHandler.post {
                             presenter?.onTransferComplete()
@@ -249,17 +249,6 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    companion object {
-        private const val PARAM_APP_NAME = "PARAM_APP_NAME"
-
-        fun getIntent(context: Context, appName: String): Intent {
-            val intent = Intent(context, AppInfoActivity::class.java)
-            intent.putExtra(PARAM_APP_NAME, appName)
-            return intent
-        }
-    }
-
-
     override fun navigateTo(downloadUrl: String) {
         navigateToUrl(downloadUrl)
     }
@@ -278,6 +267,16 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         super.onDestroy()
         presenter?.onDestroy()
         transferService?.cancelCallback()
+    }
+
+    companion object {
+        private const val PARAM_APP_NAME = "PARAM_APP_NAME"
+
+        fun getIntent(context: Context, appName: String): Intent {
+            val intent = Intent(context, AppInfoActivity::class.java)
+            intent.putExtra(PARAM_APP_NAME, appName)
+            return intent
+        }
     }
 
 }

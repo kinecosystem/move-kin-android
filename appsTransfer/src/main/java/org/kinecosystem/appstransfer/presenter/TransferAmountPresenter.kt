@@ -6,7 +6,6 @@ import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
-import org.kinecosystem.transfer.model.getTransactionMemo
 import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
@@ -14,7 +13,7 @@ import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 
-class TransferAmountPresenter(receiverAppName: String, private val senderAppName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
+class TransferAmountPresenter(receiverAppName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
 
@@ -118,24 +117,24 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
     }
 
     override fun onSendKinClicked() {
-        app?.let { application ->
-            application.identifier?.let { receiverPackage ->
-                senderServiceBinder.startSendKin(receiverPublicAddress, amount, application.getTransactionMemo())
+        app?.let {
+            it.appPackage?.let { receiverPackage ->
+                senderServiceBinder.startSendKin(repository.getSenderAppName(), repository.getSenderAppId(), receiverPublicAddress, amount, repository.getCurrentMemo())
                 startTimeOutCounter()
-                view?.initTransferBar(TransferInfo(repository.getStoredAppIcon(), application.iconUrl, application.name, receiverPackage, amount))
+                view?.initTransferBar(TransferInfo(repository.getSenderAppIcon(), it.iconUrl, it.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
                 resetAmount()
             }
         }
     }
 
-    override fun onTransferFailed(errorMessge: String, senderAddress: String) {
+    override fun onTransferFailed(errorMessge: String, senderAddress: String, transactionMemo:String) {
         if (!afterTimeout) {
             transferResponseReceived = true
             view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
-            app?.let { application ->
-                application.identifier?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress, senderAppName, receiverPublicAddress, amount, application.memo)
+            app?.let {
+                it.appPackage?.let { receiverPackage ->
+                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress, repository.getSenderAppName(), receiverPublicAddress, amount, transactionMemo)
                 }
             }
         }
@@ -146,8 +145,8 @@ class TransferAmountPresenter(receiverAppName: String, private val senderAppName
             transferResponseReceived = true
             view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
             app?.let { application ->
-                application.identifier?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, senderAppName, receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+                application.appPackage?.let { receiverPackage ->
+                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, repository.getSenderAppName(), receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
                 }
             }
         }
