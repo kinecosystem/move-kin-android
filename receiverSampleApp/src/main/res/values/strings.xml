@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Receiver Sample App</string>
+    <string name="kin_transfer_account_info_error_relogin_title"><![CDATA[You need to log out & back into %1$s before transferring Kin.]]></string>
 </resources>

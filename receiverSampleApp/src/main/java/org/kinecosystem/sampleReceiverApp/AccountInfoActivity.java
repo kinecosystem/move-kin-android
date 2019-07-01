@@ -2,19 +2,22 @@ package org.kinecosystem.sampleReceiverApp;
 
 import android.util.Log;
 
-import org.kinecosystem.transfer.receiver.view.AccountInfoActivityBase;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
+import org.kinecosystem.transfer.receiver.manager.AccountInfoException;
+import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener.ActionType;
+import org.kinecosystem.transfer.receiver.view.AccountInfoActivityBase;
 
 
 public class AccountInfoActivity extends AccountInfoActivityBase {
 
     @Override
-    public String getData() {
-        SampleWallet sampleWallet = ((ReceiverApplication)getApplicationContext()).getSampleWallet();
-        if (sampleWallet != null && sampleWallet.hasActiveAccount() ) {
-            return sampleWallet.getAccount().getPublicAddress();
+    public String getData() throws AccountInfoException {
+        SampleWallet sampleWallet = ((ReceiverApplication) getApplicationContext()).getSampleWallet();
+        if (sampleWallet == null || !sampleWallet.hasActiveAccount()) {
+            String appName = getApplicationInfo().loadLabel(getPackageManager()).toString();
+            throw new AccountInfoException(ActionType.LaunchMainActivity, getString(R.string.kin_transfer_account_info_error_relogin_title, appName));
         }
-        return null;
+        return sampleWallet.getAccount().getPublicAddress();
     }
 
     @Override

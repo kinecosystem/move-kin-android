@@ -6,23 +6,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import org.kinecosystem.common.utils.GeneralUtils;
 import org.kinecosystem.transfer.R;
 import org.kinecosystem.transfer.receiver.manager.AccountInfoResponder;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
+import org.kinecosystem.transfer.receiver.presenter.AccountInfoError;
 import org.kinecosystem.transfer.receiver.presenter.AccountInfoPresenter;
 import org.kinecosystem.transfer.receiver.presenter.IAccountInfoPresenter;
+import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener;
 
 public abstract class AccountInfoActivityBase extends AppCompatActivity implements IAccountInfoView, IAccountInfo {
     private IAccountInfoPresenter presenter;
+    private String receiverAppName = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        receiverAppName = getApplicationInfo().loadLabel(getPackageManager()).toString();
         setContentView(R.layout.receiver_approval_activity);
         initViews();
         presenter = new AccountInfoPresenter();
         presenter.onAttach(this);
-        presenter.start(new AccountInfoResponder(this),  this,
+        presenter.start(new AccountInfoResponder(this), this,
                 getIntent());
     }
 
@@ -66,13 +71,23 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     }
 
     @Override
-    public void onTransactionInfoReceived(String senderAppName, String memo, String receiverAppId , String senderAppId) {
+    public void onTransactionInfoReceived(String senderAppName, String memo, String receiverAppId, String senderAppId) {
         TextView title = findViewById(R.id.transfer_title);
-        final CharSequence destinationApp = getApplicationInfo().loadLabel(getPackageManager());
-        title.setText(getString(R.string.receiver_activity_message, senderAppName, destinationApp));
+        title.setText(getString(R.string.receiver_activity_message, senderAppName, receiverAppName));
     }
 
-    private String formatFullMemo(String memo, String receiverAppId){
+    @Override
+    public void showErrorDialog(AccountInfoError dataError, IErrorActionClickListener listener) {
+        AccountInfoErrorDialog dialog = new AccountInfoErrorDialog(this, dataError, listener);
+        dialog.show();
+    }
+
+    @Override
+    public void lunchMainActivity() {
+        GeneralUtils.launchMainActivity(this);
+    }
+
+    private String formatFullMemo(String memo, String receiverAppId) {
         return "1-" + receiverAppId + "-" + memo;
     }
 
@@ -95,5 +110,4 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
             }
         });
     }
-
 }
