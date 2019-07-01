@@ -7,6 +7,5 @@ public interface IAccountInfoView extends IBaseView {
 
     void close();
 
-    void updateSourceApp(String sourceApp);
-
+    void onTransactionInfoReceived(String senderAppName, String memo, String senderAppId,  String receiverAppId);
 }

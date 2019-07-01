@@ -14,7 +14,6 @@ import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
 import org.kinecosystem.common.base.Consts
-import org.kinecosystem.common.utils.getApplicationName
 import org.kinecosystem.common.utils.load
 import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
@@ -41,7 +40,7 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
             finish()
         }
         setContentView(R.layout.transfer_amount_activity)
-        presenter = TransferAmountPresenter(appName, baseContext.getApplicationName(), receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
+        presenter = TransferAmountPresenter(appName, receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
         presenter?.onAttach(this)
         transferBarView = findViewById(R.id.transferBar)
         findViewById<ImageView>(R.id.close_x).setOnClickListener {

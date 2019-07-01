@@ -66,12 +66,15 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     }
 
     @Override
-    public void updateSourceApp(String sourceApp) {
+    public void onTransactionInfoReceived(String senderAppName, String memo, String receiverAppId , String senderAppId) {
         TextView title = findViewById(R.id.transfer_title);
         final CharSequence destinationApp = getApplicationInfo().loadLabel(getPackageManager());
-        title.setText(getString(R.string.receiver_activity_message, sourceApp, destinationApp));
+        title.setText(getString(R.string.receiver_activity_message, senderAppName, destinationApp));
     }
 
+    private String formatFullMemo(String memo, String receiverAppId){
+        return "1-" + receiverAppId + "-" + memo;
+    }
 
     protected void initViews() {
         findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {

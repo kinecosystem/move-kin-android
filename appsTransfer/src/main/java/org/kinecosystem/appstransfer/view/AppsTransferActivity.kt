@@ -15,6 +15,7 @@ import org.kinecosystem.appstransfer.view.customview.TransferErrorDialog
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.name
+import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
@@ -75,8 +76,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         loader = findViewById(R.id.loader)
         list = findViewById(R.id.list)
         list.clickListener = presenter
-        presenter = AppsTransferPresenter(TransferManager(this))
-
+        presenter = AppsTransferPresenter(TransferManager(this), EcosystemAppsLocalRepo(this))
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
             presenter?.onCloseClicked()
         }

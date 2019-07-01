@@ -30,6 +30,12 @@ private constructor(private val currentPackage: String, private val local: Ecosy
         local.currentBalance = balance
     }
 
+    fun storeCurrentMemo(memo: String) {
+        local.memoWithRandom = memo
+    }
+
+    fun getCurrentMemo() = local.memoWithRandom
+
     fun getCurrentBalance() = local.currentBalance
 
     fun getReceiverAppPublicAddress() = local.receiverAppPublicAddress
@@ -38,9 +44,11 @@ private constructor(private val currentPackage: String, private val local: Ecosy
         local.receiverAppPublicAddress = ""
     }
 
-    fun getStoredMemo() = local.memo
+    fun getSenderAppId() = local.appId
 
-    fun getStoredAppIcon() = local.appIconUrl
+    fun getSenderAppIcon() = local.appIconUrl
+
+    fun getSenderAppName() = local.appName
 
 
     fun loadDiscoveryApps(listener: OperationResultCallback<List<EcosystemApp>>) {
@@ -65,7 +73,6 @@ private constructor(private val currentPackage: String, private val local: Ecosy
                 checkRemoteData(listener)
             }
         })
-
     }
 
     private fun checkRemoteData(listener: OperationResultCallback<List<EcosystemApp>>) {
@@ -74,11 +81,12 @@ private constructor(private val currentPackage: String, private val local: Ecosy
                 if (result.hasNewData(local.discoveryAppVersion)) {
                     result.apps?.let { serverApps ->
                         var filterApps: List<EcosystemApp> = serverApps
-                        val currentApp: EcosystemApp? = serverApps.firstOrNull { it.identifier == currentPackage }
+                        val currentApp: EcosystemApp? = serverApps.firstOrNull { it.appPackage == currentPackage }
                         //if finds this app in the list - remove it from the list
                         currentApp?.let { app ->
                             local.appIconUrl = app.iconUrl
-                            local.memo = app.memo
+                            local.appId = app.appId
+                            local.appName = app.name
                             filterApps = serverApps.filter { it != app }
                         }
                         discoveryApps = filterApps

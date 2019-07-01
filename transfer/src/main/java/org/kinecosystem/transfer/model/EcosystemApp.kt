@@ -2,18 +2,18 @@ package org.kinecosystem.transfer.model
 
 import android.graphics.Color
 import com.google.gson.annotations.SerializedName
+import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.ImageUtils
 import org.kinecosystem.common.utils.TextUtils.Companion.FONT_SAILEC
-
-private const val MEMO_PREFIX = "CrossApps_"
+import java.util.*
 
 data class EcosystemApp(
         @SerializedName("category_name")
         val category: String?,
-        @SerializedName("identifier") //package
-        val identifier: String?,
+        @SerializedName("identifier")
+        val appPackage: String?,
         @SerializedName("memo")
-        val memo: String = "",
+        val appId: String = "",
         @SerializedName("meta_data")
         val metaData: MetaData?,
         @SerializedName("transfer_data")
@@ -138,4 +138,12 @@ fun EcosystemApp.canSendAndReceiveKin(): Boolean {
     return canReceiveKin && canSendKin
 }
 
-fun EcosystemApp.getTransactionMemo() = "$MEMO_PREFIX$memo"
+fun EcosystemApp.createTransactionMemoWithRandom() :String {
+    var random = UUID.randomUUID().toString().replace("-", "")
+    random = random.substring(0, random.length/2)
+    var shortMemo = "${Consts.APPS_TRANSFER_MEMO_PREFIX}${Consts.MEMO_DELIMITER}$appId${Consts.MEMO_DELIMITER}$random"
+    while(shortMemo.toByteArray(charset("UTF-8")).size > Consts.MEMO_BYTES_LENGTH_LIMIT){
+        shortMemo = shortMemo.dropLast(1)
+    }
+    return shortMemo
+}
