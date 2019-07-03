@@ -86,8 +86,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
-    private fun sendKinAsync(receiverAddress: String, senderAppName: String, senderAppId:String, amount: Int, memo: String, receiverPackage: String) {
-        transferService?.transferKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, object : KinTransferCallback {
+    private fun sendKinAsync(senderAppName: String, receiverAppId: String, receiverAppName: String,
+                             receiverAddress:String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                 uiHandler.post {
                     presenter?.onTransferComplete()
@@ -130,19 +131,21 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    override fun sendKin(receiverAddress: String, senderAppName: String, senderAppId: String, amount: Int, memo: String, receiverPackage: String) {
+    override fun sendKin(senderAppId:String, senderAppName: String,
+                         receiverAppId: String, receiverAppName:String, receiverAddress:String,
+                         amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
             if (isBound) {
                 try {
                     Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
-                    val kinTransferComplete = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
+                    val kinTransferComplete = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         uiHandler.post {
                             presenter?.onTransferComplete()
                             notifyTransactionCompleted(it, receiverPackage, senderAppName, receiverAddress, amount)
                         }
                     } ?: run {
-                        sendKinAsync(receiverAddress, senderAppName, senderAppId, amount, memo, receiverPackage)
+                        sendKinAsync(senderAppName, receiverAppId, receiverAppName, receiverAddress, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     uiHandler.post {
@@ -188,16 +191,16 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             finish()
         }
         with(app?.metaData?.experienceData) {
-            findViewById<TextView>(R.id.howInfo).text = this?.howTo ?: ""
-            findViewById<TextView>(R.id.experienceName).text = this?.name ?: ""
-            findViewById<TextView>(R.id.experienceInfo).text = this?.about ?: ""
+            (findViewById<TextView>(R.id.howInfo) as TextView).text = this?.howTo ?: ""
+            (findViewById<TextView>(R.id.experienceName) as TextView).text = this?.name ?: ""
+            (findViewById<TextView>(R.id.experienceInfo) as TextView).text = this?.about ?: ""
         }
-        findViewById<TextView>(R.id.byApp).text = resources.getString(R.string.apps_discovery_by_app, app?.name)
-        findViewById<TextView>(R.id.aboutAppTitle).text = resources.getString(R.string.apps_discovery_about_app, app?.name)
-        findViewById<TextView>(R.id.aboutAppInfo).text = app?.metaData?.about
+        (findViewById<TextView>(R.id.byApp) as TextView).text = resources.getString(R.string.apps_discovery_by_app, app?.name)
+        (findViewById<TextView>(R.id.aboutAppTitle) as TextView).text = resources.getString(R.string.apps_discovery_about_app, app?.name)
+        (findViewById<TextView>(R.id.aboutAppInfo) as TextView).text = app?.metaData?.about
 
         findViewById<View>(R.id.headerView).setBackgroundColor(app?.cardColor!!)
-        findViewById<TextView>(R.id.category).text = app.category
+        (findViewById<TextView>(R.id.category) as TextView).text = app.category
 
         findViewById<ImageView>(R.id.icon).load(app.iconUrl)
         findViewById<ImageView>(R.id.appBigIcon).load(app.iconUrl)

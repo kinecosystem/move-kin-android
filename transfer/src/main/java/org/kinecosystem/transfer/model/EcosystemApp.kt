@@ -34,7 +34,7 @@ data class TransferData(
         @SerializedName("send_enabled")
         val canSendKin: Boolean = false,
         @SerializedName("send_kin_service")
-        val sendKinServiceFullPath: String?
+        val sendKinServiceFullPath: String? = null
 )
 
 data class MetaData(

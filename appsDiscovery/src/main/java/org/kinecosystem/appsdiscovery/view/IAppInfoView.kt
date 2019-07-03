@@ -13,7 +13,9 @@ interface IAppInfoView : IBaseView {
     fun startAmountChooserActivity(receiverAppIcon: String, balance: Int, requestCode: Int)
     fun bindToSendService()
     fun unbindToSendService()
-    fun sendKin(receiverAddress: String, senderAppName:String, senderAppId:String, amount: Int, memo: String, receiverPackage: String)
+    fun sendKin(senderAppId: String, senderAppName: String, receiverAppId: String,
+                receiverAppName: String, receiverPublicAddress:String,
+                amount: Int, memo: String, receiverPackage: String)
     fun updateAppState(state: AppStateView.State)
     fun navigateTo(downloadUrl: String)
     fun updateTransferStatus(status: TransferBarView.TransferStatus)
