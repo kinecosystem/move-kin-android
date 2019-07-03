@@ -11,17 +11,13 @@ import org.kinecosystem.appstransfer.view.AppsTransferActivity
 class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {
 
-    private fun startAppsDiscoveryActivity(debugMode: Boolean=false) {
-        context.startActivity(AppsTransferActivity.getIntent(context, debugMode))
-    }
-
     init {
         text = resources.getString(R.string.apps_transfer_kin)
         TextViewCompat.setTextAppearance(this, R.style.KinTextButtonRounded_Hollow)
         background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_hollow_drawable)
         val debugMode = getDebugModeAttribute(attrs)
         setOnClickListener {
-            startAppsDiscoveryActivity(debugMode)
+            context.startActivity(AppsTransferActivity.getIntent(context, debugMode))
         }
     }
 
