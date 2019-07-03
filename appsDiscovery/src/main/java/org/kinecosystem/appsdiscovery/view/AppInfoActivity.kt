@@ -86,8 +86,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
-    private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
-        transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
+    private fun sendKinAsync(receiverAddress: String, senderAppName: String, senderAppId:String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                 uiHandler.post {
                     presenter?.onTransferComplete()
@@ -142,7 +142,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                             notifyTransactionCompleted(it, receiverPackage, senderAppName, receiverAddress, amount)
                         }
                     } ?: run {
-                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
+                        sendKinAsync(receiverAddress, senderAppName, senderAppId, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     uiHandler.post {

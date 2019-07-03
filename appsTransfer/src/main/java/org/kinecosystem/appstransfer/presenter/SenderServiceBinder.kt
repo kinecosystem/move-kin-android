@@ -78,7 +78,7 @@ class SenderServiceBinder(private val context: Context?) {
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
-                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback {
+                        startSendKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, object : KinTransferCallback {
                             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                                 updateTransferCompleted(kinTransferComplete)
                             }
@@ -98,10 +98,10 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+    fun startSendKinAsync(senderAppName: String, senderAppId: String, receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
         if (isBounded) {
             executorService.execute {
-                transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
+                transferService?.transferKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, callback)
             }
         }
     }
