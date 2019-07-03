@@ -9,9 +9,11 @@ public interface IAccountInfoView extends IBaseView {
 
     void close();
 
-    void onTransactionInfoReceived(String senderAppName, String memo, String senderAppId,  String receiverAppId);
+    void updateTransactionInfo(String senderAppId, String senderAppName, String receiverAppId, String memo);
 
     void showErrorDialog(AccountInfoError dataError, IErrorActionClickListener listener);
+
+    void updateTitle(String senderAppName);
 
     void lunchMainActivity();
 }

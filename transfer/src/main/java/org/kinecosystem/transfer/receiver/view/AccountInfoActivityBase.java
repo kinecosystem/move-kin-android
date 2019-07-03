@@ -71,8 +71,14 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     }
 
     @Override
-    public void onTransactionInfoReceived(String senderAppName, String memo, String receiverAppId, String senderAppId) {
+    public void updateTransactionInfo(String senderAppId, String senderAppName, String receiverAppId, String memo) {
+        //could be overwritten on the receiver side in order to update transaction history
+    }
+
+    @Override
+    public void updateTitle(String senderAppName) {
         TextView title = findViewById(R.id.transfer_title);
+        String receiverAppName = getApplicationInfo().loadLabel(getPackageManager()).toString();
         title.setText(getString(R.string.receiver_activity_message, senderAppName, receiverAppName));
     }
 
@@ -85,10 +91,6 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     @Override
     public void lunchMainActivity() {
         GeneralUtils.launchMainActivity(this);
-    }
-
-    private String formatFullMemo(String memo, String receiverAppId) {
-        return "1-" + receiverAppId + "-" + memo;
     }
 
     protected void initViews() {
