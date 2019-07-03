@@ -70,15 +70,15 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKin(senderAppName:String, senderAppId:String, receiverAddress: String, amount: Int, memo: String) {
+    fun startSendKin(receiverAppId:String, receiverAppName:String, receiverAddress: String, amount: Int, memo: String) {
         if (isBounded) {
             executorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
-                        startSendKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, object : KinTransferCallback {
+                        startSendKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
                             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                                 updateTransferCompleted(kinTransferComplete)
                             }
@@ -98,10 +98,10 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKinAsync(senderAppName: String, senderAppId: String, receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+    fun startSendKinAsync(receiverAppId: String, receiverAppName: String, receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
         if (isBounded) {
             executorService.execute {
-                transferService?.transferKinAsync(senderAppName, senderAppId, receiverAddress, amount, memo, callback)
+                transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, callback)
             }
         }
     }
