@@ -1,19 +1,21 @@
 package org.kinecosystem.transfer.repositories
 
+import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import org.kinecosystem.transfer.model.*
 
 class EcosystemAppsRepository
 private constructor(private val currentPackage: String, private val local: EcosystemAppsLocalRepo,
                     private val remote: EcosystemAppsRemoteRepo, private val uiHandler: Handler) {
 
-
     companion object {
         private var instance: EcosystemAppsRepository? = null
 
-        fun getInstance(currentPackage: String, local: EcosystemAppsLocalRepo, remote: EcosystemAppsRemoteRepo, uiHandler: Handler): EcosystemAppsRepository {
+        fun getInstance(context: Context): EcosystemAppsRepository {
             if (instance == null) {
-                instance = EcosystemAppsRepository(currentPackage, local, remote, uiHandler)
+                instance = EcosystemAppsRepository(context.packageName, EcosystemAppsLocalRepo(context),
+                        EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
             }
             return instance!!
         }
@@ -21,6 +23,10 @@ private constructor(private val currentPackage: String, private val local: Ecosy
 
     private var hasLocalData = false
     private var discoveryApps: List<EcosystemApp> = listOf()
+
+    fun forceDebugMode() {
+        remote.forceDebug = true
+    }
 
     fun storeReceiverAppPublicAddress(address: String) {
         local.receiverAppPublicAddress = address
@@ -50,6 +56,7 @@ private constructor(private val currentPackage: String, private val local: Ecosy
 
     fun getSenderAppName() = local.appName
 
+    fun getSenderServiceFullPath() = local.appSendServiceFullPath
 
     fun loadDiscoveryApps(listener: OperationResultCallback<List<EcosystemApp>>) {
         hasLocalData = false
@@ -87,6 +94,9 @@ private constructor(private val currentPackage: String, private val local: Ecosy
                             local.appIconUrl = app.iconUrl
                             local.appId = app.appId
                             local.appName = app.name
+                            app.transferData?.sendKinServiceFullPath?.let {
+                                local.appSendServiceFullPath = it
+                            }
                             filterApps = serverApps.filter { it != app }
                         }
                         discoveryApps = filterApps

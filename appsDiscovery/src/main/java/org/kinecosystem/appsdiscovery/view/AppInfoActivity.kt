@@ -24,8 +24,6 @@ import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
-import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
@@ -75,7 +73,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<ImageView>(R.id.closeX).setOnClickListener {
             finish()
         }
-        val repository = EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(this)
         transferBarView = findViewById(R.id.transferBar)
         presenter = AppInfoPresenter(appName, repository, TransferManager(this))
         presenter?.onAttach(this)
@@ -163,10 +161,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
 
     override fun bindToSendService() {
-        val intent = Intent()
-
         val senderPackageName = packageName
-        val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        var serviceFullPath = EcosystemAppsRepository.getInstance(this).getSenderServiceFullPath()
+        if (serviceFullPath.isNullOrEmpty())
+            serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        val intent = Intent()
         intent.component = ComponentName(senderPackageName, serviceFullPath)
         intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)

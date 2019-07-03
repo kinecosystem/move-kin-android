@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="AppsDiscoveryButton">
+        <attr name="debug" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -10,6 +10,7 @@ import android.widget.ProgressBar
 import org.kinecosystem.appsdiscovery.R
 import org.kinecosystem.appsdiscovery.presenter.AppsDiscoveryListPresenter
 import org.kinecosystem.appsdiscovery.view.customView.AppsDiscoveryList
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 
 class AppsDiscoveryActivity : AppCompatActivity() {
 
@@ -19,6 +20,7 @@ class AppsDiscoveryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        processIntent()
         setContentView(R.layout.apps_discovery_module_activity)
         dataGroup = findViewById(R.id.data)
         noDataGroup = findViewById(R.id.noData)
@@ -61,6 +63,17 @@ class AppsDiscoveryActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun getIntent(context: Context) = Intent(context, AppsDiscoveryActivity::class.java)
+        const val EXTRA_DEBUG_MODE = "EXTRA_DEBUG_MODE"
+        fun getIntent(context: Context, debugMode: Boolean = false): Intent {
+            val intent = Intent(context, AppsDiscoveryActivity::class.java)
+            intent.putExtra(EXTRA_DEBUG_MODE, debugMode)
+            return intent
+        }
+    }
+
+    private fun processIntent() {
+        if (intent.getBooleanExtra(EXTRA_DEBUG_MODE, false)) {
+            EcosystemAppsRepository.getInstance(this).forceDebugMode()
+        }
     }
 }

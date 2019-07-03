@@ -40,7 +40,7 @@ class AppsTransferList @JvmOverloads constructor(context: Context, attrs: Attrib
 
     init {
         layoutManager = LinearLayoutManager(context)
-        val repository = EcosystemAppsRepository.getInstance(context.packageName, EcosystemAppsLocalRepo(context), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(context)
         presenter = AppsTransferListPresenter(repository)
         adapter = AppsTransferAdapter(context)
 
