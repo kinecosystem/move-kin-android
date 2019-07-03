@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="AppsTransferButton">
+        <attr name="debug" format="boolean" />
+    </declare-styleable>
+</resources>

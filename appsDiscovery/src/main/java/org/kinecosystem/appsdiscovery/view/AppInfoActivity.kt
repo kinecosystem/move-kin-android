@@ -24,8 +24,6 @@ import org.kinecosystem.appsdiscovery.view.customView.AppImagesListAdapter
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
 import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.appsdiscovery.view.customView.TransferInfo
-import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
-import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.manager.TransferManager
@@ -75,7 +73,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         findViewById<ImageView>(R.id.closeX).setOnClickListener {
             finish()
         }
-        val repository = EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(this)
         transferBarView = findViewById(R.id.transferBar)
         presenter = AppInfoPresenter(appName, repository, TransferManager(this))
         presenter?.onAttach(this)
@@ -88,8 +86,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         presenter?.onResume(baseContext)
     }
 
-    private fun sendKinAsync(receiverAddress: String, senderAppName: String, amount: Int, memo: String, receiverPackage: String) {
-        transferService?.transferKinAsync(receiverAddress, amount, memo, object : KinTransferCallback {
+    private fun sendKinAsync(senderAppName: String, receiverAppId: String, receiverAppName: String,
+                             receiverAddress:String, amount: Int, memo: String, receiverPackage: String) {
+        transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                 uiHandler.post {
                     presenter?.onTransferComplete()
@@ -132,19 +131,21 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    override fun sendKin(receiverAddress: String, senderAppName: String, senderAppId: String, amount: Int, memo: String, receiverPackage: String) {
+    override fun sendKin(senderAppId:String, senderAppName: String,
+                         receiverAppId: String, receiverAppName:String, receiverAddress:String,
+                         amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
             if (isBound) {
                 try {
                     Log.e("sendKin", "transferService $transferService receiverAddress $receiverAddress amount:$amount ")
-                    val kinTransferComplete = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
+                    val kinTransferComplete = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         uiHandler.post {
                             presenter?.onTransferComplete()
                             notifyTransactionCompleted(it, receiverPackage, senderAppName, receiverAddress, amount)
                         }
                     } ?: run {
-                        sendKinAsync(receiverAddress, senderAppName, amount, memo, receiverPackage)
+                        sendKinAsync(senderAppName, receiverAppId, receiverAppName, receiverAddress, amount, memo, receiverPackage)
                     }
                 } catch (e: SendKinServiceBase.KinTransferException) {
                     uiHandler.post {
@@ -163,10 +164,11 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
 
 
     override fun bindToSendService() {
-        val intent = Intent()
-
         val senderPackageName = packageName
-        val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        var serviceFullPath = EcosystemAppsRepository.getInstance(this).getSenderServiceFullPath()
+        if (serviceFullPath.isNullOrEmpty())
+            serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        val intent = Intent()
         intent.component = ComponentName(senderPackageName, serviceFullPath)
         intent.`package` = senderPackageName
         val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)

@@ -32,7 +32,9 @@ data class TransferData(
         @SerializedName("launch_activity")
         val launchActivityFullPath: String?,
         @SerializedName("send_enabled")
-        val canSendKin: Boolean = false
+        val canSendKin: Boolean = false,
+        @SerializedName("send_kin_service")
+        val sendKinServiceFullPath: String? = null
 )
 
 data class MetaData(

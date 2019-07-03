@@ -13,6 +13,7 @@ class EcosystemAppsRemoteRepo {
 
     private val httpClient: OkHttpClient
     private val gson = Gson()
+    var forceDebug = false
 
     companion object {
         private const val BASE_CDN_URL = "https://discover.kin.org"
@@ -34,7 +35,7 @@ class EcosystemAppsRemoteRepo {
 
     fun getDiscoveryAppsServerData(callback: OperationResultCallback<EcosystemAppResponse>) {
         var url = GET_DISCOVERY_APPS_PROD_URL
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG || forceDebug) {
             url = GET_DISCOVERY_APPS_STAGE_URL
         }
         httpClient.newCall(getRequest(url)).enqueue(object : Callback {

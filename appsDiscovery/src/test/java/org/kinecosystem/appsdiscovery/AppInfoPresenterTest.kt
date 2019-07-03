@@ -14,9 +14,9 @@ import org.kinecosystem.appsdiscovery.presenter.AppInfoPresenter
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.appsdiscovery.view.IAppInfoView
 import org.kinecosystem.appsdiscovery.view.customView.AppStateView
+import org.kinecosystem.appsdiscovery.view.customView.TransferBarView
 import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.sender.manager.TransferManager
-import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
@@ -135,7 +135,8 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(transferManager.startTransferRequestActivity(anyInt(), anyString(), anyString())).thenReturn(true)
+        `when`(transferManager.startTransferRequestActivity(anyInt(), anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString())).thenReturn(true)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
@@ -154,7 +155,8 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(transferManager.startTransferRequestActivity(anyInt(),anyString(), anyString())).thenReturn(false)
+        `when`(transferManager.startTransferRequestActivity(anyInt(),anyString(), anyString(), anyString(),
+                anyString(), anyString(), anyString())).thenReturn(false)
 
         appInfoPresenter.onAttach(view)
         appInfoPresenter.onResume(context)
@@ -174,7 +176,7 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getSenderAppIcon()).thenReturn("icon")
         `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
 
         appInfoPresenter.onAttach(view)
@@ -185,7 +187,7 @@ class AppInfoPresenterTest {
         appInfoPresenter.processResponse(appInfoPresenter.AMOUNT_CHOOSER_REQUEST_CODE, Activity.RESULT_OK, returnIntent)
 
         verify(view).updateTransferStatus(TransferBarView.TransferStatus.Started)
-        verify(view).sendKin(anyString(),anyString(),anyInt(),anyString(),anyString())
+        verify(view).sendKin(anyString(), anyString(), anyString(),anyString(), anyString(), anyInt(),anyString(),anyString())
         verify(view, times(0)).updateTransferStatus(TransferBarView.TransferStatus.Timeout)
     }
 
@@ -197,7 +199,7 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getSenderAppIcon()).thenReturn("icon")
         `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
 
         appInfoPresenter.onAttach(view)
@@ -223,7 +225,7 @@ class AppInfoPresenterTest {
         `when`(repository.getAppByName(appName)).thenReturn(app_with_transfer)
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(packageManager.getPackageInfo(anyString(), anyInt())).thenReturn(mock(PackageInfo::class.java))
-        `when`(repository.getStoredAppIcon()).thenReturn("icon")
+        `when`(repository.getSenderAppIcon()).thenReturn("icon")
         `when`(repository.getReceiverAppPublicAddress()).thenReturn("public_address")
         doNothing().`when`(repository.storeReceiverAppPublicAddress(anyString()))
 

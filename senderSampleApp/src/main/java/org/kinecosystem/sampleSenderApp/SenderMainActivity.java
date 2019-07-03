@@ -28,6 +28,5 @@ public class SenderMainActivity extends SampleBaseActivity {
         });
 
 
-
     }
 }

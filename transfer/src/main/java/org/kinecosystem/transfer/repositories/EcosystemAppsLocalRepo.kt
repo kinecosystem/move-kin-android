@@ -26,6 +26,7 @@ class EcosystemAppsLocalRepo(context: Context) {
         private const val MEMO = "MEMO"
         private const val RECEIVER_APP_ADDRESS = "RECEIVER_APP_ADDRESS"
         private const val CURRENT_BALANCE = "CURRENT_BALANCE"
+        private const val APP_SEND_SERVICE_FULL_PATH = "APP_SEND_SERVICE_FULL_PATH"
     }
 
     var discoveryAppVersion: Int
@@ -55,6 +56,10 @@ class EcosystemAppsLocalRepo(context: Context) {
     var currentBalance: Int
         set(balance) = localStore.updateInt(CURRENT_BALANCE, balance)
         get() = localStore.getInt(CURRENT_BALANCE, Consts.NO_BALANCE)
+
+    var appSendServiceFullPath: String
+        set(path) = localStore.updateString(APP_SEND_SERVICE_FULL_PATH, path)
+        get() = localStore.getString(APP_SEND_SERVICE_FULL_PATH, "")
 
     fun getDiscoveryApps(callback: OperationResultCallback<List<EcosystemApp>>) {
         val apps = localStore.getString(APPS_DISCOVERY_KEY, "")

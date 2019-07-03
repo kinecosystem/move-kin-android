@@ -32,7 +32,7 @@ class AppsDiscoveryList @JvmOverloads constructor(context: Context, attrs: Attri
 
     init {
         layoutManager = GridLayoutManager(context, COLUMNS_COUNT)
-        val repository = EcosystemAppsRepository.getInstance(context.packageName, EcosystemAppsLocalRepo(context), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper()))
+        val repository = EcosystemAppsRepository.getInstance(context)
         presenter = AppsDiscoveryListPresenter(repository)
         presenter?.let {
             adapter = AppsDiscoveryAdapter(it)

@@ -40,7 +40,8 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
             finish()
         }
         setContentView(R.layout.transfer_amount_activity)
-        presenter = TransferAmountPresenter(appName, receiverPublicAddress, EcosystemAppsRepository.getInstance(packageName, EcosystemAppsLocalRepo(this), EcosystemAppsRemoteRepo(), Handler(Looper.getMainLooper())), SenderServiceBinder(this))
+        presenter = TransferAmountPresenter(appName, receiverPublicAddress,
+                EcosystemAppsRepository.getInstance(this), SenderServiceBinder(this))
         presenter?.onAttach(this)
         transferBarView = findViewById(R.id.transferBar)
         findViewById<ImageView>(R.id.close_x).setOnClickListener {

@@ -11,6 +11,7 @@ import android.os.Looper
 import android.util.Log
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.repositories.KinTransferCallback
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import java.util.concurrent.Executors
@@ -69,15 +70,15 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKin(senderAppName:String, senderAppId:String, receiverAddress: String, amount: Int, memo: String) {
+    fun startSendKin(receiverAppId:String, receiverAppName:String, receiverAddress: String, amount: Int, memo: String) {
         if (isBounded) {
             executorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(senderAppName, senderAppId, receiverAddress, amount, memo)
+                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
-                        startSendKinAsnyc(receiverAddress, amount, memo, object : KinTransferCallback {
+                        startSendKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
                             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                                 updateTransferCompleted(kinTransferComplete)
                             }
@@ -97,10 +98,10 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    fun startSendKinAsnyc(receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
+    fun startSendKinAsync(receiverAppId: String, receiverAppName: String, receiverAddress: String, amount: Int, memo: String, callback: KinTransferCallback) {
         if (isBounded) {
             executorService.execute {
-                transferService?.transferKinAsync(receiverAddress, amount, memo, callback)
+                transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, callback)
             }
         }
     }
@@ -108,23 +109,27 @@ class SenderServiceBinder(private val context: Context?) {
     @Throws(ServiceConfigurationException::class)
     fun bind() {
         if (!isBounded) {
-            val intent = Intent()
-            val senderPackageName = context?.packageName
-            val serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
-            intent.component = ComponentName(senderPackageName, serviceFullPath)
-            intent.`package` = senderPackageName
-            context?.packageManager?.let {
-                val resolveInfos: MutableList<ResolveInfo> = it.queryIntentServices(intent, 0)
-                if (!resolveInfos.any()) {
-                    throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
+            context?.let {
+                val senderPackageName = it.packageName
+                var serviceFullPath = EcosystemAppsRepository.getInstance(it).getSenderServiceFullPath()
+                if (serviceFullPath.isNullOrEmpty())
+                    serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+                val intent = Intent()
+                intent.component = ComponentName(senderPackageName, serviceFullPath)
+                intent.`package` = senderPackageName
+                it.packageManager?.let { packageManager ->
+                    val resolveInfos: MutableList<ResolveInfo> = packageManager.queryIntentServices(intent, 0)
+                    if (!resolveInfos.any()) {
+                        throw ServiceConfigurationException(serviceFullPath, "Service not found - Service must be implemented")
+                    }
+                    if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
+                        throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
+                    }
+                } ?: kotlin.run {
+                    throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
                 }
-                if (resolveInfos.filter { it.serviceInfo.exported }.any()) {
-                    throw ServiceConfigurationException(serviceFullPath, "Service should not be exported")
-                }
-            } ?: kotlin.run {
-                throw ServiceConfigurationException(serviceFullPath, "packageManager not found")
+                it.bindService(intent, connection, Context.BIND_AUTO_CREATE)
             }
-            context?.bindService(intent, connection, Context.BIND_AUTO_CREATE)
         } else {
             updateServiceConnection(true)
         }

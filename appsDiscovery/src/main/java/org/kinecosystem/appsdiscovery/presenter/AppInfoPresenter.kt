@@ -89,7 +89,9 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
         app?.let {
             it.appPackage?.let { receiverPkg ->
                 view?.updateAmount(amountToSend)
-                view?.sendKin(repository.getReceiverAppPublicAddress(), repository.getSenderAppName(), repository.getSenderAppId(), amountToSend, repository.getCurrentMemo(), receiverPkg)
+                view?.sendKin(repository.getSenderAppId(), repository.getSenderAppName(),
+                        it.appId, it.name, repository.getReceiverAppPublicAddress(),
+                        amountToSend, repository.getCurrentMemo(), receiverPkg)
             }
         }
         startTimeOutCounter()

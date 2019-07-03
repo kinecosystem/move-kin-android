@@ -16,6 +16,8 @@ import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.manager.TransferManager
 
 class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
@@ -70,6 +72,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        processIntent()
         setContentView(R.layout.apps_transfer_activity)
         dataGroup = findViewById(R.id.data)
         noDataGroup = findViewById(R.id.noData)
@@ -87,6 +90,12 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         }
     }
 
+    private fun processIntent() {
+        if (intent.getBooleanExtra(EXTRA_DEBUG_MODE, false)) {
+            EcosystemAppsRepository.getInstance(this).forceDebugMode()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         presenter?.processResponse(requestCode, resultCode, data)
@@ -98,6 +107,11 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
     }
 
     companion object {
-        fun getIntent(context: Context) = Intent(context, AppsTransferActivity::class.java)
+        private val EXTRA_DEBUG_MODE = "DEBUG_MODE"
+        fun getIntent(context: Context, debugMode: Boolean = false): Intent {
+            val intent = Intent(context, AppsTransferActivity::class.java)
+            intent.putExtra(EXTRA_DEBUG_MODE, debugMode)
+            return intent
+        }
     }
 }

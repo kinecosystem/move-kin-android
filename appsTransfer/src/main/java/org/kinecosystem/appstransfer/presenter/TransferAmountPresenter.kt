@@ -13,7 +13,11 @@ import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 
-class TransferAmountPresenter(receiverAppName: String, private val receiverPublicAddress: String, private val repository: EcosystemAppsRepository, private val senderServiceBinder: SenderServiceBinder) : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
+class TransferAmountPresenter(receiverAppName: String, private val receiverPublicAddress: String,
+                              private val repository: EcosystemAppsRepository,
+                              private val senderServiceBinder: SenderServiceBinder)
+    : BasePresenter<ITransferAmountView>(), ITransferAmountPresenter, SenderServiceBinder.BinderListener {
+
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
 
@@ -119,7 +123,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     override fun onSendKinClicked() {
         app?.let {
             it.appPackage?.let { receiverPackage ->
-                senderServiceBinder.startSendKin(repository.getSenderAppName(), repository.getSenderAppId(), receiverPublicAddress, amount, repository.getCurrentMemo())
+                senderServiceBinder.startSendKin(it.appId, it.name, receiverPublicAddress, amount, repository.getCurrentMemo())
                 startTimeOutCounter()
                 view?.initTransferBar(TransferInfo(repository.getSenderAppIcon(), it.iconUrl, it.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
@@ -134,7 +138,8 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
             view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
             app?.let {
                 it.appPackage?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress, repository.getSenderAppName(), receiverPublicAddress, amount, transactionMemo)
+                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress,
+                            repository.getSenderAppName(), receiverPublicAddress, amount, transactionMemo)
                 }
             }
         }
@@ -146,7 +151,8 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
             view?.updateTransferBar(TransferBarView.TransferStatus.Complete)
             app?.let { application ->
                 application.appPackage?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress, repository.getSenderAppName(), receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
+                    view?.notifyReceiverTransactionSuccess(receiverPackage, kinTransferComplete.senderAddress,
+                            repository.getSenderAppName(), receiverPublicAddress, amount, kinTransferComplete.transactionId, kinTransferComplete.transactionMemo)
                 }
             }
         }
