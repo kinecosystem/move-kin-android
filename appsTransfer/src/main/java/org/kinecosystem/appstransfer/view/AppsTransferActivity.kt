@@ -79,8 +79,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         loader = findViewById(R.id.loader)
         list = findViewById(R.id.list)
         list.clickListener = presenter
-        presenter = AppsTransferPresenter(TransferManager(this),
-                EcosystemAppsLocalRepo(this))
+        presenter = AppsTransferPresenter(TransferManager(this), EcosystemAppsLocalRepo(this))
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
             presenter?.onCloseClicked()
         }

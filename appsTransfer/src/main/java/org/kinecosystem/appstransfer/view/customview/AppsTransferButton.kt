@@ -11,7 +11,7 @@ import org.kinecosystem.appstransfer.view.AppsTransferActivity
 class AppsTransferButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {
 
-    private fun startAppsDiscoveryActivity(debugMode: Boolean) {
+    private fun startAppsDiscoveryActivity(debugMode: Boolean=false) {
         context.startActivity(AppsTransferActivity.getIntent(context, debugMode))
     }
 

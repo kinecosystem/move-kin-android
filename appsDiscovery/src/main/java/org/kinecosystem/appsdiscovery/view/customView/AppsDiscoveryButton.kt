@@ -11,20 +11,15 @@ import org.kinecosystem.appsdiscovery.view.AppsDiscoveryActivity
 class AppsDiscoveryButton @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         TextView(context, attrs, defStyleAttr) {
 
-    private fun startAppsDiscoveryActivity(debugMode: Boolean) {
-        context.startActivity(AppsDiscoveryActivity.getIntent(context, debugMode))
-    }
-
     init {
         text = resources.getString(R.string.apps_discovery_explore_kin)
         TextViewCompat.setTextAppearance(this, R.style.KinTextButtonRounded_Purple)
         background = ContextCompat.getDrawable(context, R.drawable.kin_button_rounded_drawable)
         val debugMode = getDebugModeAttribute(attrs)
         setOnClickListener {
-            startAppsDiscoveryActivity(debugMode)
+            context.startActivity(AppsDiscoveryActivity.getIntent(context, debugMode))
         }
     }
-
 
     private fun getDebugModeAttribute(attrs: AttributeSet?) :Boolean {
         var debug = false
