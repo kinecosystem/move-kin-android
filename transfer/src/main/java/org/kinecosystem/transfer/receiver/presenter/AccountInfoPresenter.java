@@ -176,7 +176,7 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
 
             if (!senderAppName.isEmpty() && !memo.isEmpty() && !senderAppId.isEmpty() && !receiverAppId.isEmpty()) {
                 getView().updateTitle(senderAppName);
-                getView().updateTransactionInfo(senderAppId, senderAppName, receiverAppId, formatFullMemo(receiverAppId, memo));
+                getView().updateTransactionInfo(senderAppId, senderAppName, receiverAppId, formatFullMemo(senderAppId, memo));
                 return true;
             }
         }
@@ -184,8 +184,8 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
         return false;
     }
 
-    private String formatFullMemo(String receiverAppId, String memo) {
-        return "1-" + receiverAppId + "-" + memo;
+    private String formatFullMemo(String senderAppId, String memo) {
+        return "1-" + senderAppId + "-" + memo;
     }
 
     private class AccountInfoAsyncTask extends AsyncTask<Void, Void, TaskResponse> {
