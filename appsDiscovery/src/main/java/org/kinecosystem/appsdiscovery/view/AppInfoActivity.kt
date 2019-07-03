@@ -191,16 +191,16 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
             finish()
         }
         with(app?.metaData?.experienceData) {
-            (findViewById<TextView>(R.id.howInfo) as TextView).text = this?.howTo ?: ""
-            (findViewById<TextView>(R.id.experienceName) as TextView).text = this?.name ?: ""
-            (findViewById<TextView>(R.id.experienceInfo) as TextView).text = this?.about ?: ""
+            findViewById<TextView>(R.id.howInfo).text = this?.howTo ?: ""
+            findViewById<TextView>(R.id.experienceName).text = this?.name ?: ""
+            findViewById<TextView>(R.id.experienceInfo).text = this?.about ?: ""
         }
-        (findViewById<TextView>(R.id.byApp) as TextView).text = resources.getString(R.string.apps_discovery_by_app, app?.name)
-        (findViewById<TextView>(R.id.aboutAppTitle) as TextView).text = resources.getString(R.string.apps_discovery_about_app, app?.name)
-        (findViewById<TextView>(R.id.aboutAppInfo) as TextView).text = app?.metaData?.about
+        findViewById<TextView>(R.id.byApp).text = resources.getString(R.string.apps_discovery_by_app, app?.name)
+        findViewById<TextView>(R.id.aboutAppTitle).text = resources.getString(R.string.apps_discovery_about_app, app?.name)
+        findViewById<TextView>(R.id.aboutAppInfo).text = app?.metaData?.about
 
         findViewById<View>(R.id.headerView).setBackgroundColor(app?.cardColor!!)
-        (findViewById<TextView>(R.id.category) as TextView).text = app.category
+        findViewById<TextView>(R.id.category).text = app.category
 
         findViewById<ImageView>(R.id.icon).load(app.iconUrl)
         findViewById<ImageView>(R.id.appBigIcon).load(app.iconUrl)
