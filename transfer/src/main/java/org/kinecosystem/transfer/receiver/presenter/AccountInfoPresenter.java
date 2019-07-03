@@ -175,12 +175,17 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
             String receiverAppId = intent.getStringExtra(TransferIntent.EXTRA_RECEIVER_APP_ID);
 
             if (!senderAppName.isEmpty() && !memo.isEmpty() && !senderAppId.isEmpty() && !receiverAppId.isEmpty()) {
-                getView().onTransactionInfoReceived(senderAppName, memo, senderAppId, receiverAppId);
+                getView().updateTitle(senderAppName);
+                getView().updateTransactionInfo(senderAppId, senderAppName, receiverAppId, formatFullMemo(receiverAppId, memo));
                 return true;
             }
         }
         onError("Unable to initialize confirmation activity. Incoming intent was null or EXTRA_SENDER_APP_NAME/EXTRA_MEMO/EXTRA_SENDER_APP_NAME/EXTRA_RECEIVER_APP_ID missing or activity killed");
         return false;
+    }
+
+    private String formatFullMemo(String receiverAppId, String memo) {
+        return "1-" + receiverAppId + "-" + memo;
     }
 
     private class AccountInfoAsyncTask extends AsyncTask<Void, Void, TaskResponse> {

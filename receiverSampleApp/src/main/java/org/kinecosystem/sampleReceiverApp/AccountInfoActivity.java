@@ -21,8 +21,8 @@ public class AccountInfoActivity extends AccountInfoActivityBase {
     }
 
     @Override
-    public void onTransactionInfoReceived(String senderAppName, String memo, String receiverAppId, String senderAppId) {
-        super.onTransactionInfoReceived(senderAppName, memo, receiverAppId, senderAppId);
+    public void updateTransactionInfo(String senderAppId, String senderAppName, String receiverAppId, String memo) {
+        super.updateTransactionInfo(senderAppId, senderAppName, receiverAppId, memo);
         //server needs to check transaction got with that memo on the blockchain
         //if found add senderAppName to transaction history
         Log.d("AccountInfoActivity", "Validate memo" + memo + " if valid add to transaction history sender App Name " + senderAppName);
