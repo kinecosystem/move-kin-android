@@ -13,7 +13,7 @@ class EcosystemAppsRemoteRepo {
 
     private val httpClient: OkHttpClient
     private val gson = Gson()
-    var forceDebug = false
+    var forceDebug = true
 
     companion object {
         private const val BASE_CDN_URL = "https://discover.kin.org"
