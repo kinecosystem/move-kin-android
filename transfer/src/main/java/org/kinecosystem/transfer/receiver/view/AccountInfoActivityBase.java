@@ -84,7 +84,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
 
     @Override
     public void showErrorDialog(AccountInfoError dataError, IErrorActionClickListener listener) {
-        AccountInfoErrorDialog dialog = new AccountInfoErrorDialog(this, dataError, listener);
+        AccountInfoErrorDialog dialog = new AccountInfoErrorDialog(this, dataError, true, listener);
         dialog.show();
     }
 

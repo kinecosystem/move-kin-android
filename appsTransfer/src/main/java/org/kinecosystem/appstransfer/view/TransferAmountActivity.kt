@@ -3,8 +3,6 @@ package org.kinecosystem.appstransfer.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -15,10 +13,11 @@ import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
+import org.kinecosystem.transfer.receiver.presenter.AccountInfoError
+import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
 import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
-import org.kinecosystem.transfer.repositories.EcosystemAppsLocalRepo
-import org.kinecosystem.transfer.repositories.EcosystemAppsRemoteRepo
+import org.kinecosystem.transfer.receiver.view.AccountInfoErrorDialog
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
@@ -93,6 +92,11 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         }
     }
 
+    override fun showErrorDialog(listener: IErrorActionClickListener) {
+        val dialog = AccountInfoErrorDialog(this, AccountInfoError(IErrorActionClickListener.ActionType.None, resources.getString(R.string.timeout_occurred)), false, listener)
+        dialog.show()
+    }
+
     override fun updateAmount(amount: String) {
         this.amount?.text = amount
     }
@@ -136,7 +140,6 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         presenter?.onPause()
         super.onPause()
     }
-
 
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"
