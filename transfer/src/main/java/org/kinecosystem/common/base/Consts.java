@@ -9,6 +9,4 @@ public class Consts {
     public static final int MEMO_BYTES_LENGTH_LIMIT = 21;
     public static final String APPS_TRANSFER_MEMO_PREFIX = "xapp";
     public static final String MEMO_UNDERSCORE_DELIMITER = "_";
-    public static final String MEMO_DASH_DELIMITER = "-";
-
 }

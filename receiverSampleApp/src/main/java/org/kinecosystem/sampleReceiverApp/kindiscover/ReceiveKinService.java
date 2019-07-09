@@ -14,7 +14,7 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
 
     @Override
     public void onTransactionCompleted(@NonNull String fromAddress, @NonNull String senderAppName, @NonNull String toAddress, int amount, @NonNull String transactionId, @NonNull String memo) {
-        Log.d(TAG, "Transaction completed. Account public address: " + toAddress + " received " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
+        Log.d(TAG, "Kin Transfer completed. Account public address: " + toAddress + " received " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
                 + ".\n The transactionId is: " + transactionId + " with memo " + memo);
 
         // If you display a transaction history in your app, here is the place
@@ -23,9 +23,7 @@ public class ReceiveKinService extends ReceiveKinServiceBase {
 
     @Override
     public void onTransactionFailed(@NonNull String error, @NonNull String fromAddress, @NonNull String senderAppName, @NonNull String toAddress, int amount, @NonNull String memo) {
-        Log.d(TAG, "Transaction failed. Account public address: " + toAddress + ", DID NOT receive " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
+        Log.d(TAG, "Kin Transfer failed. Account public address: " + toAddress + ", DID NOT receive " + amount + " KIN from " + senderAppName + " public address: " + fromAddress
                 + ". The attempted transaction memo was " + memo + ". The error message is " + error);
-
     }
-
 }
