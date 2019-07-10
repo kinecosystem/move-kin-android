@@ -8,7 +8,7 @@ import org.kinecosystem.transfer.R
 import org.kinecosystem.transfer.receiver.presenter.AccountInfoError
 import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
 
-class AccountInfoErrorDialog(context: Context, dataError: AccountInfoError, listener: IErrorActionClickListener? = null) : AlertDialog(context) {
+class AccountInfoErrorDialog(context: Context, dataError: AccountInfoError, isCancelable : Boolean = true, listener: IErrorActionClickListener? = null) : AlertDialog(context) {
 
     init {
         val dialogView = View.inflate(context, R.layout.account_info_error_alert_dialog, null)
@@ -22,5 +22,7 @@ class AccountInfoErrorDialog(context: Context, dataError: AccountInfoError, list
             dismiss()
             listener?.onOkClicked(dataError.actionType)
         }
+        setCancelable(isCancelable)
+        setCanceledOnTouchOutside(isCancelable)
     }
 }

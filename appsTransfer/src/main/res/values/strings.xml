@@ -12,4 +12,5 @@
     <string name="apps_transfer_alert_subtitle"><![CDATA[Transfer your Kin from %s to other Kin Ecosystem apps on your device]]></string>
     <string name="apps_transfer_try_it">Try it now</string>
     <string name="apps_transfer_later">Later</string>
+    <string name="timeout_occurred">A timeout occurred. Please close the page and start again.</string>
 </resources>

@@ -1,6 +1,7 @@
 package org.kinecosystem.appstransfer.presenter
 
 import android.os.Handler
+import android.os.Looper
 import org.kinecosystem.appstransfer.view.ITransferAmountView
 import org.kinecosystem.common.base.BasePresenter
 import org.kinecosystem.common.base.Consts
@@ -8,10 +9,12 @@ import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
+import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
+import java.util.*
 
 class TransferAmountPresenter(receiverAppName: String, private val receiverPublicAddress: String,
                               private val repository: EcosystemAppsRepository,
@@ -20,6 +23,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
 
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
+    private val SENDIONG_TIMEOUT = 5 * 60 * 1000L //5 min
 
     private var amount: Int = 0
     private var amountStr: String = ZEROE
@@ -27,6 +31,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private var app: EcosystemApp? = null
     private var balanceRequested = false
     private val handler = Handler()
+    private val sendingTimeoutTimer: Timer = Timer()
     private var afterTimeout = false
     @Volatile
     private var transferResponseReceived = false
@@ -121,10 +126,11 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     }
 
     override fun onSendKinClicked() {
+        stopSendingTimeoutCounter()
         app?.let {
             it.appPackage?.let { receiverPackage ->
                 senderServiceBinder.startSendKin(it.appId, it.name, receiverPublicAddress, amount, repository.getCurrentMemo())
-                startTimeOutCounter()
+                startTransferTimeOutCounter()
                 view?.initTransferBar(TransferInfo(repository.getSenderAppIcon(), it.iconUrl, it.name, receiverPackage, amount))
                 view?.updateTransferBar(TransferBarView.TransferStatus.Started)
                 resetAmount()
@@ -132,7 +138,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         }
     }
 
-    override fun onTransferFailed(errorMessge: String, senderAddress: String, transactionMemo:String) {
+    override fun onTransferFailed(errorMessge: String, senderAddress: String, transactionMemo: String) {
         if (!afterTimeout) {
             transferResponseReceived = true
             view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
@@ -168,6 +174,15 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         view.updateBalance(repository.getCurrentBalance())
         senderServiceBinder.setListener(this)
         onAmountModified()
+        startSendingTimeoutCounter()
+    }
+
+    private fun startSendingTimeoutCounter() {
+        sendingTimeoutTimer.schedule(ShowErrorTask(view), SENDIONG_TIMEOUT)
+    }
+
+    private fun stopSendingTimeoutCounter() {
+        sendingTimeoutTimer.cancel()
     }
 
     override fun onCloseClicked() {
@@ -187,8 +202,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         senderServiceBinder.bind()
     }
 
-
-    private fun startTimeOutCounter() {
+    private fun startTransferTimeOutCounter() {
         afterTimeout = false
         transferResponseReceived = false
         handler.postDelayed({
@@ -197,5 +211,18 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
                 view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
             }
         }, TRANSACTION_TIMEOUT)
+    }
+}
+
+private class ShowErrorTask(var view: ITransferAmountView?) : TimerTask() {
+    val handler = Handler(Looper.getMainLooper())
+    override fun run() {
+        handler.post {
+            view?.showErrorDialog(object : IErrorActionClickListener {
+                override fun onOkClicked(errorType: IErrorActionClickListener.ActionType) {
+                    view?.close()
+                }
+            })
+        }
     }
 }
