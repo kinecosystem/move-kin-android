@@ -55,4 +55,13 @@ public class SendKinService extends SendKinServiceBase {
             throw new BalanceException("Unable to retrieve Kin balance. Exception " + e + ", with message " + e.getMessage());
         }
     }
+
+    @Override
+    public String getAddress() throws AccountException {
+        SampleWallet sampleWallet = ((SenderApplication) getApplicationContext()).getSampleWallet();
+        if (!sampleWallet.hasActiveAccount()) {
+            throw new AccountException("Cannot retrieve address. Account not initialized");
+        }
+        return sampleWallet.getAccount().getPublicAddress();
+    }
 }

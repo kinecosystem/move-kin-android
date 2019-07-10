@@ -22,6 +22,8 @@ class SenderServiceBinder(private val context: Context?) {
     interface BinderListener {
         fun onBalanceReceived(balance: Int)
         fun onBalanceFailed()
+        fun onAddressReceived(address: String)
+        fun onAddressFailed()
         fun onServiceConnected()
         fun onServiceDisconnected()
         fun onTransferFailed(errorMessage: String, senderAddress: String, transactionMemo:String)
@@ -63,6 +65,22 @@ class SenderServiceBinder(private val context: Context?) {
                     }
                 } catch (balanceException: SendKinServiceBase.BalanceException) {
                     updateBalance(false)
+                }
+            }
+        } else {
+            Log.e(TAG, "service must call bind first and wait until its bounded")
+        }
+    }
+
+    fun requestAddress() {
+        if (isBounded) {
+            executorService.execute {
+                try {
+                    transferService?.let {
+                        updateAddress(true, it.address)
+                    }
+                } catch (accountException: SendKinServiceBase.AccountException) {
+                    updateAddress(false)
                 }
             }
         } else {
@@ -142,12 +160,22 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    private fun updateBalance(recieved: Boolean, balance: Int = 0) {
+    private fun updateBalance(received: Boolean, balance: Int = 0) {
         mainThreadHandler.post {
-            if (recieved) {
+            if (received) {
                 listener?.onBalanceReceived(balance)
             } else {
                 listener?.onBalanceFailed()
+            }
+        }
+    }
+
+    private fun updateAddress(received: Boolean, address: String ="") {
+        mainThreadHandler.post {
+            if (received) {
+                listener?.onAddressReceived(address)
+            } else {
+                listener?.onAddressFailed()
             }
         }
     }

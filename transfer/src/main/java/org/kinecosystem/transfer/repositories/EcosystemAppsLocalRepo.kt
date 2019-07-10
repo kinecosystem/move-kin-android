@@ -26,6 +26,7 @@ class EcosystemAppsLocalRepo(context: Context) {
         private const val MEMO = "MEMO"
         private const val RECEIVER_APP_ADDRESS = "RECEIVER_APP_ADDRESS"
         private const val CURRENT_BALANCE = "CURRENT_BALANCE"
+        private const val ADDRESS = "ADDRESS"
         private const val APP_SEND_SERVICE_FULL_PATH = "APP_SEND_SERVICE_FULL_PATH"
     }
 
@@ -56,6 +57,10 @@ class EcosystemAppsLocalRepo(context: Context) {
     var currentBalance: Int
         set(balance) = localStore.updateInt(CURRENT_BALANCE, balance)
         get() = localStore.getInt(CURRENT_BALANCE, Consts.NO_BALANCE)
+
+    var address: String
+        set(address) = localStore.updateString(ADDRESS, address)
+        get() = localStore.getString(ADDRESS, "")
 
     var appSendServiceFullPath: String
         set(path) = localStore.updateString(APP_SEND_SERVICE_FULL_PATH, path)

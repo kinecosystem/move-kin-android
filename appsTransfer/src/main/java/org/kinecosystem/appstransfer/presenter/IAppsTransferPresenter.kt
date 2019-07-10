@@ -7,5 +7,6 @@ import org.kinecosystem.common.base.IBasePresenter
 interface IAppsTransferPresenter : IBasePresenter<IAppsTransferView> {
     fun onCloseClicked()
     fun onResume()
+    fun onPause()
     fun processResponse(requestCode: Int, resultCode: Int, intent: Intent?)
 }

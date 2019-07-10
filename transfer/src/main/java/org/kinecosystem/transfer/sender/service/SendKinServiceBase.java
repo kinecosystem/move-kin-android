@@ -24,6 +24,7 @@ public abstract class SendKinServiceBase extends Service {
 
     public abstract BigDecimal getCurrentBalance() throws BalanceException;
 
+    public abstract String getAddress() throws AccountException;
 
     public final IBinder binder = new KinTransferServiceBinder();
 
@@ -38,11 +39,16 @@ public abstract class SendKinServiceBase extends Service {
         return binder;
     }
 
-    public class BalanceException extends Exception {
+    public class BalanceException extends AccountException {
         public BalanceException(String getBalanceError) {
             super(getBalanceError);
         }
+    }
 
+    public class AccountException extends Exception {
+        public AccountException(String getAccountError) {
+            super(getAccountError);
+        }
     }
 
     public class KinTransferException extends Exception {

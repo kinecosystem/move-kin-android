@@ -36,6 +36,10 @@ private constructor(private val currentPackage: String, private val local: Ecosy
         local.currentBalance = balance
     }
 
+    fun storeAddress(address: String) {
+        local.address = address
+    }
+
     fun storeCurrentMemo(memo: String) {
         local.memoWithRandom = memo
     }

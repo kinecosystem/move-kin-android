@@ -144,6 +144,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
         view?.requestCurrentBalance()
     }
 
+    //TODO
     override fun onRequestReceiverPublicAddress() {
         repository.clearReceiverAppPublicAddress()
         app?.let { it ->
@@ -151,7 +152,7 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
                 app?.appPackage?.let { receiverPkg ->
                     repository.storeCurrentMemo(it.createTransactionMemoWithRandom())
                     val started = transferManager.startTransferRequestActivity(REMOTE_PUBLIC_ADDRESS_REQUEST_CODE,
-                            receiverPkg, activityPath, repository.getSenderAppName(), repository.getCurrentMemo(), repository.getSenderAppId(), it.appId)
+                            receiverPkg, activityPath, "SenderAddressTLV", repository.getSenderAppName(), repository.getCurrentMemo(), repository.getSenderAppId(), it.appId)
                     if (!started) {
                         view?.updateTransferStatus(TransferBarView.TransferStatus.FailedReceiverError)
                     }

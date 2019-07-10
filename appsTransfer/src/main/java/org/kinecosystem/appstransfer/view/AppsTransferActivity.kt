@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import org.kinecosystem.appstransfer.R
 import org.kinecosystem.appstransfer.presenter.AppsTransferPresenter
+import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.view.customview.AppsTransferList
 import org.kinecosystem.appstransfer.view.customview.TransferErrorDialog
 import org.kinecosystem.common.utils.navigateToUrl
@@ -42,6 +43,11 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
 
     override fun navigateToAppStore(url: String) {
         navigateToUrl(url)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPause()
     }
 
     override fun showLoading() {
@@ -79,7 +85,7 @@ class AppsTransferActivity : AppCompatActivity(), IAppsTransferView {
         loader = findViewById(R.id.loader)
         list = findViewById(R.id.list)
         list.clickListener = presenter
-        presenter = AppsTransferPresenter(TransferManager(this), EcosystemAppsLocalRepo(this))
+        presenter = AppsTransferPresenter(TransferManager(this), EcosystemAppsLocalRepo(this), SenderServiceBinder(this))
         findViewById<ImageView>(R.id.close_x).setOnClickListener {
             presenter?.onCloseClicked()
         }

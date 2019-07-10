@@ -166,17 +166,19 @@ public class AccountInfoPresenter extends BasePresenter<IAccountInfoView> implem
     private boolean processIntent(Intent intent) {
         if (intent != null && intent.hasExtra(TransferIntent.EXTRA_SENDER_APP_NAME)
                 && intent.hasExtra(TransferIntent.EXTRA_MEMO)
+                && intent.hasExtra(TransferIntent.EXTRA_SENDER_ADDRESS)
                 && intent.hasExtra(TransferIntent.EXTRA_SENDER_APP_NAME)
                 && intent.hasExtra(TransferIntent.EXTRA_RECEIVER_APP_ID)
                 && getView() != null) {
             String senderAppName = intent.getStringExtra(TransferIntent.EXTRA_SENDER_APP_NAME);
+            String senderAddress = intent.getStringExtra(TransferIntent.EXTRA_SENDER_ADDRESS);
             String memo = intent.getStringExtra(TransferIntent.EXTRA_MEMO);
             String senderAppId = intent.getStringExtra(TransferIntent.EXTRA_SENDER_APP_ID);
             String receiverAppId = intent.getStringExtra(TransferIntent.EXTRA_RECEIVER_APP_ID);
 
             if (!senderAppName.isEmpty() && !memo.isEmpty() && !senderAppId.isEmpty() && !receiverAppId.isEmpty()) {
                 getView().updateTitle(senderAppName);
-                getView().updateTransactionInfo(senderAppId, senderAppName, receiverAppId, formatFullMemo(senderAppId, memo));
+                getView().updateTransactionInfo(senderAddress, senderAppId, senderAppName, receiverAppId, formatFullMemo(senderAppId, memo));
                 return true;
             }
         }

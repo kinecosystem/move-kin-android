@@ -28,7 +28,7 @@ class TransferManager(var activity: Activity?) {
      * @return boolean true if the destination activity has been started
      */
     fun startTransferRequestActivity(requestCode: Int, applicationId: String,
-                                     launchActivityFullPath: String, senderAppName:String, memo:String, senderAppId:String, receiverAppId:String): Boolean {
+                                     launchActivityFullPath: String,  senderAddress:String, senderAppName:String, memo:String, senderAppId:String, receiverAppId:String): Boolean {
         activity?.let {
             val packageManager = it.packageManager
             val intent = Intent()
@@ -38,6 +38,7 @@ class TransferManager(var activity: Activity?) {
                 val exported = resolveInfos[0].activityInfo.exported
                 if (exported) {
                     intent.putExtra(TransferIntent.EXTRA_SENDER_APP_NAME, senderAppName)
+                    intent.putExtra(TransferIntent.EXTRA_SENDER_ADDRESS, senderAddress)
                     intent.putExtra(TransferIntent.EXTRA_SENDER_APP_ID, senderAppId)
                     intent.putExtra(TransferIntent.EXTRA_RECEIVER_APP_ID, receiverAppId)
                     intent.putExtra(TransferIntent.EXTRA_MEMO, memo)

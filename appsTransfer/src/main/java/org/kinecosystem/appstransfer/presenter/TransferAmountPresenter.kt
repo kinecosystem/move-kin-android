@@ -30,6 +30,8 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private var balance = Consts.NO_BALANCE
     private var app: EcosystemApp? = null
     private var balanceRequested = false
+    private var addressRequested = false
+
     private val handler = Handler()
     private val sendingTimeoutTimer: Timer = Timer()
     private var afterTimeout = false
@@ -38,6 +40,16 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
 
     init {
         app = repository.getAppByName(receiverAppName)
+    }
+
+    override fun onResume() {
+        if (senderServiceBinder.isBounded) {
+            senderServiceBinder.requestCurrentBalance()
+            senderServiceBinder.requestAddress()
+        } else {
+            requestBalance()
+            requestAddress()
+        }
     }
 
     override fun onZerosClicked() {
@@ -104,6 +116,10 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
             senderServiceBinder.requestCurrentBalance()
             balanceRequested = false
         }
+        if(addressRequested){
+            senderServiceBinder.requestAddress()
+            addressRequested = false
+        }
     }
 
     override fun onServiceDisconnected() {
@@ -121,8 +137,16 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         repository.storeCurrentBalance(balance)
     }
 
+    override fun onAddressReceived(address: String) {
+        repository.storeAddress(address)
+    }
+
     override fun onBalanceFailed() {
         balance = Consts.NO_BALANCE
+    }
+
+    override fun onAddressFailed() {
+        repository.storeAddress("")
     }
 
     override fun onSendKinClicked() {
@@ -189,16 +213,13 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         view?.close()
     }
 
-    override fun onResume() {
-        if (senderServiceBinder.isBounded) {
-            senderServiceBinder.requestCurrentBalance()
-        } else {
-            requestBalance()
-        }
-    }
-
     private fun requestBalance() {
         balanceRequested = true
+        senderServiceBinder.bind()
+    }
+
+    private fun requestAddress() {
+        addressRequested = true
         senderServiceBinder.bind()
     }
 
