@@ -87,7 +87,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     }
 
     private fun sendKinAsync(senderAppName: String, receiverAppId: String, receiverAppName: String,
-                             receiverAddress:String, amount: Int, memo: String, receiverPackage: String) {
+                             receiverAddress: String, amount: Int, memo: String, receiverPackage: String) {
         transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
             override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
                 uiHandler.post {
@@ -131,8 +131,8 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    override fun sendKin(senderAppId:String, senderAppName: String,
-                         receiverAppId: String, receiverAppName:String, receiverAddress:String,
+    override fun sendKin(senderAppId: String, senderAppName: String,
+                         receiverAppId: String, receiverAppName: String, receiverAddress: String,
                          amount: Int, memo: String, receiverPackage: String) {
         executorService.execute {
             if (isBound) {
@@ -166,8 +166,9 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     override fun bindToSendService() {
         val senderPackageName = packageName
         var serviceFullPath = EcosystemAppsRepository.getInstance(this).getSenderServiceFullPath()
-        if (serviceFullPath.isNullOrEmpty())
+        if (serviceFullPath.isEmpty()) {
             serviceFullPath = "$senderPackageName.${Consts.SERVICE_DEFAULT_PACKAGE}.${Consts.SENDER_SERVICE_NAME}"
+        }
         val intent = Intent()
         intent.component = ComponentName(senderPackageName, serviceFullPath)
         intent.`package` = senderPackageName

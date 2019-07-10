@@ -58,6 +58,9 @@ private constructor(private val currentPackage: String, private val local: Ecosy
 
     fun getSenderServiceFullPath() = local.appSendServiceFullPath
 
+    fun getReceiverServiceFullPath() = local.appReceiveServiceFullPath
+
+
     fun loadDiscoveryApps(listener: OperationResultCallback<List<EcosystemApp>>) {
         hasLocalData = false
         //get first data from cache
@@ -96,6 +99,9 @@ private constructor(private val currentPackage: String, private val local: Ecosy
                             local.appName = app.name
                             app.transferData?.sendKinServiceFullPath?.let {
                                 local.appSendServiceFullPath = it
+                            }
+                            app.transferData?.receiveKinServiceFullPath?.let {
+                                local.appReceiveServiceFullPath = it
                             }
                             filterApps = serverApps.filter { it != app }
                         }

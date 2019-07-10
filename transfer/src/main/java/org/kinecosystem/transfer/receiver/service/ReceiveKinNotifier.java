@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.support.annotation.NonNull;
 
 import org.kinecosystem.common.base.Consts;
+import org.kinecosystem.transfer.repositories.EcosystemAppsRepository;
 
 import java.util.List;
 
@@ -53,10 +54,13 @@ public class ReceiveKinNotifier {
 
     private static Intent getTransactionResultIntent(Context context, String receiverPackageName,
                                                      final Boolean isCompleted) throws ServiceConfigurationException {
+        String serviceFullPath = EcosystemAppsRepository.Companion.getInstance(context).getReceiverServiceFullPath();
+        if (serviceFullPath.isEmpty()) {
+            serviceFullPath = receiverPackageName + "." + Consts.SERVICE_DEFAULT_PACKAGE + "." + Consts.RECEIVER_SERVICE_NAME;
+        }
         String action = isCompleted ? ACTION_TRANSACTION_COMPLETED : ACTION_TRANSACTION_FAILED;
         Intent intent = new Intent();
         intent.setAction(action);
-        String serviceFullPath = receiverPackageName + "." + Consts.SERVICE_DEFAULT_PACKAGE + "." + Consts.RECEIVER_SERVICE_NAME;
         intent.setComponent(new ComponentName(receiverPackageName, serviceFullPath));
         intent.setPackage(receiverPackageName);
         final List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentServices(intent, 0);
