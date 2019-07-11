@@ -17,13 +17,12 @@ import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener;
 
 public abstract class AccountInfoActivityBase extends AppCompatActivity implements IAccountInfoView, IAccountInfo {
     private IAccountInfoPresenter presenter;
-    private String receiverAppName = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        receiverAppName = getApplicationInfo().loadLabel(getPackageManager()).toString();
         setContentView(R.layout.receiver_approval_activity);
+        initDataOnCreate();
         initViews();
         presenter = new AccountInfoPresenter();
         presenter.onAttach(this);
@@ -41,6 +40,9 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     protected void onResume() {
         super.onResume();
         presenter.onResume();
+    }
+
+    protected void initDataOnCreate() {
     }
 
     @Override
