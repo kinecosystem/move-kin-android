@@ -71,7 +71,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     }
 
     @Override
-    public void updateTransactionInfo(String senderAppId, String senderAppName, String receiverAppId, String memo) {
+    public void updateTransactionInfo(final String senderAppId, final String senderAppName, final String receiverAppId, final String memo) {
         //could be overwritten on the receiver side in order to update transaction history
     }
 
