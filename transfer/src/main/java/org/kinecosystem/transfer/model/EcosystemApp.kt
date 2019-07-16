@@ -143,7 +143,7 @@ fun EcosystemApp.canSendAndReceiveKin(): Boolean {
 fun EcosystemApp.createTransactionMemoWithRandom() :String {
     var random = UUID.randomUUID().toString().replace("-", "")
     random = random.substring(0, random.length/2)
-    //DO'NT CHANGE THIS FORMAT BEFORE CONSULTING THE SERVER
+    //Please do not change this format - Changing this format should be coordinated with the BI team
     var shortMemo = "${Consts.APPS_TRANSFER_MEMO_PREFIX}${Consts.MEMO_UNDERSCORE_DELIMITER}$appId${Consts.MEMO_UNDERSCORE_DELIMITER}$random"
     while(shortMemo.toByteArray(charset("UTF-8")).size > Consts.MEMO_BYTES_LENGTH_LIMIT){
         shortMemo = shortMemo.dropLast(1)
