@@ -30,7 +30,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private var balance = Consts.NO_BALANCE
     private var app: EcosystemApp? = null
     private var balanceRequested = false
-    private val handler = Handler()
+    private val mainThreadHandler = Handler(Looper.getMainLooper())
     private val sendingTimeoutTimer: Timer = Timer()
     private var afterTimeout = false
     @Volatile
@@ -138,13 +138,13 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         }
     }
 
-    override fun onTransferFailed(errorMessge: String, senderAddress: String, transactionMemo: String) {
+    override fun onTransferFailed(errorMessage: String, senderAddress: String, transactionMemo: String) {
         if (!afterTimeout) {
             transferResponseReceived = true
             view?.updateTransferBar(TransferBarView.TransferStatus.Failed)
             app?.let {
                 it.appPackage?.let { receiverPackage ->
-                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessge, senderAddress,
+                    view?.notifyReceiverTransactionFailed(receiverPackage, errorMessage, senderAddress,
                             repository.getSenderAppName(), receiverPublicAddress, amount, transactionMemo)
                 }
             }
@@ -205,7 +205,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private fun startTransferTimeOutCounter() {
         afterTimeout = false
         transferResponseReceived = false
-        handler.postDelayed({
+        mainThreadHandler.postDelayed({
             if (!transferResponseReceived) {
                 afterTimeout = true
                 view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
