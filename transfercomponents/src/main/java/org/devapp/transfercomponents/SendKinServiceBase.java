@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.sender.service;
+package org.devapp.transfercomponents;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,21 +6,22 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 
-import org.kinecosystem.transfer.repositories.KinTransferCallback;
-
 import java.math.BigDecimal;
 
 public abstract class SendKinServiceBase extends Service {
 
     protected KinTransferCallback transferKinCallback = null;
 
-    public void cancelCallback() { transferKinCallback = null; }
+    public void cancelCallback() {
+        transferKinCallback = null;
+    }
 
     public abstract KinTransferComplete transferKin(@NonNull final String receiverAppId, @NonNull final String receiverAppName,
-                                                    @NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
+                                                                                                                @NonNull final String toAddress, final int amount, @NonNull final String memo) throws KinTransferException;
 
     public void transferKinAsync(@NonNull final String receiverAppId, @NonNull final String receiverAppName, @NonNull final String toAddress,
-                                 final int amount, @NonNull final String memo, @NonNull KinTransferCallback callback){}
+                                 final int amount, @NonNull final String memo, @NonNull KinTransferCallback callback) {
+    }
 
     public abstract BigDecimal getCurrentBalance() throws BalanceException;
 
@@ -78,7 +79,13 @@ public abstract class SendKinServiceBase extends Service {
             return transactionId;
         }
 
-        public String getTransactionMemo() { return transactionMemo; }
+        public String getTransactionMemo() {
+            return transactionMemo;
+        }
     }
 
+    interface KinTransferCallback {
+        void onSuccess(KinTransferComplete kinTransferComplete);
+        void onError(KinTransferException e);
+    }
 }

@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.receiver.presenter;
+package org.devapp.transfercomponents.receiver.presenter;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -6,14 +6,13 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import org.devapp.transfercomponents.receiver.view.IAccountInfoView;
 import org.jetbrains.annotations.NotNull;
 import org.kinecosystem.common.base.BasePresenter;
 import org.kinecosystem.transfer.TransferIntent;
 import org.kinecosystem.transfer.receiver.manager.AccountInfoException;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfoResponder;
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener.ActionType;
-import org.kinecosystem.transfer.receiver.view.IAccountInfoView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

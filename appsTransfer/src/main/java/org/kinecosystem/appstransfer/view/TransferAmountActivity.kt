@@ -13,11 +13,11 @@ import org.kinecosystem.appstransfer.presenter.SenderServiceBinder
 import org.kinecosystem.appstransfer.presenter.TransferAmountPresenter
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.common.utils.load
-import org.kinecosystem.transfer.receiver.presenter.AccountInfoError
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
+import org.devapp.transfercomponents.receiver.presenter.AccountInfoError
+import org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener
 import org.kinecosystem.transfer.receiver.service.ReceiveKinNotifier
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
-import org.kinecosystem.transfer.receiver.view.AccountInfoErrorDialog
+import org.devapp.transfercomponents.receiver.view.AccountInfoErrorDialog
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo

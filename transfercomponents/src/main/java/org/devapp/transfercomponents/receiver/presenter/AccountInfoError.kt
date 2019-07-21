@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.receiver.presenter
+package org.devapp.transfercomponents.receiver.presenter
 
 class AccountInfoError(val actionType: IErrorActionClickListener.ActionType, val errorMessage: String)
 

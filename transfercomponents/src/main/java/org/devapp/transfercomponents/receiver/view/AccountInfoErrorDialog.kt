@@ -1,12 +1,12 @@
-package org.kinecosystem.transfer.receiver.view
+package org.devapp.transfercomponents.receiver.view
 
 import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.TextView
 import org.kinecosystem.transfer.R
-import org.kinecosystem.transfer.receiver.presenter.AccountInfoError
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
+import org.devapp.transfercomponents.receiver.presenter.AccountInfoError
+import org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener
 
 class AccountInfoErrorDialog(context: Context, dataError: AccountInfoError, isCancelable : Boolean = true, listener: IErrorActionClickListener? = null) : AlertDialog(context) {
 

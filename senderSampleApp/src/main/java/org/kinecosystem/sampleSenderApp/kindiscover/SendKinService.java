@@ -3,7 +3,7 @@ package org.kinecosystem.sampleSenderApp.kindiscover;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.kinecosystem.transfer.sender.service.SendKinServiceBase;
+import org.devapp.transfercomponents.SendKinServiceBase;
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
 import org.kinecosystem.sampleSenderApp.SenderApplication;
 

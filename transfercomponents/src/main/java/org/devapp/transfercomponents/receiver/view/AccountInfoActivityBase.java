@@ -1,4 +1,4 @@
-package org.kinecosystem.transfer.receiver.view;
+package org.devapp.transfercomponents.receiver.view;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -6,14 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import org.devapp.transfercomponents.receiver.presenter.AccountInfoError;
+import org.devapp.transfercomponents.receiver.presenter.AccountInfoPresenter;
+import org.devapp.transfercomponents.receiver.presenter.IAccountInfoPresenter;
+import org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener;
 import org.kinecosystem.common.utils.GeneralUtils;
-import org.kinecosystem.transfer.R;
 import org.kinecosystem.transfer.receiver.manager.AccountInfoResponder;
 import org.kinecosystem.transfer.receiver.manager.IAccountInfo;
-import org.kinecosystem.transfer.receiver.presenter.AccountInfoError;
-import org.kinecosystem.transfer.receiver.presenter.AccountInfoPresenter;
-import org.kinecosystem.transfer.receiver.presenter.IAccountInfoPresenter;
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener;
 
 public abstract class AccountInfoActivityBase extends AppCompatActivity implements IAccountInfoView, IAccountInfo {
     private IAccountInfoPresenter presenter;
@@ -23,7 +22,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         receiverAppName = getApplicationInfo().loadLabel(getPackageManager()).toString();
-        setContentView(R.layout.receiver_approval_activity);
+        setContentView(org.kinecosystem.transfer.R.layout.receiver_approval_activity);
         initViews();
         presenter = new AccountInfoPresenter();
         presenter.onAttach(this);
@@ -62,7 +61,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
 
     @Override
     public void enabledAgreeButton() {
-        findViewById(R.id.confirm_button).setEnabled(true);
+        findViewById(org.kinecosystem.transfer.R.id.confirm_button).setEnabled(true);
     }
 
     @Override
@@ -77,9 +76,9 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
 
     @Override
     public void updateTitle(String senderAppName) {
-        TextView title = findViewById(R.id.transfer_title);
+        TextView title = findViewById(org.kinecosystem.transfer.R.id.transfer_title);
         String receiverAppName = getApplicationInfo().loadLabel(getPackageManager()).toString();
-        title.setText(getString(R.string.receiver_activity_message, senderAppName, receiverAppName));
+        title.setText(getString(org.kinecosystem.transfer.R.string.receiver_activity_message, senderAppName, receiverAppName));
     }
 
     @Override
@@ -94,7 +93,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
     }
 
     protected void initViews() {
-        findViewById(R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(org.kinecosystem.transfer.R.id.confirm_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (presenter != null) {
@@ -103,7 +102,7 @@ public abstract class AccountInfoActivityBase extends AppCompatActivity implemen
             }
         });
 
-        findViewById(R.id.close_button).setOnClickListener(new View.OnClickListener() {
+        findViewById(org.kinecosystem.transfer.R.id.close_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (presenter != null) {

@@ -3,9 +3,6 @@ package org.kinecosystem.sampleReceiverApp;
 import android.util.Log;
 
 import org.kinecosystem.baseSampleApp.sampleWallet.SampleWallet;
-import org.kinecosystem.transfer.receiver.manager.AccountInfoException;
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener.ActionType;
-import org.kinecosystem.transfer.receiver.view.AccountInfoActivityBase;
 
 
 public class AccountInfoActivity extends AccountInfoActivityBase {

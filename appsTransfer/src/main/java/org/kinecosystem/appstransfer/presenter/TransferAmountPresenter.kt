@@ -9,7 +9,7 @@ import org.kinecosystem.common.base.Consts.TRANSACTION_TIMEOUT
 import org.kinecosystem.transfer.model.EcosystemApp
 import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
-import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
+import org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import org.kinecosystem.transfer.sender.view.TransferBarView
@@ -229,8 +229,8 @@ private class ShowErrorTask(var view: ITransferAmountView?) : TimerTask() {
     val handler = Handler(Looper.getMainLooper())
     override fun run() {
         handler.post {
-            view?.showErrorDialog(object : IErrorActionClickListener {
-                override fun onOkClicked(errorType: IErrorActionClickListener.ActionType) {
+            view?.showErrorDialog(object : org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener {
+                override fun onOkClicked(errorType: org.devapp.transfercomponents.receiver.presenter.IErrorActionClickListener.ActionType) {
                     view?.close()
                 }
             })
