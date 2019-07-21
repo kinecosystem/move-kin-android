@@ -61,11 +61,6 @@ class AppInfoPresenter(private val appName: String?, private val repository: Eco
         }
     }
 
-    override fun onDetach() {
-        transferManager.reset()
-        super.onDetach()
-    }
-
     override fun onDestroy() {
         view?.unbindToSendService()
     }
