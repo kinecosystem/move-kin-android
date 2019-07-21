@@ -35,6 +35,13 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private var afterTimeout = false
     @Volatile
     private var transferResponseReceived = false
+    private val updateTimeout = {
+        if (!transferResponseReceived) {
+            afterTimeout = true
+            view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
+        }
+    }
+    private lateinit var showErrorTask: ShowErrorTask
 
     init {
         app = repository.getAppByName(receiverAppName)
@@ -173,12 +180,21 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         }
         view.updateBalance(repository.getCurrentBalance())
         senderServiceBinder.setListener(this)
+        showErrorTask = ShowErrorTask(view)
         onAmountModified()
         startSendingTimeoutCounter()
     }
 
+    override fun onDetach() {
+        sendingTimeoutTimer.cancel()
+        showErrorTask.onDetach()
+        mainThreadHandler.removeCallbacks { updateTimeout }
+        super.onDetach()
+
+    }
+
     private fun startSendingTimeoutCounter() {
-        sendingTimeoutTimer.schedule(ShowErrorTask(view), SENDIONG_TIMEOUT)
+        sendingTimeoutTimer.schedule(showErrorTask, SENDIONG_TIMEOUT)
     }
 
     private fun stopSendingTimeoutCounter() {
@@ -205,12 +221,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
     private fun startTransferTimeOutCounter() {
         afterTimeout = false
         transferResponseReceived = false
-        mainThreadHandler.postDelayed({
-            if (!transferResponseReceived) {
-                afterTimeout = true
-                view?.updateTransferBar(TransferBarView.TransferStatus.Timeout)
-            }
-        }, TRANSACTION_TIMEOUT)
+        mainThreadHandler.postDelayed(updateTimeout, TRANSACTION_TIMEOUT)
     }
 }
 
@@ -224,5 +235,9 @@ private class ShowErrorTask(var view: ITransferAmountView?) : TimerTask() {
                 }
             })
         }
+    }
+
+    fun onDetach() {
+        view = null
     }
 }

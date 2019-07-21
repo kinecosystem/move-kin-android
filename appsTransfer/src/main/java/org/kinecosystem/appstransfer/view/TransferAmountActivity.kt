@@ -141,6 +141,11 @@ class TransferAmountActivity : AppCompatActivity(), ITransferAmountView {
         super.onPause()
     }
 
+    override fun finish() {
+        presenter?.onDetach()
+        super.finish()
+    }
+
     companion object {
         private const val PARAM_APP_NAME = "PARAM_APP_NAME"
         private const val PARAM_RECEIVER_ADDRESS = "PARAM_RECEIVER_ADDRESS"
