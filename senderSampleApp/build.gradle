@@ -33,7 +33,8 @@ dependencies {
 
     implementation 'com.github.kinecosystem:kin-sdk-android:1.0.3.1'
     implementation project(':appsDiscovery')
-    implementation project(':appsTransfer')
     implementation project(':baseSampleApp')
+    implementation project(':appsTransfer')
+
 
 }

@@ -11,7 +11,7 @@ import org.kinecosystem.transfer.model.iconUrl
 import org.kinecosystem.transfer.model.name
 import org.kinecosystem.transfer.receiver.presenter.IErrorActionClickListener
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
-import org.kinecosystem.transfer.sender.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.KinTransferComplete
 import org.kinecosystem.transfer.sender.view.TransferBarView
 import org.kinecosystem.transfer.sender.view.TransferInfo
 import java.util.*
@@ -158,7 +158,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
         }
     }
 
-    override fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+    override fun onTransferComplete(kinTransferComplete: KinTransferComplete) {
         if (!afterTimeout) {
             transferResponseReceived = true
             view?.updateTransferBar(TransferBarView.TransferStatus.Complete)

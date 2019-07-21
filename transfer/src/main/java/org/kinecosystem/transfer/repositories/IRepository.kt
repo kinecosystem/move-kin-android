@@ -1,6 +1,7 @@
 package org.kinecosystem.transfer.repositories
 
-import org.kinecosystem.transfer.sender.service.SendKinServiceBase
+import org.kinecosystem.transfer.sender.service.KinTransferComplete
+import org.kinecosystem.transfer.sender.service.KinTransferException
 
 interface OperationCompletionCallback {
     fun onSuccess()
@@ -13,6 +14,6 @@ interface OperationResultCallback<in T> {
 }
 
 interface KinTransferCallback {
-    fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
-    fun onError(e: SendKinServiceBase.KinTransferException)
+    fun onSuccess(kinTransferComplete: KinTransferComplete)
+    fun onError(e: KinTransferException)
 }

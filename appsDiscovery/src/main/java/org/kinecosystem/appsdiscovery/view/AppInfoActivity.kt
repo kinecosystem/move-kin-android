@@ -32,6 +32,8 @@ import org.kinecosystem.common.utils.load
 import org.kinecosystem.common.utils.navigateToUrl
 import org.kinecosystem.transfer.model.*
 import org.kinecosystem.transfer.repositories.KinTransferCallback
+import org.kinecosystem.transfer.sender.service.KinTransferComplete
+import org.kinecosystem.transfer.sender.service.KinTransferException
 import java.util.concurrent.Executors
 
 class AppInfoActivity : AppCompatActivity(), IAppInfoView {
@@ -89,14 +91,14 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
     private fun sendKinAsync(senderAppName: String, receiverAppId: String, receiverAppName: String,
                              receiverAddress:String, amount: Int, memo: String, receiverPackage: String) {
         transferService?.transferKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
-            override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+            override fun onSuccess(kinTransferComplete: KinTransferComplete) {
                 uiHandler.post {
                     presenter?.onTransferComplete()
                     notifyTransactionCompleted(kinTransferComplete, receiverPackage, senderAppName, receiverAddress, amount)
                 }
             }
 
-            override fun onError(e: SendKinServiceBase.KinTransferException) {
+            override fun onError(e: KinTransferException) {
                 uiHandler.post {
                     presenter?.onTransferFailed()
                     notifyTransactionFailed(e, receiverPackage, senderAppName, receiverAddress, amount, memo)
@@ -106,7 +108,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         })
     }
 
-    private fun notifyTransactionCompleted(kinTransferComplete: SendKinServiceBase.KinTransferComplete, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int) {
+    private fun notifyTransactionCompleted(kinTransferComplete: KinTransferComplete, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int) {
         try {
             ReceiveKinNotifier.notifyTransactionCompleted(baseContext, receiverPackage,
                     kinTransferComplete.senderAddress, senderAppName, receiverAddress, amount,
@@ -118,7 +120,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
         }
     }
 
-    private fun notifyTransactionFailed(e: SendKinServiceBase.KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String) {
+    private fun notifyTransactionFailed(e: KinTransferException, receiverPackage: String, senderAppName: String, receiverAddress: String, amount: Int, memo: String) {
         Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
         try {
             ReceiveKinNotifier.notifyTransactionFailed(baseContext, receiverPackage,
@@ -147,7 +149,7 @@ class AppInfoActivity : AppCompatActivity(), IAppInfoView {
                     } ?: run {
                         sendKinAsync(senderAppName, receiverAppId, receiverAppName, receiverAddress, amount, memo, receiverPackage)
                     }
-                } catch (e: SendKinServiceBase.KinTransferException) {
+                } catch (e: KinTransferException) {
                     uiHandler.post {
                         presenter?.onTransferFailed()
                         notifyTransactionFailed(e, receiverPackage, senderAppName, receiverAddress, amount, memo)

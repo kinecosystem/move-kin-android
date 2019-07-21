@@ -9,10 +9,12 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import org.kinecosystem.appstransfer.sender.KinTransferException
 import org.kinecosystem.common.base.Consts
 import org.kinecosystem.transfer.receiver.service.ServiceConfigurationException
 import org.kinecosystem.transfer.repositories.EcosystemAppsRepository
 import org.kinecosystem.transfer.repositories.KinTransferCallback
+import org.kinecosystem.transfer.sender.service.KinTransferComplete
 import org.kinecosystem.transfer.sender.service.SendKinServiceBase
 import java.util.concurrent.Executors
 
@@ -25,7 +27,7 @@ class SenderServiceBinder(private val context: Context?) {
         fun onServiceConnected()
         fun onServiceDisconnected()
         fun onTransferFailed(errorMessage: String, senderAddress: String, transactionMemo:String)
-        fun onTransferComplete(kinTransferComplete: SendKinServiceBase.KinTransferComplete)
+        fun onTransferComplete(kinTransferComplete: KinTransferComplete)
     }
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
@@ -74,21 +76,21 @@ class SenderServiceBinder(private val context: Context?) {
         if (isBounded) {
             executorService.execute {
                 try {
-                    val kinTransferComplete: SendKinServiceBase.KinTransferComplete? = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
+                    val kinTransferComplete: KinTransferComplete? = transferService?.transferKin(receiverAppId, receiverAppName, receiverAddress, amount, memo)
                     kinTransferComplete?.let {
                         updateTransferCompleted(it)
                     } ?: kotlin.run {
                         startSendKinAsync(receiverAppId, receiverAppName, receiverAddress, amount, memo, object : KinTransferCallback {
-                            override fun onSuccess(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+                            override fun onSuccess(kinTransferComplete: KinTransferComplete) {
                                 updateTransferCompleted(kinTransferComplete)
                             }
 
-                            override fun onError(e: SendKinServiceBase.KinTransferException) {
+                            override fun onError(e: KinTransferException) {
                                 updateTransferFailed(e, memo)
                             }
                         })
                     }
-                } catch (e: SendKinServiceBase.KinTransferException) {
+                } catch (e: KinTransferException) {
                     updateTransferFailed(e, memo)
                     Log.d(TAG, "Exception while transferring Kin,  SendKinServiceBase.KinTransferException ${e.message}")
                 }
@@ -152,13 +154,13 @@ class SenderServiceBinder(private val context: Context?) {
         }
     }
 
-    private fun updateTransferCompleted(kinTransferComplete: SendKinServiceBase.KinTransferComplete) {
+    private fun updateTransferCompleted(kinTransferComplete: KinTransferComplete) {
         mainThreadHandler.post {
             listener?.onTransferComplete(kinTransferComplete)
         }
     }
 
-    private fun updateTransferFailed(e: SendKinServiceBase.KinTransferException, transactionMemo: String) {
+    private fun updateTransferFailed(e: KinTransferException, transactionMemo: String) {
         mainThreadHandler.post {
             val msg = e.message ?: ""
             listener?.onTransferFailed(msg, e.senderAddress, transactionMemo)
