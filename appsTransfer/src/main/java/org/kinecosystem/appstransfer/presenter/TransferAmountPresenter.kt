@@ -23,7 +23,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
 
     private val DOUBLE_ZEROE = "00"
     private val ZEROE = "0"
-    private val SENDIONG_TIMEOUT = 5 * 60 * 1000L //5 min
+    private val SENDIONG_TIMEOUT = 5 * 1 * 1000L //5 min
 
     private var amount: Int = 0
     private var amountStr: String = ZEROE
