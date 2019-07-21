@@ -187,7 +187,7 @@ class TransferAmountPresenter(receiverAppName: String, private val receiverPubli
 
     override fun onDetach() {
         sendingTimeoutTimer.cancel()
-        showErrorTask.onDetach()
+        showErrorTask.release()
         mainThreadHandler.removeCallbacks { updateTimeout }
         super.onDetach()
 
@@ -237,7 +237,7 @@ private class ShowErrorTask(var view: ITransferAmountView?) : TimerTask() {
         }
     }
 
-    fun onDetach() {
+    fun release() {
         view = null
     }
 }

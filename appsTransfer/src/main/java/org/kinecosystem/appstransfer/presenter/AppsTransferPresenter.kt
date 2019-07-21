@@ -42,11 +42,6 @@ class AppsTransferPresenter(private val transferManager: TransferManager, val re
         }
     }
 
-    override fun onDetach() {
-        transferManager.reset()
-        super.onDetach()
-    }
-
     override fun loading() {
         view?.showLoading()
     }

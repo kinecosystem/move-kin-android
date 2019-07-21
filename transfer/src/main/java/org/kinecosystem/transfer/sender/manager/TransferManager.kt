@@ -6,9 +6,12 @@ import android.content.Intent
 import org.kinecosystem.transfer.TransferIntent
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.lang.ref.WeakReference
 
 
-class TransferManager(var activity: Activity?) {
+class TransferManager(activity: Activity?) {
+
+    private var weakActivity: WeakReference<Activity>? = null
 
     interface AccountInfoResponseListener {
         fun onCancel()
@@ -16,6 +19,12 @@ class TransferManager(var activity: Activity?) {
         fun onError(error: String)
 
         fun onResult(data: String)
+    }
+
+    init {
+        activity?.let {
+            weakActivity = WeakReference(it)
+        }
     }
 
     /**
@@ -29,7 +38,7 @@ class TransferManager(var activity: Activity?) {
      */
     fun startTransferRequestActivity(requestCode: Int, applicationId: String,
                                      launchActivityFullPath: String, senderAppName:String, memo:String, senderAppId:String, receiverAppId:String): Boolean {
-        activity?.let {
+        weakActivity?.get()?.let {
             val packageManager = it.packageManager
             val intent = Intent()
             intent.component = ComponentName(applicationId, launchActivityFullPath)
@@ -76,13 +85,12 @@ class TransferManager(var activity: Activity?) {
 
     }
 
-
     private fun processResultOk(intent: Intent,
             accountInfoResponseListener: AccountInfoResponseListener) {
 
         try {
             val uri = intent.data
-            val inputStream = activity?.contentResolver?.openInputStream(uri!!)
+            val inputStream = weakActivity?.get()?.contentResolver?.openInputStream(uri!!)
             val reader = BufferedReader(InputStreamReader(inputStream!!))
             val data: String? = reader.readLine()
             data?.let {
@@ -108,9 +116,5 @@ class TransferManager(var activity: Activity?) {
         } else {
             accountInfoResponseListener.onCancel()
         }
-    }
-
-    fun reset() {
-        activity = null
     }
 }
