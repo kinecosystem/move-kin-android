@@ -45,4 +45,6 @@ class AppsTransferListPresenter(private val repository: EcosystemAppsRepository)
         })
     }
 
+    private fun test(){}
+
 }
