@@ -33,7 +33,7 @@ class EcosystemAppsRemoteRepo {
     }
 
     fun getDiscoveryAppsServerData(callback: OperationResultCallback<EcosystemAppResponse>) {
-        var url = GET_DISCOVERY_APPS_PROD_URL
+        var url = GET_DISCOVERY_APPS_STAGE_URL
         if (BuildConfig.DEBUG) {
             url = GET_DISCOVERY_APPS_STAGE_URL
         }
